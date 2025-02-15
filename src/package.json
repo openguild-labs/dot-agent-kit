@@ -14,7 +14,7 @@
       "db:studio": "drizzle-kit studio"
     },
     "engines": {
-      "node": "18"
+      "node": "22"
     },
     "keywords": [],
     "license": "ISC",
