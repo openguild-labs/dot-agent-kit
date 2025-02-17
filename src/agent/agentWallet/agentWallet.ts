@@ -47,7 +47,7 @@ export class PolkadotAgent {
         - "remove proxy <proxy_address>"
 
         User input: {input}
-        Respond in JSON format: {{ "action": "addProxy" / "checkProxy" / "removeProxy", "data": {{ ... }} }}
+        Respond in JSON format: {{ "action": "addProxy" / "checkProxy" / "removeProxy", "data": {{ "proxyAddress": "<address>", "ownerAddress": "<address>" }} }}
       `,
       inputVariables: ["input"]
     });
@@ -93,16 +93,16 @@ export class PolkadotAgent {
             this.api,
             this.sender,
             data.proxyAddress,
-            data.proxyType,
-            data.delay
+            'Any',
+            0
           );
           return "✅ Proxy added successfully";
 
         case "checkProxy":
           const isProxy = await checkProxy(
             this.api,
-            data.owner,
-            data.proxy
+            this.sender.address,
+            data.proxyAddress
           );
           return isProxy ? "✅ Proxy exists!" : "❌ Proxy not found.";
 
@@ -111,7 +111,7 @@ export class PolkadotAgent {
             this.api,
             this.sender,
             data.proxyAddress,
-            data.proxyType
+            'Any'
           );
           return "✅ Proxy removed successfully";
 

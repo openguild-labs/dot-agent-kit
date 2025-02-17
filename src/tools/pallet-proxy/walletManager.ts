@@ -25,9 +25,14 @@ export async function checkProxy(
   owner: string,
   proxy: string
 ): Promise<boolean> {
-  const proxies = await api.query.proxy.proxies(owner);
-  const [proxyList] = proxies.toJSON() as any[];
-  return proxyList.some((p: any) => p.delegate === proxy);
+  try {
+    const proxies = await api.query.proxy.proxies(owner);
+    const [proxyList] = proxies.toJSON() as [Array<{ delegate: string }>, number];
+    return proxyList.some((p) => p.delegate === proxy);
+  } catch (error) {
+    console.error("Error checking proxy:", error);
+    return false;
+  }
 }
 
 export async function removeProxy(
