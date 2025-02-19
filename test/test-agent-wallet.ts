@@ -1,8 +1,7 @@
-import { PolkadotAgent } from '../agent/agentWallet/agentWallet';
+import { PolkadotAgent } from '../src/agent/agentWallet/agentWallet';
 import dotenv from 'dotenv';
-import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config();
 
 async function main() {
   const agent = new PolkadotAgent({
