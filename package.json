@@ -12,8 +12,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "npx tsx src/db/migrate.ts",
     "db:studio": "drizzle-kit studio",
-    "test": "node --no-deprecation ./node_modules/.bin/ts-node test/test-agent-wallet.ts"
-  },
+    "test": "tsx"
+    },
   "engines": {
     "node": "22"
   },
@@ -26,6 +26,7 @@
     "@langchain/openai": "^0.3.14",
     "@polkadot/api": "^15.5.2",
     "@polkadot/keyring": "^13.3.1",
+    "@polkadot/util-crypto": "^13.4.3",
     "axios": "^1.6.7",
     "bs58": "^6.0.0",
     "dotenv": "^16.0.3",
