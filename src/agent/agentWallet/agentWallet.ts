@@ -8,6 +8,7 @@ import { connectToSubstrate, addProxy, checkProxy, removeProxy } from '../../too
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { XcmTransferManager } from '../../tools/xcm/xcmTransfer';
 
+
 export interface AgentConfig {
   openAIApiKey: string;
   wsEndpoint: string;
@@ -66,6 +67,14 @@ Respond with a JSON object containing:
     "destChain": string
   }}
 }}`,
+        You are an AI managing proxies on the Polkadot blockchain. Here are the available commands:
+        - "add proxy <proxy_address>"
+        - "check proxy <owner_address> <proxy_address>"
+        - "remove proxy <proxy_address>"
+
+        User input: {input}
+        Respond in JSON format: {{ "action": "addProxy" / "checkProxy" / "removeProxy", "data": {{ "proxyAddress": "<address>", "ownerAddress": "<address>" }} }}
+      `,
       inputVariables: ["input"]
     });
 
@@ -75,6 +84,7 @@ Respond with a JSON object containing:
         this.xcmManager = new XcmTransferManager(this.api!, this.sender!);
       })
       .catch(console.error);
+    this.initializeAgent(config).catch(console.error);
   }
 
   private async initializeAgent(config: AgentConfig) {
@@ -144,7 +154,6 @@ Respond with a JSON object containing:
             amount
           );
           return "✅ XCM Transfer completed successfully";
-
         default:
           return "⚠️ Invalid action!";
       }
