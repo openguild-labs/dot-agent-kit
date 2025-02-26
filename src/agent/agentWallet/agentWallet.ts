@@ -7,6 +7,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import { connectToSubstrate, addProxy, checkProxy, removeProxy } from '../../tools/pallet-proxy/walletManager';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { XcmTransferManager } from '../../tools/xcm/xcmTransfer';
+import { ChainRegistry } from '../../chain/chainRegistry';
 
 export interface AgentConfig {
   openAIApiKey: string;
@@ -14,6 +15,7 @@ export interface AgentConfig {
   temperature?: number;
   privateKey?: string;
   customPromptTemplate?: string;
+  chainRegistry?: ChainRegistry;
 }
 
 export class PolkadotAgent {
@@ -70,18 +72,36 @@ Respond with a JSON object containing:
     });
 
     this.keyring = new Keyring({ type: "sr25519" });
-    this.initializeAgent(config)
-      .then(() => {
-        this.xcmManager = new XcmTransferManager(this.api!, this.sender!);
-      })
-      .catch(console.error);
+    this.initializeAgent(config);
   }
 
   private async initializeAgent(config: AgentConfig) {
-    await cryptoWaitReady();
-    this.sender = this.keyring.addFromUri(config.privateKey!);
-    this.api = await connectToSubstrate(config.wsEndpoint);
-    this.isInitialized = true;
+    try {
+      // Disable deprecation warnings
+      process.removeAllListeners('warning');
+      process.on('warning', (warning) => {
+        if (warning.name !== 'DeprecationWarning') {
+          console.warn(warning);
+        }
+      });
+
+      await cryptoWaitReady();
+      this.sender = this.keyring.addFromUri(config.privateKey!);
+      
+      process.removeAllListeners('unhandledRejection');
+      this.api = await connectToSubstrate(config.wsEndpoint);
+      
+      await this.api.isReady;
+      this.xcmManager = new XcmTransferManager(
+        this.api, 
+        this.sender,
+        config.chainRegistry || new ChainRegistry()
+      );
+      this.isInitialized = true;
+    } catch (error) {
+      console.error('Failed to initialize agent:', error);
+      throw error;
+    }
   }
 
   public async waitForReady(): Promise<void> {
@@ -162,17 +182,21 @@ Respond with a JSON object containing:
   }
 
   async handleXcmTransfer(from: string, to: string, amount: bigint) {
-    if (!this.sender) {
-      throw new Error("Sender not initialized");
+    if (!this.sender || !this.api) {
+      throw new Error("Agent not properly initialized");
     }
-    if (!this.api) {
-      throw new Error("Not connected to Substrate node");
-    }
-    return await this.xcmManager!.transferToParachain({
-      sourceChain: from,
-      destChain: to,
+
+    // Normalize chain names
+    const sourceChain = from.toLowerCase() === 'westend' ? 'Westend' : from;
+    const destChain = to.toLowerCase() === 'relay' ? 'Westend' : to;
+
+    const params = {
+      sourceChain,
+      destChain,
       recipient: this.sender.address,
       amount: amount
-    });
+    };
+
+    return await this.xcmManager!.executeXcmTransfer(params);
   }
 }

@@ -3,7 +3,12 @@ import { KeyringPair } from '@polkadot/keyring/types';
 
 export async function connectToSubstrate(endpoint: string): Promise<ApiPromise> {
   const provider = new WsProvider(endpoint);
-  return await ApiPromise.create({ provider });
+  return await ApiPromise.create({ 
+    provider,
+    noInitWarn: true,
+    throwOnConnect: true,
+    throwOnUnknown: false
+  });
 }
 
 
@@ -15,8 +20,7 @@ export async function addProxy(
   delay: number = 0
 ): Promise<void> {
   const tx = api.tx.proxy.addProxy(proxyAddress, proxyType, delay);
-  const hash = await tx.signAndSend(sender);
-  console.log(`✅ Proxy added! Transaction hash: ${hash.toHex()}`);
+  await tx.signAndSend(sender);
 }
 
 
@@ -30,7 +34,6 @@ export async function checkProxy(
     const [proxyList] = proxies.toJSON() as [Array<{ delegate: string }>, number];
     return proxyList.some((p) => p.delegate === proxy);
   } catch (error) {
-    console.error("Error checking proxy:", error);
     return false;
   }
 }
@@ -42,6 +45,5 @@ export async function removeProxy(
   proxyType: string = 'Any'
 ): Promise<void> {
   const tx = api.tx.proxy.removeProxy(proxyAddress, proxyType, 0);
-  const hash = await tx.signAndSend(sender);
-  console.log(`✅ Proxy removed! Transaction hash: ${hash.toHex()}`);
+  await tx.signAndSend(sender);
 }
