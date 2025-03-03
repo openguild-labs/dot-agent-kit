@@ -5,7 +5,7 @@ let api: ApiPromise | null = null;
 
 export async function connect(config: SubstrateConnectorConfig): Promise<boolean> {
   try {
-    const provider = config.isWeb Socket ?? true
+    const provider = config.isWebSocket
       ? new WsProvider(config.url)
       : new HttpProvider(config.url);
 
