@@ -6,6 +6,8 @@ import { ApiPromise } from '@polkadot/api';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { connectToSubstrate, addProxy, checkProxy, removeProxy } from '../../tools/pallet-proxy/walletManager';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
+import { XcmTransferManager } from '../../tools/xcm/xcmTransfer';
+import { ChainRegistry } from '../../chain/chainRegistry';
 
 export interface AgentConfig {
   openAIApiKey: string;
@@ -13,6 +15,7 @@ export interface AgentConfig {
   temperature?: number;
   privateKey?: string;
   customPromptTemplate?: string;
+  chainRegistry?: ChainRegistry;
 }
 
 export class PolkadotAgent {
@@ -22,6 +25,7 @@ export class PolkadotAgent {
   private sender: KeyringPair | null = null;
   private api: ApiPromise | null = null;
   private isInitialized = false;
+  private xcmManager: XcmTransferManager | undefined;
 
   constructor(config: AgentConfig) {
     if (!config.openAIApiKey) {
@@ -41,26 +45,63 @@ export class PolkadotAgent {
 
     this.prompt = new PromptTemplate({
       template: config.customPromptTemplate || `
-        You are an AI managing proxies on the Polkadot blockchain. Here are the available commands:
-        - "add proxy <proxy_address>"
-        - "check proxy <owner_address> <proxy_address>"
-        - "remove proxy <proxy_address>"
+You are an AI managing transfers on the Polkadot blockchain. Here are the available commands:
+- "add proxy <proxy_address>"
+- "check proxy <owner_address> <proxy_address>"
+- "remove proxy <proxy_address>"
+- "transfer <amount> from <source_chain> to <destination_chain>"
 
-        User input: {input}
-        Respond in JSON format: {{ "action": "addProxy" / "checkProxy" / "removeProxy", "data": {{ "proxyAddress": "<address>", "ownerAddress": "<address>" }} }}
-      `,
+For XCM transfers:
+- Source chain can be: "Westend", "Asset Hub" (parachain 1000)
+- Destination chain can be: parachain ID (e.g. "1000") or "relay" for relay chain
+- Amount should be in native tokens (e.g. "0.1 WND")
+
+User input: {input}
+Respond with a JSON object containing:
+{{
+  "action": "addProxy" | "checkProxy" | "removeProxy" | "xcmTransfer",
+  "data": {{
+    "proxyAddress": "<address>",
+    "ownerAddress": "<address>",
+    "amount": number,
+    "sourceChain": string,
+    "destChain": string
+  }}
+}}`,
       inputVariables: ["input"]
     });
 
     this.keyring = new Keyring({ type: "sr25519" });
-    this.initializeAgent(config).catch(console.error);
+    this.initializeAgent(config);
   }
 
   private async initializeAgent(config: AgentConfig) {
-    await cryptoWaitReady();
-    this.sender = this.keyring.addFromUri(config.privateKey!);
-    this.api = await connectToSubstrate(config.wsEndpoint);
-    this.isInitialized = true;
+    try {
+      // Disable deprecation warnings
+      process.removeAllListeners('warning');
+      process.on('warning', (warning) => {
+        if (warning.name !== 'DeprecationWarning') {
+          console.warn(warning);
+        }
+      });
+
+      await cryptoWaitReady();
+      this.sender = this.keyring.addFromUri(config.privateKey!);
+      
+      process.removeAllListeners('unhandledRejection');
+      this.api = await connectToSubstrate(config.wsEndpoint);
+      
+      await this.api.isReady;
+      this.xcmManager = new XcmTransferManager(
+        this.api, 
+        this.sender,
+        config.chainRegistry || new ChainRegistry()
+      );
+      this.isInitialized = true;
+    } catch (error) {
+      console.error('Failed to initialize agent:', error);
+      throw error;
+    }
   }
 
   public async waitForReady(): Promise<void> {
@@ -115,6 +156,15 @@ export class PolkadotAgent {
           );
           return "✅ Proxy removed successfully";
 
+        case "xcmTransfer":
+          const amount = BigInt(data.amount * 1_000_000_000_000); // Convert to 12 decimals
+          await this.handleXcmTransfer(
+            data.sourceChain,
+            data.destChain,
+            amount
+          );
+          return "✅ XCM Transfer completed successfully";
+
         default:
           return "⚠️ Invalid action!";
       }
@@ -129,5 +179,24 @@ export class PolkadotAgent {
       await this.api.disconnect();
       this.api = null;
     }
+  }
+
+  async handleXcmTransfer(from: string, to: string, amount: bigint) {
+    if (!this.sender || !this.api) {
+      throw new Error("Agent not properly initialized");
+    }
+
+    // Normalize chain names
+    const sourceChain = from.toLowerCase() === 'westend' ? 'Westend' : from;
+    const destChain = to.toLowerCase() === 'relay' ? 'Westend' : to;
+
+    const params = {
+      sourceChain,
+      destChain,
+      recipient: this.sender.address,
+      amount: amount
+    };
+
+    return await this.xcmManager!.executeXcmTransfer(params);
   }
 }
