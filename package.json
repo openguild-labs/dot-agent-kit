@@ -26,6 +26,8 @@
     "@langchain/openai": "^0.3.14",
     "@polkadot/api": "^15.5.2",
     "@polkadot/keyring": "^13.3.1",
+    "@polkadot/util-crypto": "^13.4.3",
+
     "axios": "^1.6.7",
     "bs58": "^6.0.0",
     "dotenv": "^16.0.3",
