@@ -9,7 +9,7 @@ export interface ChainConfig {
   type: ChainType;
   parachainId?: number;
   endpoint: string;
-  xcmPallet: string; // 'xcmPallet' or 'polkadotXcm'
+  xcmPallet: 'xcmPallet' | 'polkadotXcm';
 }
 
 export interface XcmTransferParams {

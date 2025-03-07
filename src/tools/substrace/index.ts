@@ -1,1 +1,1 @@
-export * from './substraceConnector'
+export * from './substraceConnector';

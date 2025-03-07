@@ -1,0 +1,21 @@
+{
+  "version": 0,
+  "descriptorPath": ".papi/descriptors",
+  "entries": {
+    "west": {
+      "chain": "westend2",
+      "metadata": ".papi/metadata/west.scale",
+      "genesis": "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
+    },
+    "dot": {
+      "chain": "polkadot",
+      "metadata": ".papi/metadata/dot.scale",
+      "genesis": "0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3"
+    },
+    "west_asset_hub": {
+      "chain": "westend2_asset_hub",
+      "metadata": ".papi/metadata/west_asset_hub.scale",
+      "genesis": "0x67f9723393ef76214df0118c34bbbd3dbebc8ed46a10973a8c969d48fe7598c9"
+    }
+  }
+}

@@ -1,13 +1,9 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { Keyring } from "@polkadot/api";
-import { ApiPromise } from '@polkadot/api';
-import { KeyringPair } from '@polkadot/keyring/types';
-import { connectToSubstrate, addProxy, checkProxy, removeProxy } from '../../tools/pallet-proxy/walletManager';
-import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { XcmTransferManager } from '../../tools/xcm/xcmTransfer';
+import { executeAction } from '../../tools/action';
+import { ApiPromise, magicApi } from '../../tools/substrace/substraceConnector';
 import { ChainRegistry } from '../../chain/chainRegistry';
+import { HumanMessage } from "@langchain/core/messages";
 
 export interface AgentConfig {
   openAIApiKey: string;
@@ -21,11 +17,8 @@ export interface AgentConfig {
 export class PolkadotAgent {
   private model: ChatOpenAI;
   private prompt: PromptTemplate;
-  private keyring: Keyring;
-  private sender: KeyringPair | null = null;
   private api: ApiPromise | null = null;
-  private isInitialized = false;
-  private xcmManager: XcmTransferManager | undefined;
+  private _disconnect: (() => void) | null = null;
 
   constructor(config: AgentConfig) {
     if (!config.openAIApiKey) {
@@ -67,136 +60,57 @@ Respond with a JSON object containing:
     "sourceChain": string,
     "destChain": string
   }}
-}}`,
+}}
+Ensure the response is always a valid JSON object.`,
       inputVariables: ["input"]
     });
 
-    this.keyring = new Keyring({ type: "sr25519" });
-    this.initializeAgent(config);
+    // Initialize API connection
+    this.initializeApi(config.wsEndpoint);
   }
 
-  private async initializeAgent(config: AgentConfig) {
+  private async initializeApi(wsEndpoint: string) {
     try {
-      // Disable deprecation warnings
-      process.removeAllListeners('warning');
-      process.on('warning', (warning) => {
-        if (warning.name !== 'DeprecationWarning') {
-          console.warn(warning);
-        }
-      });
-
-      await cryptoWaitReady();
-      this.sender = this.keyring.addFromUri(config.privateKey!);
-      
-      process.removeAllListeners('unhandledRejection');
-      this.api = await connectToSubstrate(config.wsEndpoint);
-      
-      await this.api.isReady;
-      this.xcmManager = new XcmTransferManager(
-        this.api, 
-        this.sender,
-        config.chainRegistry || new ChainRegistry()
-      );
-      this.isInitialized = true;
+      const { api, disconnect } = await magicApi({ url: wsEndpoint, name: 'westend' }, 'west');
+      this.api = api;
+      this._disconnect = disconnect;
     } catch (error) {
-      console.error('Failed to initialize agent:', error);
-      throw error;
+      console.error('Failed to connect to API:', error);
     }
   }
 
-  public async waitForReady(): Promise<void> {
-    while (!this.isInitialized) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-  }
-
-  public async handlePrompt(input: string): Promise<string> {
-    if (!this.sender) {
-      throw new Error("Private key not set. Call setPrivateKey() first");
-    }
+  public async handleUserCommand(input: string): Promise<string> {
     if (!this.api) {
-      throw new Error("Not connected to Substrate node");
+      throw new Error("API not initialized");
     }
 
-    const chain = RunnableSequence.from([
-      this.prompt,
-      this.model,
-    ]);
-    const response = await chain.invoke({ input });
-
+    const response = await this.model.invoke([new HumanMessage(input)]);
+    
+    let parsedResponse;
     try {
-      const parsedResponse = JSON.parse(response.text);
-      const { action, data } = parsedResponse;
-
-      switch (action) {
-        case "addProxy":
-          await addProxy(
-            this.api,
-            this.sender,
-            data.proxyAddress,
-            'Any',
-            0
-          );
-          return "✅ Proxy added successfully";
-
-        case "checkProxy":
-          const isProxy = await checkProxy(
-            this.api,
-            this.sender.address,
-            data.proxyAddress
-          );
-          return isProxy ? "✅ Proxy exists!" : "❌ Proxy not found.";
-
-        case "removeProxy":
-          await removeProxy(
-            this.api,
-            this.sender,
-            data.proxyAddress,
-            'Any'
-          );
-          return "✅ Proxy removed successfully";
-
-        case "xcmTransfer":
-          const amount = BigInt(data.amount * 1_000_000_000_000); // Convert to 12 decimals
-          await this.handleXcmTransfer(
-            data.sourceChain,
-            data.destChain,
-            amount
-          );
-          return "✅ XCM Transfer completed successfully";
-
-        default:
-          return "⚠️ Invalid action!";
-      }
+      parsedResponse = JSON.parse(response.text);
     } catch (error) {
-      console.error("Error processing prompt:", error);
-      throw new Error("Failed to process request");
+      console.error("Failed to parse JSON response:", response.text);
+      return `Error: Invalid JSON response from AI model. Response: ${response.text}`;
     }
+
+    const { action, data } = parsedResponse;
+    const result = await executeAction(action, { api: this.api, ...data });
+
+    // Convert result to string if it's not already
+    return typeof result === 'string' ? result : JSON.stringify(result);
   }
 
   public async disconnect() {
-    if (this.api) {
-      await this.api.disconnect();
-      this.api = null;
+    if (this._disconnect) {
+      this._disconnect();
     }
+    this.api = null;
   }
 
-  async handleXcmTransfer(from: string, to: string, amount: bigint) {
-    if (!this.sender || !this.api) {
-      throw new Error("Agent not properly initialized");
+  public async waitForReady(): Promise<void> {
+    while (!this.api) {
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
-
-    // Normalize chain names
-    const sourceChain = from.toLowerCase() === 'westend' ? 'Westend' : from;
-    const destChain = to.toLowerCase() === 'relay' ? 'Westend' : to;
-
-    const params = {
-      sourceChain,
-      destChain,
-      recipient: this.sender.address,
-      amount: amount
-    };
-
-    return await this.xcmManager!.executeXcmTransfer(params);
   }
 }
