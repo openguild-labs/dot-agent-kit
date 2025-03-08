@@ -1,7 +1,7 @@
-import { addressOfSubstrate, publicKeyOf, toMultiAddress } from "../src/account/account"
-import { magicApi } from "../src/tools/substrace/substraceConnector"
-import { createProxy, removeProxy } from "../src/tools/pallet-proxy/call"
-import { teleportToParaChain, teleportToRelayChain } from "../src/tools/xcm/teleport/teleport"
+import { addressOfSubstrate, publicKeyOf, toMultiAddress } from "./account"
+import { magicApi } from "../../src/tools/substrace/substraceConnector"
+import { createProxy, removeProxy } from "../../src/tools/pallet-proxy/call"
+import { teleportToParaChain, teleportToRelayChain } from "../../src/tools/xcm/teleport/teleport"
 
 // Westend use SS58 address 42
 const publicKey = publicKeyOf(process.env.PRIVATE_KEY)
@@ -23,12 +23,8 @@ async function main() {
   const proxySetup = await createProxy(api, myDelegateMultiAddress)
   console.log('Proxy setup:', proxySetup)
 
-  // 2. Test teleportToParaChain
-  const paraChainTeleport = await teleportToParaChain(api, myAccount, BigInt(1000), 1000)
-  console.log('Teleport to ParaChain:', paraChainTeleport)
-
   // 3. Test teleportToRelayChain
-  const relayChainTeleport = await teleportToRelayChain(api, myAccount, BigInt(1000))
+  const relayChainTeleport = await teleportToRelayChain(myAccount, BigInt(1000000000000000000))
   console.log('Teleport to RelayChain:', relayChainTeleport)
 
    // 4. remove proxy

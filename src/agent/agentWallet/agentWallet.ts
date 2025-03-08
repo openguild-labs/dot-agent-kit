@@ -1,6 +1,6 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { executeAction } from '../../tools/action';
+import { executeAction } from '../../action/action';
 import { ApiPromise, magicApi } from '../../tools/substrace/substraceConnector';
 import { ChainRegistry } from '../../chain/chainRegistry';
 import { HumanMessage } from "@langchain/core/messages";
