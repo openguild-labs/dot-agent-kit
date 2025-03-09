@@ -1,7 +1,7 @@
 import { TxCallData } from "polkadot-api"
-import { ApiPromise } from "../substrace/substraceConnector"
+import { ApiPromise } from "../tools/substrace/substraceConnector"
 import { MultiAddress } from "@polkadot-api/descriptors"
-import { createProxy, removeProxy, callAsProxy, transferKeepAlive } from "../pallet-proxy/call"
+import { createProxy, removeProxy, callAsProxy, transferKeepAlive } from "../tools/pallet-proxy/call"
 
 type Action = "addProxy" | "removeProxy" | "callAsProxy" | "transferKeepAlive"
 
