@@ -53,9 +53,6 @@ importers:
       drizzle-orm:
         specifier: ^0.38.2
         version: 0.38.4(postgres@3.4.5)
-      ed25519:
-        specifier: link:@noble/curves/ed25519
-        version: link:@noble/curves/ed25519
       express:
         specifier: ^4.18.2
         version: 4.21.2

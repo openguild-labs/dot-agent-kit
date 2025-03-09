@@ -35,7 +35,6 @@
     "dotenv": "^16.0.3",
     "drizzle-kit": "^0.30.1",
     "drizzle-orm": "^0.38.2",
-    "ed25519": "link:@noble/curves/ed25519",
     "express": "^4.18.2",
     "langchain": "^0.3.7",
     "marked": "^15.0.4",
