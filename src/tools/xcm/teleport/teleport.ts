@@ -53,7 +53,7 @@ export const teleportToRelayChain = (address: SS58String, amount: bigint) =>
       interior: XcmV3Junctions.Here(),
     }),
     beneficiary: getBeneficiary(address),
-    assets: getNativeAsset(amount, 1),
+    assets: getNativeAsset(amount,1),
     fee_asset_item: 0,
     weight_limit: XcmV3WeightLimit.Unlimited(),
   })
