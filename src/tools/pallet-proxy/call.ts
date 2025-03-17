@@ -6,10 +6,7 @@ import { MultiAddress } from "@polkadot-api/descriptors"
 export async function createProxy(api: ApiPromise, delegate: MultiAddress): Promise<string> {
 	const result = await api.tx.Proxy.add_proxy({
 		delegate: delegate, 
-		proxy_type: {
-			type: 'Any',
-			value: undefined
-		} as Enum<{ Any: undefined; NonTransfer: undefined; Governance: undefined; Staking: undefined; CancelProxy: undefined; Auction: undefined; NominationPools: undefined; ParaRegistration: undefined; }>, 
+		proxy_type: Enum("Any", undefined), 
 		delay: 0
 	}).signAndSubmit(buildAccountSigner());
 	return result.txHash;
@@ -18,10 +15,7 @@ export async function createProxy(api: ApiPromise, delegate: MultiAddress): Prom
 export async function removeProxy(api: ApiPromise, delegate: MultiAddress): Promise<string> {
 	const result = await api.tx.Proxy.remove_proxy({
 		delegate: delegate, 
-		proxy_type: {
-			type: 'Any',
-			value: undefined
-		} as Enum<{ Any: undefined; NonTransfer: undefined; Governance: undefined; Staking: undefined; CancelProxy: undefined; Auction: undefined; NominationPools: undefined; ParaRegistration: undefined; }>, 
+		proxy_type: Enum("Any", undefined), 
 		delay: 0
 	}).signAndSubmit(buildAccountSigner());
 	return result.txHash;
@@ -36,10 +30,7 @@ export async function callAsProxy(api: ApiPromise, params: ProxyParams): Promise
 	const result = await api.tx.Proxy.proxy({
 		real: params.address,
 		call: params.call,
-		force_proxy_type: {
-			type: 'Any',
-			value: undefined
-		} as Enum<{ Any: undefined; NonTransfer: undefined; Governance: undefined; Staking: undefined; CancelProxy: undefined; Auction: undefined; NominationPools: undefined; ParaRegistration: undefined; }>
+		force_proxy_type: Enum("Any", undefined)
 	}).signAndSubmit(buildAccountDelegateProxySigner());
 	return result.txHash;
 }
