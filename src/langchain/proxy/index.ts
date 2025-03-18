@@ -1,34 +1,36 @@
-import { TxCallData } from "polkadot-api"
-import { ApiPromise } from "../../tools/substrace"
-import { MultiAddress } from "@polkadot-api/descriptors"
-import { createProxy, removeProxy, callAsProxy, transferKeepAlive } from "../../tools/pallet-proxy"
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
+import { PolkadotTools } from '../../tools/index';
 
-type Action = "addProxy" | "removeProxy" | "callAsProxy" | "transferKeepAlive"
-
-interface ActionParams {
-	api: ApiPromise
-	delegate?: MultiAddress
-	address?: MultiAddress
-	call?: TxCallData
-	to?: MultiAddress
-	amount?: bigint
-}
-
-export async function executeAction(action: Action, params: ActionParams): Promise<string | TxCallData> {
-	switch (action) {
-		case "addProxy":
-			if (!params.delegate) throw new Error("Delegate address is required for addProxy")
-			return await createProxy(params.api, params.delegate)
-
-		case "removeProxy":
-			if (!params.delegate) throw new Error("Delegate address is required for removeProxy")
-			return await removeProxy(params.api, params.delegate)
-
-		case "callAsProxy":
-			if (!params.address || !params.call) throw new Error("Address and call data are required for callAsProxy")
-			return await callAsProxy(params.api, { address: params.address, call: params.call })
-
-		default:
-			throw new Error("Invalid action")
-	}
-}
+export const checkProxiesTool = (tools: PolkadotTools) =>
+  tool(
+    async () => {
+      try {
+        const proxies = await tools.checkProxies('westend2_asset_hub');
+        if (proxies.length === 0) {
+          return {
+            content: 'No proxies found for this account on Westend',
+            tool_call_id: `proxies_${Date.now()}`,
+          };
+        }
+        return {
+          content: `Proxy information on Westend:\n${JSON.stringify(proxies, null, 2)}`,
+          tool_call_id: `proxies_${Date.now()}`,
+        };
+      } catch (error) {
+        console.error('Proxy check error:', error);
+        return {
+          content: JSON.stringify({
+            error: true,
+            message: `Failed to check proxies: ${error instanceof Error ? error.message : String(error)}`,
+          }),
+          tool_call_id: `proxies_${Date.now()}`,
+        };
+      }
+    },
+    {
+      name: 'checkProxies',
+      description: 'Check all proxy accounts for the default account on Westend',
+      schema: z.object({}),
+    },
+  );

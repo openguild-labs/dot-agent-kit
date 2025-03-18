@@ -6,6 +6,8 @@ import { PolkadotTools } from '../../../src/tools/index';
 import { Tool } from '@langchain/core/tools';
 import { setupHandlers } from './handlers';
 import { xcmTransfer } from '../../../src/langchain/xcm/index';
+import { checkBalanceTool } from '../../../src/langchain/balance/index';
+import { checkProxiesTool } from '../../../src/langchain/proxy/index';
 
 dotenv.config();
 
@@ -47,12 +49,19 @@ export class TelegramBot {
       modelName: 'gpt-4',
       temperature: 0.7,
       openAIApiKey: openAiApiKey,
+      streaming: true,
     });
 
     const tools = new PolkadotTools(this.agent);
     const xcmTool = xcmTransfer(tools) as unknown as Tool;
+    const balanceTool = checkBalanceTool(tools) as unknown as Tool;
+    const proxiesTool = checkProxiesTool(tools) as unknown as Tool;
 
-    setupHandlers(this.bot, this.llm, { xcmTransfer: xcmTool });
+    setupHandlers(this.bot, this.llm, {
+      xcmTransfer: xcmTool,
+      checkBalance: balanceTool,
+      checkProxies: proxiesTool,
+    });
   }
 
   public async start(): Promise<void> {
