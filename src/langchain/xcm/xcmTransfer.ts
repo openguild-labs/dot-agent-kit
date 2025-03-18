@@ -12,7 +12,7 @@ export const xcmTransfer = (tools: PolkadotTools) =>
           txHash = await tools.xcmTransferToRelayChain('westend2_asset_hub', BigInt(amount * 1e12));
           console.log(`RelayChain txHash: ${txHash}`);
         } else {
-          txHash = await tools.xcmTransferToParaChain('westend', BigInt(amount * 1e12));
+          txHash = await tools.xcmTransferToParaChain('west', BigInt(amount * 1e12));
           console.log(`ParaChain txHash: ${txHash}`);
         }
         return {
@@ -41,4 +41,4 @@ export const xcmTransfer = (tools: PolkadotTools) =>
         amount: z.number().positive().describe('Amount of tokens to transfer'),
       }),
     },
-  );
+);
