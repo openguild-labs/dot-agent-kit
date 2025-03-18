@@ -1,5 +1,5 @@
 import { Binary, TxCallData, TxFinalizedPayload } from "polkadot-api"
-import { addressOf, addressOfSubstrate, publicKeyOf, toMultiAddress } from "./account"
+import { addressOf, addressOfSubstrate, publicKeyOf, toMultiAddress } from "../../src/types/account"
 import { Chain, magicApi } from "../../src/tools/substrace/substraceConnector"
 import { callAsProxy, createProxy, removeProxy, transferKeepAlive} from "../../src/tools/pallet-proxy/call"
 

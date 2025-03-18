@@ -28,10 +28,6 @@ export async function executeAction(action: Action, params: ActionParams): Promi
 			if (!params.address || !params.call) throw new Error("Address and call data are required for callAsProxy")
 			return await callAsProxy(params.api, { address: params.address, call: params.call })
 
-		case "transferKeepAlive":
-			if (!params.to || !params.amount) throw new Error("Destination address and amount are required for transferKeepAlive")
-			return await transferKeepAlive(params.api, params.to, params.amount)
-
 		default:
 			throw new Error("Invalid action")
 	}

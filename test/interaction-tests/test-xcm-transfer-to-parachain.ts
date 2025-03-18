@@ -1,4 +1,4 @@
-import { addressOfSubstrate, publicKeyOf, toMultiAddress } from "./account"
+import { addressOfSubstrate, publicKeyOf, toMultiAddress } from "../../src/types/account"
 import { magicApi } from "../../src/tools/substrace/substraceConnector"
 import { createProxy, removeProxy } from "../../src/tools/pallet-proxy/call"
 import { teleportToParaChain, teleportToRelayChain } from "../../src/tools/xcm/teleport/teleport"

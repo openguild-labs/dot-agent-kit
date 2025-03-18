@@ -1,6 +1,6 @@
 import { ApiPromise } from "../substrace/substraceConnector"
 import { Enum, TxCallData } from "polkadot-api"
-import { buildAccountSigner, buildAccountDelegateProxySigner } from "../../../test/interaction-tests/account"
+import { buildAccountSigner, buildAccountDelegateProxySigner } from "../../types/account"
 import { MultiAddress } from "@polkadot-api/descriptors"
 
 export async function createProxy(api: ApiPromise, delegate: MultiAddress): Promise<string> {
