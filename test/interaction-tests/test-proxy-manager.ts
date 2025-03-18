@@ -3,7 +3,6 @@ import { addressOf, addressOfSubstrate, publicKeyOf, toMultiAddress } from "../c
 import { Chain, magicApi } from "../../src/tools/substrace"
 import { callAsProxy, createProxy, removeProxy, transferKeepAlive} from "../../src/tools/pallet-proxy"
 
-
 // Westend use SS58 address 42
 const publicKey = publicKeyOf(process.env.PRIVATE_KEY)
 const myAccount = addressOfSubstrate(publicKey)
@@ -13,7 +12,7 @@ const myDelegatePublicKey = publicKeyOf(process.env.DELEGATE_PRIVATE_KEY)
 const myDelegateAddress = addressOfSubstrate(myDelegatePublicKey)
 
 async function main() {
-  const { api, disconnect } = await magicApi({ url: 'wss://westend-rpc.polkadot.io', name: 'west' }, 'westend2')
+  const { api, disconnect } = await magicApi({ url: 'wss://westend-rpc.polkadot.io', name: 'westend' }, 'west')
   console.log('My delegate address:', myDelegateAddress)
 
   // 0. convert to myAccount and my delegate multi address

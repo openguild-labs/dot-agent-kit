@@ -6,7 +6,7 @@ dotenv.config();
 
 async function main() {
   const config: SubstrateConnectorConfig = {
-    name: 'westend2',
+    name: 'westend',
     url: process.env.WS_ENDPOINT || 'wss://westend-rpc.polkadot.io'
   };
 
