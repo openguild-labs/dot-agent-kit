@@ -1,7 +1,7 @@
-import { addressOfSubstrate, publicKeyOf, toMultiAddress } from "./account"
-import { magicApi } from "../../src/tools/substrace/substraceConnector"
-import { createProxy, removeProxy } from "../../src/tools/pallet-proxy/call"
-import { teleportToParaChain, teleportToRelayChain } from "../../src/tools/xcm/teleport/teleport"
+import { addressOfSubstrate, publicKeyOf, toMultiAddress } from "../config-tests/account"
+import { magicApi } from "../../src/tools/substrace"
+import { createProxy, removeProxy } from "../../src/tools/pallet-proxy"
+import { teleportToParaChain, teleportToRelayChain } from "../../src/tools/xcm/teleport"
 
 // Westend use SS58 address 42
 const publicKey = publicKeyOf(process.env.PRIVATE_KEY)

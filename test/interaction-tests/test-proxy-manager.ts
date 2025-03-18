@@ -1,8 +1,7 @@
 import { Binary, TxCallData, TxFinalizedPayload } from "polkadot-api"
-import { addressOf, addressOfSubstrate, publicKeyOf, toMultiAddress } from "./account"
-import { Chain, magicApi } from "../../src/tools/substrace/substraceConnector"
-import { callAsProxy, createProxy, removeProxy, transferKeepAlive} from "../../src/tools/pallet-proxy/call"
-
+import { addressOf, addressOfSubstrate, publicKeyOf, toMultiAddress } from "../config-tests/account"
+import { Chain, magicApi } from "../../src/tools/substrace"
+import { callAsProxy, createProxy, removeProxy, transferKeepAlive} from "../../src/tools/pallet-proxy"
 
 // Westend use SS58 address 42
 const publicKey = publicKeyOf(process.env.PRIVATE_KEY)

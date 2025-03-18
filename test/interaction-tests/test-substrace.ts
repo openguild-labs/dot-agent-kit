@@ -1,4 +1,4 @@
-import { connect, getBlockNumber, disconnect } from '../../src/tools/substrace/substraceConnector';
+import { connect, getBlockNumber, disconnect } from '../../src/tools/substrace';
 import { SubstrateConnectorConfig } from '../../src/types/connect';
 import dotenv from 'dotenv';
 
