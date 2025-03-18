@@ -1,6 +1,6 @@
-import { ApiPromise } from '../tools/substrace/substraceConnector';
-import { Chain, magicApi } from '../../src/tools/substrace/substraceConnector';
-import { addressOfSubstrate, publicKeyOf } from '../types/account';
+import { ApiPromise } from '../tools/substrace';
+import { Chain, magicApi } from '../tools/substrace';
+import { addressOfSubstrate, publicKeyOf } from '../../test/config-tests/account';
 
 // Define type for chain configuration
 interface ChainConfig {

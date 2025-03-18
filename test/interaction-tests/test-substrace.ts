@@ -1,4 +1,4 @@
-import { connect, getBlockNumber, disconnect } from '../../src/tools/substrace/substraceConnector';
+import { connect, getBlockNumber, disconnect } from '../../src/tools/substrace';
 import { SubstrateConnectorConfig } from '../../src/types/connect';
 import dotenv from 'dotenv';
 
@@ -6,7 +6,7 @@ dotenv.config();
 
 async function main() {
   const config: SubstrateConnectorConfig = {
-    name: 'westend',
+    name: 'westend2',
     url: process.env.WS_ENDPOINT || 'wss://westend-rpc.polkadot.io'
   };
 

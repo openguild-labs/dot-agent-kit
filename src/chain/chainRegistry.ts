@@ -1,16 +1,16 @@
-import { west, west_asset_hub } from "@polkadot-api/descriptors";
+import { westend2, westend2_asset_hub } from "@polkadot-api/descriptors";
 import { ChainConfig, ChainType } from '../types/xcmTypes';
 
 // Define an interface for the typed API
 interface TypedApi {
-	west: typeof west;
-	westend2_asset_hub: typeof west_asset_hub;
+	westend2: typeof westend2;
+	westend2_asset_hub: typeof westend2_asset_hub;
 }
 
 // Apply the type annotation to the typedApi object
 export const typedApi: TypedApi = {
-	west: west,
-	westend2_asset_hub: west_asset_hub,
+	westend2: westend2,
+	westend2_asset_hub: westend2_asset_hub,
 };
 
 export class ChainRegistry {

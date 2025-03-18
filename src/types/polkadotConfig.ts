@@ -1,4 +1,3 @@
-
 type ChainConfig = {
     wss: string;
     client: any;

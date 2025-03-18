@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { TelegramBot } from '../bot/TelegramBot';
+import { TelegramBot } from './TelegramBot';
 
 dotenv.config();
 

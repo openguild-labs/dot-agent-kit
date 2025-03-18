@@ -1,6 +1,6 @@
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
-import { PolkadotTools } from '../../tools/index';
+import { PolkadotTools } from '../../tools/xcm/index';
 
 export const xcmTransfer = (tools: PolkadotTools) =>
   tool(
@@ -9,10 +9,11 @@ export const xcmTransfer = (tools: PolkadotTools) =>
       try {
         let txHash: string;
         if (chain === 'RelayChain') {
-          txHash = await tools.xcmTransferToRelayChain('westend2_asset_hub', BigInt(amount * 1e12));
+          console.log(`Transferring ${amount} tokens to RelayChain`);
+          txHash = await tools.xcmTransferToRelayChain('westend2', BigInt(amount * 1e12));
           console.log(`RelayChain txHash: ${txHash}`);
         } else {
-          txHash = await tools.xcmTransferToParaChain('westend', BigInt(amount * 1e12));
+          txHash = await tools.xcmTransferToParaChain('westend2_asset_hub', BigInt(amount * 1e12));
           console.log(`ParaChain txHash: ${txHash}`);
         }
         return {

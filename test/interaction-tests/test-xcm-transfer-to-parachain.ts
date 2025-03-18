@@ -1,7 +1,7 @@
-import { addressOfSubstrate, publicKeyOf, toMultiAddress } from "../../src/types/account"
-import { magicApi } from "../../src/tools/substrace/substraceConnector"
-import { createProxy, removeProxy } from "../../src/tools/pallet-proxy/call"
-import { teleportToParaChain, teleportToRelayChain } from "../../src/tools/xcm/teleport/teleport"
+import { addressOfSubstrate, publicKeyOf, toMultiAddress } from "../config-tests/account"
+import { magicApi } from "../../src/tools/substrace"
+import { createProxy, removeProxy } from "../../src/tools/pallet-proxy"
+import { teleportToParaChain, teleportToRelayChain } from "../../src/tools/xcm/teleport"
 
 // Westend use SS58 address 42
 const publicKey = publicKeyOf(process.env.PRIVATE_KEY)
@@ -12,7 +12,7 @@ const myDelegatePublicKey = publicKeyOf(process.env.DELEGATE_PRIVATE_KEY)
 const myDelegateAddress = addressOfSubstrate(myDelegatePublicKey)
 
 async function main() {
-  const { api, disconnect } = await magicApi({ url: 'wss://westend-rpc.polkadot.io', name: 'westend' }, 'west')
+  const { api, disconnect } = await magicApi({ url: 'wss://westend-rpc.polkadot.io', name: 'westend2' }, 'westend2')
   console.log('My delegate address:', myDelegateAddress)
 
   // 0. convert to myAccount and my delegate multi address
@@ -24,7 +24,7 @@ async function main() {
   console.log('Proxy setup:', proxySetup)
 
   // 2. Test teleportToParaChain
-  const paraChainTeleport = await teleportToParaChain(myAccount, BigInt(1000000000000000000))
+  const paraChainTeleport = await teleportToParaChain('westend2_asset_hub', myAccount, BigInt(1000000000000000000))
   console.log('Teleport to ParaChain:', paraChainTeleport)
 
    // 4. remove proxy
