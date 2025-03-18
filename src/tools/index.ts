@@ -34,4 +34,16 @@ export class PolkadotTools {
     console.log(`xcmTransferToParaChain result: ${result.txHash.toString()}`);
     return result.txHash.toString();
   }
+
+  async checkBalance(chainName: string): Promise<number> {
+    console.log(`checkBalance called for chain: ${chainName}`);
+    const { api } = this.agent.getConnection(chainName);
+    const accountInfo = await api.query.System.Account.getValue(this.agent.address);
+                    
+    const planckBalance = BigInt(accountInfo.data.free.toString());
+    const wndBalance = Number(planckBalance) / Math.pow(10, 12); 
+
+    console.log(`Balance on ${chainName}: ${wndBalance.toFixed(4)}`);
+    return wndBalance;
+  }
 }
