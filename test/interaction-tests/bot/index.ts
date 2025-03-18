@@ -11,6 +11,7 @@ async function runBot() {
     delegatePrivateKey: process.env.DELEGATE_PRIVATE_KEY!,
     chains: [
       { url: 'wss://westmint-rpc-tn.dwellir.com', name: 'westend2_asset_hub' },
+      { url: 'wss://westend-rpc.polkadot.io', name: 'west' },
     ],
   });
 

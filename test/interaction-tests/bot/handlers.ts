@@ -4,8 +4,9 @@ import { ChatOpenAI } from '@langchain/openai';
 import { Tool } from '@langchain/core/tools';
 
 const SYSTEM_PROMPT = `I am a Telegram bot powered by PolkadotAgentKit. I can assist with:
-- Transferring tokens between chains using XCM (to RelayChain or ParaChain)
-Provide instructions like "transfer 1 token to RelayChain" or "transfer 0.5 tokens to ParaChain", and I'll help you!`;
+- Transferring tokens between chains using XCM (e.g., "transfer 1 token to RelayChain")
+- Checking your WND balance on Westend (e.g., "check balance")
+Provide instructions, and I'll help you!`;
 
 export function setupHandlers(
   bot: Telegraf,
@@ -15,8 +16,10 @@ export function setupHandlers(
   bot.start((ctx) => {
     ctx.reply(
       'Welcome to Polkadot Bot!\n' +
-      'I can help with XCM transfers.\n' +
-      'Try asking: "transfer 1 token to RelayChain" or "transfer 0.5 tokens to ParaChain"',
+      'I can help with:\n' +
+      '- XCM transfers (e.g., "transfer 1 token to RelayChain")\n' +
+      '- Checking WND balance (e.g., "check balance")\n' +
+      'Try asking something!',
     );
   });
 
@@ -45,11 +48,11 @@ export function setupHandlers(
               await ctx.reply('Tool returned an empty response.');
               return;
             }
-            const response = JSON.parse(toolMessage.content);
+            const response = JSON.parse(toolMessage.content || '{}');
             if (response.error) {
               await ctx.reply(`Error: ${response.message}`);
             } else {
-              await ctx.reply(response.message || 'No message returned from tool.');
+              await ctx.reply(response.content || response.message || 'No message returned from tool.');
             }
           } else {
             await ctx.reply(`Tool ${toolCall.name} not found.`);

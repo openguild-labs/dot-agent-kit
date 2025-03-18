@@ -6,7 +6,7 @@ import { PolkadotTools } from '../../../src/tools/index';
 import { Tool } from '@langchain/core/tools';
 import { setupHandlers } from '../bot/handlers';
 import { xcmTransfer } from '../../../src/langchain/xcm/xcmTransfer';
-
+import { checkBalanceTool } from '../../../src/langchain/xcm/checkBalance';
 dotenv.config();
 
 interface BotConfig {
@@ -51,8 +51,12 @@ export class TelegramBot {
 
     const tools = new PolkadotTools(this.agent);
     const xcmTool = xcmTransfer(tools) as unknown as Tool;
+    const balanceTool = checkBalanceTool(tools) as unknown as Tool;
 
-    setupHandlers(this.bot, this.llm, { xcmTransfer: xcmTool });
+    setupHandlers(this.bot, this.llm, {
+      xcmTransfer: xcmTool,
+      checkBalance: balanceTool,
+    });
   }
 
   public async start(): Promise<void> {
