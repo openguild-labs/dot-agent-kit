@@ -1,30 +1,20 @@
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
-import { ApiPromise } from '../../tools/substrace/substraceConnector';
-import { buildAccountSigner } from '../../types/account';
-import { teleportToRelayChain, teleportToParaChain } from '../../tools/xcm/teleport/teleport';
+import { PolkadotTools } from '../../tools/index';
 
-export const xcmTransfer = (api?: ApiPromise | null, accountAddress?: string) =>
+export const xcmTransfer = (tools: PolkadotTools) =>
   tool(
     async ({ chain, amount }: { chain: 'RelayChain' | 'ParaChain'; amount: number }) => {
+      console.log(`xcmTransfer called with chain: ${chain}, amount: ${amount}`);
       try {
-        if (!api) {
-          throw new Error('API connection not initialized');
-        }
-        if (!accountAddress) {
-          throw new Error('Account address not provided');
-        }
-
-        const signer = buildAccountSigner();
-        let result;
-
+        let txHash: string;
         if (chain === 'RelayChain') {
-          result = await teleportToRelayChain(accountAddress, BigInt(amount)).signAndSubmit(signer);
+          txHash = await tools.xcmTransferToRelayChain('westend2_asset_hub', BigInt(amount * 1e12));
+          console.log(`RelayChain txHash: ${txHash}`);
         } else {
-          result = await teleportToParaChain(accountAddress, BigInt(amount)).signAndSubmit(signer); // Giả định paraId 1000
+          txHash = await tools.xcmTransferToParaChain('westend', BigInt(amount * 1e12));
+          console.log(`ParaChain txHash: ${txHash}`);
         }
-
-        const txHash = result.txHash.toString();
         return {
           content: JSON.stringify({
             message: `Successfully transferred ${amount} tokens to ${chain}`,
@@ -33,6 +23,7 @@ export const xcmTransfer = (api?: ApiPromise | null, accountAddress?: string) =>
           tool_call_id: `xcm_${Date.now()}`,
         };
       } catch (error) {
+        console.error(`Error in xcmTransfer: ${error}`);
         return {
           content: JSON.stringify({
             error: true,
@@ -47,7 +38,7 @@ export const xcmTransfer = (api?: ApiPromise | null, accountAddress?: string) =>
       description: 'Transfer tokens between chains using XCM with your account',
       schema: z.object({
         chain: z.enum(['RelayChain', 'ParaChain']),
-        amount: z.number(),
+        amount: z.number().positive().describe('Amount of tokens to transfer'),
       }),
     },
   );
