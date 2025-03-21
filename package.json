@@ -12,7 +12,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "npx tsx src/db/migrate.ts",
     "db:studio": "drizzle-kit studio",
-    "test": "tsx"
+    "test": "tsx",
+    "test:setup": "pnpm i polkadot-api && mkdir -p .papi/descriptors && npx papi add west -n westend2 && npx papi add west_asset_hub -n westend2_asset_hub"
   },
   "engines": {
     "node": "22"

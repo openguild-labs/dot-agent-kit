@@ -8,6 +8,7 @@ import { setupHandlers } from './handlers';
 import { xcmTransfer } from '../../../src/langchain/xcm/index';
 import { checkBalanceTool } from '../../../src/langchain/balance/index';
 import { checkProxiesTool } from '../../../src/langchain/proxy/index';
+import { ChainInfo, ChainMap } from '../../../src/chain/chainMap';
 
 dotenv.config();
 
@@ -16,13 +17,14 @@ interface BotConfig {
   openAiApiKey?: string;
   privateKey?: string;
   delegatePrivateKey?: string;
-  chains: { url: string; name: string }[];
+  chains: { url: string; name: string; apiKey: string; type: 'RelayChain' | 'ParaChain'; paraId?: number }[];
 }
 
 export class TelegramBot {
   private bot: Telegraf;
   private agent: PolkadotAgentKit;
   private llm: ChatOpenAI;
+  private chainMap: ChainMap = {};
 
   constructor(config: BotConfig) {
     const {
@@ -39,6 +41,10 @@ export class TelegramBot {
 
     this.bot = new Telegraf(botToken);
 
+    chains.forEach(chain => {
+      this.chainMap[chain.name] = chain as ChainInfo;
+    });
+
     this.agent = new PolkadotAgentKit({
       privateKey: privateKey || process.env.PRIVATE_KEY || '',
       delegatePrivateKey: delegatePrivateKey || process.env.DELEGATE_PRIVATE_KEY || '',
@@ -53,7 +59,7 @@ export class TelegramBot {
     });
 
     const tools = new PolkadotTools(this.agent);
-    const xcmTool = xcmTransfer(tools) as unknown as Tool;
+    const xcmTool = xcmTransfer(tools, this.chainMap) as unknown as Tool;
     const balanceTool = checkBalanceTool(tools) as unknown as Tool;
     const proxiesTool = checkProxiesTool(tools) as unknown as Tool;
 

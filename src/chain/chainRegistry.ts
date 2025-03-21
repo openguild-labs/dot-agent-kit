@@ -3,14 +3,14 @@ import { ChainConfig, ChainType } from '../types/xcmTypes';
 
 // Define an interface for the typed API
 interface TypedApi {
-	west: typeof west;
-	westend2_asset_hub: typeof west_asset_hub;
+	westend: typeof west;
+	westend_asset_hub: typeof west_asset_hub;
 }
 
 // Apply the type annotation to the typedApi object
 export const typedApi: TypedApi = {
-	west: west,
-	westend2_asset_hub: west_asset_hub,
+	westend: west,
+	westend_asset_hub: west_asset_hub,
 };
 
 export class ChainRegistry {
