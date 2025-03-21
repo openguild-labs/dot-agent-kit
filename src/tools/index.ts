@@ -26,15 +26,26 @@ export class PolkadotTools {
 
   async checkProxies(chainName: string): Promise<any[]> {
         console.log(`checkProxies called for chain: ${chainName}`);
-        const { api } = this.agent.getConnection(chainName);
-        const proxiesInfo = await api.query.Proxy.Proxies.getValue(this.agent.address);
-        const [proxies] = proxiesInfo;
+        try {
+            const { api } = this.agent.getConnection(chainName);
+            
+            if (!api.query.Proxy || !api.query.Proxy.Proxies) {
+                console.log(`Proxy pallet not available on chain ${chainName}`);
+                return [{ error: `Proxy pallet not available on chain ${chainName}` }];
+            }
+            
+            const proxiesInfo = await api.query.Proxy.Proxies.getValue(this.agent.address);
+            const [proxies] = proxiesInfo;
 
-        if (!proxies || proxies.length === 0) {
-            console.log(`No proxies found for ${this.agent.address} on ${chainName}`);
-            return [];
+            if (!proxies || proxies.length === 0) {
+                console.log(`No proxies found for ${this.agent.address} on ${chainName}`);
+                return [];
+            }
+            console.log(`Found ${proxies.length} proxies for ${this.agent.address} on ${chainName}`);
+            return proxies;
+        } catch (error) {
+            console.error(`Error checking proxies on ${chainName}:`, error);
+            return [{ error: `Failed to check proxies: ${error instanceof Error ? error.message : String(error)}` }];
         }
-        console.log(`Found ${proxies.length} proxies for ${this.agent.address} on ${chainName}`);
-        return proxies;
     }
 }

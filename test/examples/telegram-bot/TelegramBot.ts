@@ -61,7 +61,7 @@ export class TelegramBot {
     const tools = new PolkadotTools(this.agent);
     const xcmTool = xcmTransfer(tools, this.chainMap) as unknown as Tool;
     const balanceTool = checkBalanceTool(tools) as unknown as Tool;
-    const proxiesTool = checkProxiesTool(tools) as unknown as Tool;
+    const proxiesTool = checkProxiesTool(tools, this.chainMap) as unknown as Tool;
 
     setupHandlers(this.bot, this.llm, {
       xcmTransfer: xcmTool,

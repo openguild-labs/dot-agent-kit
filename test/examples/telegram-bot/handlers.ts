@@ -3,17 +3,20 @@ import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
 import { Tool } from '@langchain/core/tools';
 
-const SYSTEM_PROMPT = `I am a Telegram bot powered by PolkadotAgentKit. I can help you:
-- Transfer tokens between chains using XCM (e.g., "transfer 1 token to westend_asset_hub to 5CSox4ZSN4SGLKUG9NYPtfVK9sByXLtxP4hmoF4UgkM4jgDJ")
-- Check WND balance on Westend (e.g., "check balance")
-- Check proxies (e.g., "check proxies")
+const SYSTEM_PROMPT = `I am a Telegram bot powered by PolkadotAgentKit. I can assist you with:
+- Transferring tokens between chains using XCM (e.g., "transfer 1 token to westend_asset_hub to 5CSox4ZSN4SGLKUG9NYPtfVK9sByXLtxP4hmoF4UgkM4jgDJ")
+- Checking WND balance on Westend (e.g., "check balance")
+- Checking proxies (e.g., "check proxies on westend" or "check proxies")
 
 When transferring tokens, please provide:
-1. The number of tokens to transfer (e.g., 1)
-2. The destination chain name (e.g., westend, westend_asset_hub)
-3. The recipient address (e.g., 5CSox4ZSN4SGLKUG9NYPtfVK9sByXLtxP4hmoF4UgkM4jgDJ)
+1. The amount of tokens to transfer (e.g., 1)
+2. The name of the destination chain (e.g., westend, westend_asset_hub)
+3. The address to receive the tokens (e.g., 5CSox4ZSN4SGLKUG9NYPtfVK9sByXLtxP4hmoF4UgkM4jgDJ)
 
 Suggested syntax: "transfer [amount] token to [chain name] to [address]"
+
+When checking proxies, you can specify the chain (e.g., "check proxies on westend") or 
+not specify a chain (the first chain will be used by default)
 
 Please provide instructions, and I will assist you!`;
 
@@ -25,10 +28,10 @@ export function setupHandlers(
   bot.start((ctx) => {
     ctx.reply(
       'Welcome to Polkadot Bot!\n' +
-      'I can help you:\n' +
-      '- Transfer XCM tokens (e.g., "transfer 1 token to westend_asset_hub to 5CSox4ZSN4SGLKUG9NYPtfVK9sByXLtxP4hmoF4UgkM4jgDJ")\n' +
-      '- Check WND balance (e.g., "check balance")\n' +
-      '- Check proxies (e.g., "check proxies")\n' +
+      'I can assist you with:\n' +
+      '- Transferring XCM tokens (e.g., "transfer 1 token to westend_asset_hub to 5CSox4ZSN4SGLKUG9NYPtfVK9sByXLtxP4hmoF4UgkM4jgDJ")\n' +
+      '- Checking WND balance (e.g., "check balance")\n' +
+      '- Checking proxies (e.g., "check proxies on westend" or "check proxies")\n' +
       'Try asking something!',
     );
   });
@@ -62,7 +65,7 @@ export function setupHandlers(
             if (response.error) {
               await ctx.reply(`Error: ${response.message}`);
             } else {
-              await ctx.reply(response.content || response.message || 'No message from tool.');
+              await ctx.reply(response.message || response.content || 'No message from tool.');
             }
           } else {
             await ctx.reply(`Tool ${toolCall.name} not found.`);

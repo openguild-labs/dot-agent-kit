@@ -1,28 +1,63 @@
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { PolkadotTools } from '../../tools/index';
+import { ChainMap, defaultChainMap } from '../../chain/chainMap';
 
-export const checkProxiesTool = (tools: PolkadotTools) =>
+export const checkProxiesTool = (tools: PolkadotTools, chainMap: ChainMap = defaultChainMap) =>
   tool(
-    async () => {
+    async (input) => {
       try {
-        const proxies = await tools.checkProxies('westend2_asset_hub');
-        if (proxies.length === 0) {
+        // Trích xuất chainName từ input hoặc sử dụng giá trị mặc định
+        const chainName = input.chainName;
+        
+        // Mặc định sử dụng chain đầu tiên nếu không có chainName
+        const targetChainName = chainName || Object.keys(chainMap)[0];
+        
+        if (!chainMap[targetChainName]) {
           return {
-            content: 'No proxies found for this account on Westend',
+            content: JSON.stringify({
+              error: true,
+              message: `Chain "${targetChainName}" không tồn tại trong chainMap`
+            }),
             tool_call_id: `proxies_${Date.now()}`,
           };
         }
+
+        const proxies = await tools.checkProxies(targetChainName);
+        
+        // Kiểm tra nếu có lỗi
+        if (proxies.length === 1 && 'error' in proxies[0]) {
+          return {
+            content: JSON.stringify({
+              error: true,
+              message: proxies[0].error
+            }),
+            tool_call_id: `proxies_${Date.now()}`,
+          };
+        }
+        
+        if (proxies.length === 0) {
+          return {
+            content: JSON.stringify({
+              message: `Không tìm thấy proxy nào cho tài khoản này trên ${targetChainName}`
+            }),
+            tool_call_id: `proxies_${Date.now()}`,
+          };
+        }
+        
         return {
-          content: `Proxy information on Westend:\n${JSON.stringify(proxies, null, 2)}`,
+          content: JSON.stringify({
+            message: `Thông tin proxy trên ${targetChainName}`,
+            data: proxies
+          }),
           tool_call_id: `proxies_${Date.now()}`,
         };
       } catch (error) {
-        console.error('Proxy check error:', error);
+        console.error('Lỗi kiểm tra proxy:', error);
         return {
           content: JSON.stringify({
             error: true,
-            message: `Failed to check proxies: ${error instanceof Error ? error.message : String(error)}`,
+            message: `Không thể kiểm tra proxy: ${error instanceof Error ? error.message : String(error)}`
           }),
           tool_call_id: `proxies_${Date.now()}`,
         };
@@ -30,7 +65,9 @@ export const checkProxiesTool = (tools: PolkadotTools) =>
     },
     {
       name: 'checkProxies',
-      description: 'Check all proxy accounts for the default account on Westend',
-      schema: z.object({}),
+      description: 'Kiểm tra tất cả tài khoản proxy cho tài khoản mặc định trên chain được chỉ định',
+      schema: z.object({
+        chainName: z.string().optional().describe('Tên của chain để kiểm tra proxy (nếu không cung cấp, sẽ sử dụng chain đầu tiên trong chainMap)')
+      }),
     },
   );
