@@ -10,7 +10,7 @@
     "build": "esbuild index=./src --bundle --minify --outdir=dist --packages=external --platform=node",
     "start": "node dist",
     "test": "tsx",
-    "test:setup": "pnpm i polkadot-api && mkdir -p .papi/descriptors && npx papi add west -n westend2 && npx papi add west_asset_hub -n westend2_asset_hub"
+    "test:setup": "pnpm i polkadot-api && node setup-chains.js"
   },
   "engines": {
     "node": "22"
@@ -24,6 +24,7 @@
     "@langchain/openai": "^0.3.17",
     "@noble/curves": "^1.6.0",
     "@noble/hashes": "^1.5.0",
+    "@polkadot-api/descriptors": "file:.papi/descriptors",
     "@polkadot-labs/hdkd": "^0.0.12",
     "@polkadot-labs/hdkd-helpers": "^0.0.12",
     "@subsquid/ss58": "^2.0.2",

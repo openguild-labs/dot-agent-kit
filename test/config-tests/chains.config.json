@@ -1,0 +1,14 @@
+{
+  "chains": [
+    {
+      "id": "west",
+      "name": "westend2",
+      "description": "Westend 2 Testnet"
+    },
+    {
+      "id": "west_asset_hub",
+      "name": "westend2_asset_hub",
+      "description": "Westend 2 Asset Hub"
+    }
+  ]
+} 
