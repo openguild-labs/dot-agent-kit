@@ -1,5 +1,3 @@
-import { ApiPromise } from '@polkadot/api';
-
 export interface ISubstrateConnector {
   connect(): Promise<boolean>;
   getBlockNumber(): Promise<number | null>;
@@ -7,6 +5,8 @@ export interface ISubstrateConnector {
 }
 
 export type SubstrateConnectorConfig = {
+  name: string;
   url: string;
   isWebSocket?: boolean;
 };
+

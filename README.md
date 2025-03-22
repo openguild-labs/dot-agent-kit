@@ -84,3 +84,88 @@ This project is licensed under the **[MIT License](LICENSE)**.
 
 - **GitHub Issues**: [Report Bugs/Suggestions](https://github.com/chauanhtuan185/polkadot-ai-agent-kit/issues)
 - **Email**: [Telegram](https://t.me/kayx64)
+
+## Chain Configuration and Setup
+
+This project provides a flexible, interactive system to install Polkadot chains. The `.papi/` directory is included in `.gitignore` to prevent tracking of chain descriptors, which means each developer needs to set up their desired chains after cloning the repository.
+
+### Quick Setup
+
+After cloning the project, the easiest way to setup chains is:
+
+1. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+2. Run the interactive chain setup script:
+   ```bash
+   pnpm run test:setup
+   ```
+
+This will launch an interactive CLI menu that allows you to:
+- Choose from common predefined chains
+- Add custom chains
+- Install from a configuration file
+- Save your configuration for later use
+
+### Command Line Options
+
+The setup script supports various command line options for more flexibility:
+
+```bash
+# Show all available options
+pnpm run test:setup -- --help
+
+# List all common predefined chains
+pnpm run test:setup -- --list
+
+# Install specific chains directly
+pnpm run test:setup -- --install west,west_asset_hub
+
+# Install chains from a configuration file
+pnpm run test:setup -- --config ./my-chains.json
+```
+
+### Custom Chain Configuration
+
+You can create your own chain configuration file with this format:
+
+```json
+{
+  "chains": [
+    {
+      "id": "chain_id",
+      "name": "chain_name_in_system",
+      "description": "Description of the chain (optional)"
+    }
+  ]
+}
+```
+
+The setup script will automatically detect:
+1. A `chains.config.json` file in the project root directory
+2. A custom path specified via the `--config` option
+3. An environment variable `CHAINS_CONFIG_PATH` pointing to your config file
+
+### Why is `.papi/` in `.gitignore`?
+
+The `.papi/` directory contains descriptors for Polkadot chains. These descriptors:
+1. Can be quite large
+2. Can be generated automatically
+3. May differ between development environments
+4. May be updated frequently
+
+By placing this directory in `.gitignore`, we avoid tracking unnecessary files and allow each developer to set up chains according to their specific needs.
+
+### Troubleshooting
+
+If you encounter errors during chain installation:
+
+1. Make sure you're using the Node.js version specified in `package.json` (Node.js 22).
+2. Delete the `.papi/` directory and try again from scratch.
+3. For specific chains, you can try installing them manually:
+   ```bash
+   npx papi add [chain_id] -n [chain_name]
+   ```
+4. Ensure you have a stable internet connection when running the setup script.
