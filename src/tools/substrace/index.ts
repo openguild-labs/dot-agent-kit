@@ -44,12 +44,7 @@ export async function getBlockNumber(): Promise<number | null> {
 
 export async function disconnect(): Promise<void> {
 	if (provider) {
-		try {
-			// Close connection
-			client = null;
-			provider = null;
-		} catch (error) {
-			console.error('Error disconnecting:', error);
-		}
+		client = null;
+		provider = null;
 	}
 }

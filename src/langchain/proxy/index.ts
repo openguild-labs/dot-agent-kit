@@ -7,17 +7,14 @@ export const checkProxiesTool = (tools: PolkadotTools, chainMap: ChainMap = defa
   tool(
     async (input) => {
       try {
-        // Trích xuất chainName từ input hoặc sử dụng giá trị mặc định
         const chainName = input.chainName;
-        
-        // Mặc định sử dụng chain đầu tiên nếu không có chainName
         const targetChainName = chainName || Object.keys(chainMap)[0];
         
         if (!chainMap[targetChainName]) {
           return {
             content: JSON.stringify({
               error: true,
-              message: `Chain "${targetChainName}" không tồn tại trong chainMap`
+              message: `Chain "${targetChainName}" not found in chainMap`
             }),
             tool_call_id: `proxies_${Date.now()}`,
           };
@@ -25,7 +22,6 @@ export const checkProxiesTool = (tools: PolkadotTools, chainMap: ChainMap = defa
 
         const proxies = await tools.checkProxies(targetChainName);
         
-        // Kiểm tra nếu có lỗi
         if (proxies.length === 1 && 'error' in proxies[0]) {
           return {
             content: JSON.stringify({
@@ -39,7 +35,7 @@ export const checkProxiesTool = (tools: PolkadotTools, chainMap: ChainMap = defa
         if (proxies.length === 0) {
           return {
             content: JSON.stringify({
-              message: `Không tìm thấy proxy nào cho tài khoản này trên ${targetChainName}`
+              message: `No proxy found on ${targetChainName}`
             }),
             tool_call_id: `proxies_${Date.now()}`,
           };
@@ -47,17 +43,17 @@ export const checkProxiesTool = (tools: PolkadotTools, chainMap: ChainMap = defa
         
         return {
           content: JSON.stringify({
-            message: `Thông tin proxy trên ${targetChainName}`,
+            message: `Proxy info on ${targetChainName}`,
             data: proxies
           }),
           tool_call_id: `proxies_${Date.now()}`,
         };
       } catch (error) {
-        console.error('Lỗi kiểm tra proxy:', error);
+        console.error('Error: ', error);
         return {
           content: JSON.stringify({
             error: true,
-            message: `Không thể kiểm tra proxy: ${error instanceof Error ? error.message : String(error)}`
+            message: `Can't check proxy: ${error instanceof Error ? error.message : String(error)}`
           }),
           tool_call_id: `proxies_${Date.now()}`,
         };

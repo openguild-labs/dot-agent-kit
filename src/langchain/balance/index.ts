@@ -6,7 +6,8 @@ export const checkBalanceTool = (tools: PolkadotTools) =>
   tool(
     async () => {
       try {
-        const wndBalance = await tools.checkBalance('westend2_asset_hub');
+        const wndBalance = await tools.checkBalance('westend_asset_hub');
+        console.log('wndBalance:', wndBalance);
         return {
           content: `Balnce : ${wndBalance.toFixed(4)}`,
           tool_call_id: `balance_${Date.now()}`,

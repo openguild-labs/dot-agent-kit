@@ -7,28 +7,24 @@ import { ChainConfig, ApiConnection, AgentConfig } from '../types/typeAgent';
  * Manages account details and chain connections
  */
 export class PolkadotAgentKit {
-  public address: string; // Address of the main account
-  public delegateAddress?: string; // Address of the delegate account (if provided)
+  public address: string;
+  public delegateAddress?: string; 
   private connections: Map<string, ApiConnection>;
 
   constructor(config: AgentConfig) {
-    // Main account (use env if privateKey is not provided)
     const mainPrivateKey = config.privateKey || process.env.PRIVATE_KEY;
     if (!mainPrivateKey) throw new Error("Main private key is required");
     const mainPublicKey = publicKeyOf(mainPrivateKey);
     this.address = addressOfSubstrate(mainPublicKey);
 
-    // Delegate account (optional)
     if (config.delegatePrivateKey) {
       const delegatePublicKey = publicKeyOf(config.delegatePrivateKey);
       this.delegateAddress = addressOfSubstrate(delegatePublicKey);
     }
 
-    // Initialize connections map
     this.connections = new Map<string, ApiConnection>();
-
-    // Connect to the specified chains
     this.initializeConnections(config.chains);
+    
   }
 
   /**
