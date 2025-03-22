@@ -1,4 +1,4 @@
-export enum ChainType {
+export enum Chain {
   RELAY_CHAIN = 'RELAY_CHAIN',
   SYSTEM_PARACHAIN = 'SYSTEM_PARACHAIN',
   PARACHAIN = 'PARACHAIN'
@@ -6,7 +6,7 @@ export enum ChainType {
 
 export interface ChainConfig {
   name: string;
-  type: ChainType;
+  type: Chain;
   parachainId?: number;
   endpoint: string;
   xcmPallet: 'xcmPallet' | 'polkadotXcm';
