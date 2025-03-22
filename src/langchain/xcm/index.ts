@@ -11,7 +11,7 @@ export const xcmTransfer = (tools: PolkadotTools, chainMap: ChainMap = defaultCh
     async ({ chainName, amount, address }: { chainName: string; amount: number, address: string }) => {
       try {
         if (!chainMap[chainName]) {
-          throw new Error(`Chain "${chainName}" không tồn tại trong chainMap`);
+          throw new Error(`Chain "${chainName}" does not exist in chainMap`);
         }
 
         const chainInfo = chainMap[chainName];
@@ -34,17 +34,17 @@ export const xcmTransfer = (tools: PolkadotTools, chainMap: ChainMap = defaultCh
         
         return {
           content: JSON.stringify({
-            message: `Đã chuyển thành công ${amount} tokens tới ${chainName}`,
+            message: `Successfully transferred ${amount} tokens to ${chainName}`,
             hash: txHash,
           }),
           tool_call_id: `xcm_${Date.now()}`,
         };
       } catch (error) {
-        console.error(`Lỗi trong xcmTransfer: ${error}`);
+        console.error(`Error in xcmTransfer: ${error}`);
         return {
           content: JSON.stringify({
             error: true,
-            message: `Không thể chuyển tokens: ${error instanceof Error ? error.message : String(error)}`,
+            message: `Unable to transfer tokens: ${error instanceof Error ? error.message : String(error)}`,
           }),
           tool_call_id: `xcm_${Date.now()}`,
         };
@@ -52,11 +52,11 @@ export const xcmTransfer = (tools: PolkadotTools, chainMap: ChainMap = defaultCh
     },
     {
       name: 'xcmTransfer',
-      description: 'Chuyển tokens giữa các chain sử dụng XCM với tài khoản của bạn',
+      description: 'Transfer tokens between chains using XCM with your account',
       schema: z.object({
-        chainName: z.string().describe('Tên của chain muốn chuyển tokens (phải tồn tại trong chainMap)'),
-        amount: z.number().positive().describe('Số lượng tokens muốn chuyển'),
-        address: z.string().describe('Địa chỉ nhận tokens'),
+        chainName: z.string().describe('Name of the chain to transfer tokens to (must exist in chainMap)'),
+        amount: z.number().positive().describe('Amount of tokens to transfer'),
+        address: z.string().describe('Address to receive tokens'),
       }),
     },
   );
