@@ -1,5 +1,5 @@
 import { west, west_asset_hub } from "@polkadot-api/descriptors";
-import { ChainConfig, ChainType } from '../types/xcmTypes';
+import { ChainConfig, Chain } from '../types/xcmTypes';
 
 /** Define type for chain configuration **/
 interface TypedApi {
@@ -36,6 +36,6 @@ export class ChainRegistry {
 
   isRelayChain(name: string): boolean {
     const chain = this.getChain(name.toLowerCase());
-    return chain?.type === ChainType.RELAY_CHAIN;
+    return chain?.type === Chain.RELAY_CHAIN;
   }
 }
