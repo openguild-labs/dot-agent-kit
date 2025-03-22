@@ -1,7 +1,6 @@
-import { ApiPromise } from '../tools/substrace';
 import { Chain, magicApi } from '../tools/substrace';
 import { addressOfSubstrate, publicKeyOf } from '../../test/config-tests/account';
-import { ChainConfig, ApiConnection, AgentConfig } from '../agent/type';
+import { ChainConfig, ApiConnection, AgentConfig } from '../types/typeAgent';
 
 /**
  * Core class for interacting with Polkadot/Substrate blockchains
