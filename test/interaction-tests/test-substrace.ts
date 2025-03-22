@@ -13,23 +13,23 @@ async function main() {
   console.log('Initializing connection to:', config.url);
 
   try {
-    // Test connection
+    /** Test connection **/
     console.log('Connecting...');
     const connectResult = await connect(config);
     console.log('Connection result:', connectResult ? '✅ Success' : '❌ Failed');
 
     if (connectResult) {
-      // Test getting block number
+      /** Test getting block number **/
       console.log('Getting block number...');
       const blockNumber = await getBlockNumber();
       console.log('Current block number:', blockNumber);
 
-      // Test disconnection
+      /** Test disconnection **/
       console.log('Disconnecting...');
       await disconnect();
       console.log('Disconnected');
 
-      // Check after disconnection
+      /** Check after disconnection **/
       console.log('Trying to get block number after disconnect...');
       const blockAfterDisconnect = await getBlockNumber();
       console.log('Result:', blockAfterDisconnect === null ? '✅ Correct (null)' : '❌ Error (still connected)');
@@ -37,7 +37,7 @@ async function main() {
   } catch (error) {
     console.error('Test failed:', error);
   } finally {
-    // Ensure process exits after test completion
+    /** Ensure process exits after test completion **/
     console.log('Exiting process...');
     process.exit(0);
   }

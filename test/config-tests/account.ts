@@ -8,8 +8,6 @@ export type Hex = Uint8Array | string;
 
 import * as ss58 from '@subsquid/ss58'
 
-// const formatter = fromBufferToBase58()
-
 export function buildAccountSigner(): PolkadotSigner {
 	const seed = getPrivateKey(process.env.PRIVATE_KEY) as string;
 	const signer = getPolkadotSigner(
@@ -32,7 +30,6 @@ export function buildAccountDelegateProxySigner(): PolkadotSigner {
 
 
 export function getPrivateKey(account?: string) {
-	// default to env if not provided
   return account || process.env.PRIVATE_KEY
 }
 
@@ -41,7 +38,6 @@ export function publicKeyOf(seed?: string) {
 	if (!privateKey) {
 		console.warn('No private key found will use a random one')
 		privateKey = ed25519.utils.randomPrivateKey()
-		// throw new Error('No private key found')
 	}
   return ed25519.getPublicKey(privateKey)
 }
