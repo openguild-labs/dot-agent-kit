@@ -1,5 +1,4 @@
 import { PolkadotAgentKit } from '../agent/index';
-import { chainPalletNames, defaultPalletNames } from '../config/palletNames';
 
 export class PolkadotTools {
   private agent: PolkadotAgentKit;
@@ -27,10 +26,9 @@ export class PolkadotTools {
     try {
         const { api } = this.agent.getConnection(chainName);
         
-        const configuredName = chainPalletNames[chainName]?.proxy;
-        const proxyPallet = configuredName && api.query[configuredName]?.Proxies
-            ? configuredName
-            : defaultPalletNames.find(name => api.query[name]?.Proxies);
+        // Find the proxy pallet dynamically by checking common naming patterns
+        const proxyPallets = ['Proxy', 'proxy', 'ProxyPallet'];
+        const proxyPallet = proxyPallets.find(name => api.query[name]?.Proxies);
         
         if (!proxyPallet) {
             return [{ error: `No proxy pallet found on chain ${chainName}` }];
