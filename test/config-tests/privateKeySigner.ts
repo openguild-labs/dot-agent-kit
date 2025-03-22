@@ -6,10 +6,10 @@ import {
 import { getPolkadotSigner } from "polkadot-api/signer"
 
 /**
- * Tạo signer từ cụm từ mnemonic
- * @param mnemonic Cụm từ mnemonic của ví
- * @param path Đường dẫn của ví, mặc định là ""
- * @returns Đối tượng signer và địa chỉ
+ * Create signer from mnemonic
+ * @param mnemonic Mnemonic of the wallet
+ * @param path Path of the wallet, default is ""
+ * @returns Signer object and address
  */
 export function createSignerFromMnemonic(mnemonic: string, path: string = "") {
   const entropy = mnemonicToEntropy(mnemonic)
