@@ -1,25 +1,7 @@
 import { ApiPromise } from '../tools/substrace';
 import { Chain, magicApi } from '../tools/substrace';
 import { addressOfSubstrate, publicKeyOf } from '../../test/config-tests/account';
-
-// Define type for chain configuration
-interface ChainConfig {
-  url: string; // WebSocket URL of the chain
-  name: string; // Name of the chain (e.g., 'westend', 'kusama', 'polkadot')
-}
-
-// Define interface for API connection
-interface ApiConnection {
-  api: ApiPromise;
-  disconnect: () => void;
-}
-
-// Define configuration for PolkadotAgentKit
-interface AgentConfig {
-  privateKey?: string; // Private key of the main account (optional, defaults to env)
-  delegatePrivateKey?: string; // Private key of the delegate account (optional)
-  chains: ChainConfig[]; // List of chains to connect to
-}
+import { ChainConfig, ApiConnection, AgentConfig } from '../agent/type';
 
 /**
  * Core class for interacting with Polkadot/Substrate blockchains
