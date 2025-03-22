@@ -84,3 +84,90 @@ This project is licensed under the **[MIT License](LICENSE)**.
 
 - **GitHub Issues**: [Report Bugs/Suggestions](https://github.com/chauanhtuan185/polkadot-ai-agent-kit/issues)
 - **Email**: [Telegram](https://t.me/kayx64)
+
+## Chain Configuration and Setup
+
+This project uses a configurable system to install Polkadot chains. The `.papi/` directory is included in `.gitignore` to prevent tracking of chain descriptors, which means each developer needs to set up the chains after cloning the repository.
+
+### How to Set Up Chains
+
+After cloning the project, follow these steps:
+
+1. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+2. Run the chain setup script:
+   ```bash
+   pnpm run test:setup
+   ```
+
+This script will:
+- Install the `polkadot-api` package
+- Read the chain configuration from `test/chains.config.json`
+- Create the `.papi/descriptors` directory if it doesn't exist
+- Install all chains listed in the configuration file
+
+### Customizing Chains
+
+You can install different chains by editing the `test/chains.config.json` file.
+
+File structure:
+```json
+{
+  "chains": [
+    {
+      "id": "chain_id",
+      "name": "chain_name_in_system",
+      "description": "Description of the chain (optional)"
+    }
+  ]
+}
+```
+
+Default example:
+```json
+{
+  "chains": [
+    {
+      "id": "west",
+      "name": "westend2",
+      "description": "Westend 2 Testnet"
+    },
+    {
+      "id": "west_asset_hub",
+      "name": "westend2_asset_hub",
+      "description": "Westend 2 Asset Hub"
+    }
+  ]
+}
+```
+
+### Why is `.papi/` in `.gitignore`?
+
+The `.papi/` directory contains descriptors for Polkadot chains. These descriptors:
+1. Can be quite large
+2. Can be generated automatically
+3. May differ between development environments
+4. May be updated frequently
+
+By placing this directory in `.gitignore`, we avoid tracking unnecessary files and allow each developer to set up chains according to their specific needs.
+
+### Troubleshooting
+
+If you encounter errors during chain installation:
+
+1. Make sure you're using the Node.js version specified in `package.json` (Node.js 22).
+2. Check the `test/chains.config.json` configuration file to ensure it contains valid JSON syntax.
+3. If a specific chain fails to install, you can remove it from the configuration and try again.
+4. Delete the `.papi/` directory and try again from scratch.
+
+In some cases, you may need to manually install chains by running:
+```bash
+npx papi add [chain_id] -n [chain_name]
+```
+
+### Important Note
+
+Ensure you have a stable internet connection when running the setup script as it will download chain descriptors from the network.
