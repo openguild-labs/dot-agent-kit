@@ -87,33 +87,50 @@ This project is licensed under the **[MIT License](LICENSE)**.
 
 ## Chain Configuration and Setup
 
-This project uses a configurable system to install Polkadot chains. The `.papi/` directory is included in `.gitignore` to prevent tracking of chain descriptors, which means each developer needs to set up the chains after cloning the repository.
+This project provides a flexible, interactive system to install Polkadot chains. The `.papi/` directory is included in `.gitignore` to prevent tracking of chain descriptors, which means each developer needs to set up their desired chains after cloning the repository.
 
-### How to Set Up Chains
+### Quick Setup
 
-After cloning the project, follow these steps:
+After cloning the project, the easiest way to setup chains is:
 
 1. Install dependencies:
    ```bash
    pnpm install
    ```
 
-2. Run the chain setup script:
+2. Run the interactive chain setup script:
    ```bash
    pnpm run test:setup
    ```
 
-This script will:
-- Install the `polkadot-api` package
-- Read the chain configuration from `test/chains.config.json`
-- Create the `.papi/descriptors` directory if it doesn't exist
-- Install all chains listed in the configuration file
+This will launch an interactive CLI menu that allows you to:
+- Choose from common predefined chains
+- Add custom chains
+- Install from a configuration file
+- Save your configuration for later use
 
-### Customizing Chains
+### Command Line Options
 
-You can install different chains by editing the `test/chains.config.json` file.
+The setup script supports various command line options for more flexibility:
 
-File structure:
+```bash
+# Show all available options
+pnpm run test:setup -- --help
+
+# List all common predefined chains
+pnpm run test:setup -- --list
+
+# Install specific chains directly
+pnpm run test:setup -- --install west,west_asset_hub
+
+# Install chains from a configuration file
+pnpm run test:setup -- --config ./my-chains.json
+```
+
+### Custom Chain Configuration
+
+You can create your own chain configuration file with this format:
+
 ```json
 {
   "chains": [
@@ -126,23 +143,10 @@ File structure:
 }
 ```
 
-Default example:
-```json
-{
-  "chains": [
-    {
-      "id": "west",
-      "name": "westend2",
-      "description": "Westend 2 Testnet"
-    },
-    {
-      "id": "west_asset_hub",
-      "name": "westend2_asset_hub",
-      "description": "Westend 2 Asset Hub"
-    }
-  ]
-}
-```
+The setup script will automatically detect:
+1. A `chains.config.json` file in the project root directory
+2. A custom path specified via the `--config` option
+3. An environment variable `CHAINS_CONFIG_PATH` pointing to your config file
 
 ### Why is `.papi/` in `.gitignore`?
 
@@ -159,15 +163,9 @@ By placing this directory in `.gitignore`, we avoid tracking unnecessary files a
 If you encounter errors during chain installation:
 
 1. Make sure you're using the Node.js version specified in `package.json` (Node.js 22).
-2. Check the `test/chains.config.json` configuration file to ensure it contains valid JSON syntax.
-3. If a specific chain fails to install, you can remove it from the configuration and try again.
-4. Delete the `.papi/` directory and try again from scratch.
-
-In some cases, you may need to manually install chains by running:
-```bash
-npx papi add [chain_id] -n [chain_name]
-```
-
-### Important Note
-
-Ensure you have a stable internet connection when running the setup script as it will download chain descriptors from the network.
+2. Delete the `.papi/` directory and try again from scratch.
+3. For specific chains, you can try installing them manually:
+   ```bash
+   npx papi add [chain_id] -n [chain_name]
+   ```
+4. Ensure you have a stable internet connection when running the setup script.

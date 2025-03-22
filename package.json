@@ -10,7 +10,7 @@
     "build": "esbuild index=./src --bundle --minify --outdir=dist --packages=external --platform=node",
     "start": "node dist",
     "test": "tsx",
-    "test:setup": "pnpm i polkadot-api && node setup-chains.js"
+    "test:setup": "pnpm i polkadot-api && node src/scripts/setup-chains.js"
   },
   "engines": {
     "node": "22"
