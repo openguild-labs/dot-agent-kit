@@ -21,29 +21,23 @@ export async function connect(config: SubstrateConnectorConfig): Promise<boolean
 	try {
 		provider = getWsProvider(config.url);
 		client = createClient(provider);
-		
 		const block = await client.getFinalizedBlock();
-		console.log(`Successfully connected to ${config.url}, block: #${block.number}`);
-		
 		return true;
+
 	} catch (error) {
-		console.error(`Unable to connect to ${config.url}:`, error);
 		return false;
 	}
 }
 
 export async function getBlockNumber(): Promise<number | null> {
 	if (!client) {
-		console.log('No connection.');
 		return null;
 	}
 	
 	try {
 		const block = await client.getFinalizedBlock();
-		console.log(`Latest block number: ${block.number}`);
 		return Number(block.number);
 	} catch (error) {
-		console.error('Unable to get block number:', error);
 		return null;
 	}
 }
@@ -54,11 +48,8 @@ export async function disconnect(): Promise<void> {
 			// Close connection
 			client = null;
 			provider = null;
-			console.log('Disconnected');
 		} catch (error) {
 			console.error('Error disconnecting:', error);
 		}
-	} else {
-		console.log('No connection.');
 	}
 }

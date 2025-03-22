@@ -36,13 +36,11 @@ export class PolkadotAgentKit {
     if (!mainPrivateKey) throw new Error("Main private key is required");
     const mainPublicKey = publicKeyOf(mainPrivateKey);
     this.address = addressOfSubstrate(mainPublicKey);
-    console.log('My account:', this.address);
 
     // Delegate account (optional)
     if (config.delegatePrivateKey) {
       const delegatePublicKey = publicKeyOf(config.delegatePrivateKey);
       this.delegateAddress = addressOfSubstrate(delegatePublicKey);
-      console.log('My delegate account:', this.delegateAddress);
     }
 
     // Initialize connections map
@@ -63,9 +61,7 @@ export class PolkadotAgentKit {
           chain.name as Chain,
         );
         this.connections.set(chain.name, connection);
-        console.log(`Connected to ${chain.name} at ${chain.url}`);
       } catch (error) {
-        console.error(`Failed to connect to ${chain.name}:`, error);
         throw new Error(`Connection to ${chain.name} failed`);
       }
     }
@@ -88,7 +84,6 @@ export class PolkadotAgentKit {
   public disconnectAll(): void {
     for (const [chainName, connection] of this.connections) {
       connection.disconnect();
-      console.log(`Disconnected from ${chainName}`);
     }
     this.connections.clear();
   }

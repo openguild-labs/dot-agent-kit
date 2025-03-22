@@ -9,9 +9,7 @@ import { ChainMap, defaultChainMap } from '../../chain/chainMap';
 export const xcmTransfer = (tools: PolkadotTools, chainMap: ChainMap = defaultChainMap) =>
   tool(
     async ({ chainName, amount, address }: { chainName: string; amount: number, address: string }) => {
-      console.log(`xcmTransfer called with chainName: ${chainName}, amount: ${amount}`);
       try {
-        // Kiểm tra xem chainName có tồn tại trong chainMap không
         if (!chainMap[chainName]) {
           throw new Error(`Chain "${chainName}" không tồn tại trong chainMap`);
         }
@@ -19,7 +17,6 @@ export const xcmTransfer = (tools: PolkadotTools, chainMap: ChainMap = defaultCh
         const chainInfo = chainMap[chainName];
         let txHash: string;
 
-        // Sử dụng apiKey để kết nối đến chain
         const { api, disconnect } = await magicApi({ url: chainInfo.url, name: chainInfo.name }, chainInfo.apiKey);
         const signer = buildAccountSigner();
 
@@ -27,15 +24,12 @@ export const xcmTransfer = (tools: PolkadotTools, chainMap: ChainMap = defaultCh
           const tx = teleportToRelayChain(address, BigInt(amount * 1e12));
           const result = await tx.signAndSubmit(signer);
           txHash = await result.txHash.toString();
-          console.log(`RelayChain txHash: ${txHash}`);
         } else {
           const tx = teleportToParaChain(address, BigInt(amount * 1e12));
           const result = await tx.signAndSubmit(signer);
           txHash = await result.txHash.toString();
-          console.log(`ParaChain txHash: ${txHash}`);
         }
 
-        // Dọn dẹp kết nối sau khi hoàn thành
         if (disconnect) disconnect();
         
         return {
