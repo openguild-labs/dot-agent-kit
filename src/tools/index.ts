@@ -13,7 +13,7 @@ export class PolkadotTools {
    * @returns Balance in WND
    */
   async checkBalance(chainName: string): Promise<number> {
-    const { api } = this.agent.getConnection(chainName);
+    const { api } = await this.agent.getConnection(chainName);
     const accountInfo = await api.query.System.Account.getValue(this.agent.address);
 
     const planckBalance = BigInt(accountInfo.data.free.toString());
@@ -24,7 +24,7 @@ export class PolkadotTools {
 
   async checkProxies(chainName: string): Promise<any[]> {
     try {
-        const { api } = this.agent.getConnection(chainName);
+        const { api } = await this.agent.getConnection(chainName);
         
         /* Find the proxy pallet dynamically by checking common naming patterns */
         const proxyPallets = ['Proxy', 'proxy', 'ProxyPallet'];

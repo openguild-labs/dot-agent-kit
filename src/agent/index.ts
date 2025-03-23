@@ -3,6 +3,8 @@ import { ChainConfig, ApiConnection, AgentConfig } from '../types/typeAgent';
 import { getPolkadotSigner } from 'polkadot-api/signer';
 import { ed25519 } from '@noble/curves/ed25519';
 import * as ss58 from '@subsquid/ss58';
+import { initializeDefaultChainDescriptors } from '../chain/chainInit';
+import { chainDescriptorRegistry } from '../chain/chainRegistry';
 
 /**
  * # PolkadotAgentKit
@@ -79,6 +81,12 @@ export class PolkadotAgentKit {
   /** Private key bytes for the delegate account */
   private delegatePrivateKey: Uint8Array | null = null;
 
+  /** Flag indicating if initialization is complete */
+  private initialized: boolean = false;
+  
+  /** Promise that resolves when initialization is complete */
+  private initPromise: Promise<void> | null = null;
+
   /**
    * Creates a new PolkadotAgentKit instance
    * 
@@ -108,8 +116,42 @@ export class PolkadotAgentKit {
       this.delegateAddress = ss58.codec('substrate').encode(delegatePublicKey);
     }
 
-    /* Initialize connections to all chains in the config */
-    this.initializeConnections(config.chains);
+    /* Start chain initialization */
+    this.initPromise = this.initialize(config.chains);
+  }
+
+  /**
+   * Initialize the agent with chain descriptors and connections
+   * @param chains Chain configurations
+   * @returns Promise that resolves when initialization is complete
+   */
+  private async initialize(chains: ChainConfig[]): Promise<void> {
+    try {
+      // Initialize chain descriptors if not already done by the auto-import
+      if (Object.keys(chainDescriptorRegistry.getAllDescriptors()).length === 0) {
+        console.log('⚠️ No chain descriptors found, initializing them now...');
+        await initializeDefaultChainDescriptors();
+      }
+      
+      // Initialize connections to chains
+      await this.initializeConnections(chains);
+      
+      // Mark initialization as complete
+      this.initialized = true;
+      console.log('🔄 PolkadotAgentKit initialized successfully');
+    } catch (error) {
+      console.error('❌ Failed to initialize PolkadotAgentKit:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Wait for agent initialization to complete
+   * @returns Promise that resolves when initialization is complete
+   */
+  public async waitForInitialization(): Promise<void> {
+    if (this.initialized) return;
+    if (this.initPromise) await this.initPromise;
   }
 
   /**
@@ -143,11 +185,12 @@ export class PolkadotAgentKit {
       try {
         const connection = await substrateApi(
           chain,
-          chain.name as Chain,
+          chain.name,
         );
         this.connections.set(chain.name, connection);
       } catch (error) {
-        throw new Error(`Connection to ${chain.name} failed`);
+        console.error(`Connection to ${chain.name} failed:`, error);
+        throw new Error(`Connection to ${chain.name} failed: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
   }
@@ -161,7 +204,7 @@ export class PolkadotAgentKit {
    * 
    * @example
    * ```typescript
-   * // Get API for specific chain
+   * // Get connection for a chain
    * const { api } = agent.getConnection('westend2');
    * 
    * // Use API for queries
@@ -169,7 +212,10 @@ export class PolkadotAgentKit {
    * console.log('Balance:', balance.data.free.toString());
    * ```
    */
-  getConnection(chainName: string): ApiConnection {
+  async getConnection(chainName: string): Promise<ApiConnection> {
+    // Wait for initialization to complete
+    await this.waitForInitialization();
+    
     const connection = this.connections.get(chainName);
     if (!connection) {
       throw new Error(`No connection found for chain: ${chainName}`);
