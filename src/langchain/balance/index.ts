@@ -1,24 +1,31 @@
-export const checkBalanceTool = (tools: PolkadotLangTools) => {
-  return tool({
-    name: "check_balance",
-    description: "Check balance of the agent's account on a specific chain",
-    schema: z.object({
-      chain: z.string().describe("The chain name to check balance on (e.g., 'polkadot', 'kusama', 'westend', 'westend_asset_hub', etc.)"),
-    }),
-    func: async ({ chain }) => {
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
+import { PolkadotLangTools } from '../../tools/index';
+
+export const checkBalanceTool = (tools: PolkadotLangTools) =>
+  tool(
+    async () => {
       try {
-        const balance = await tools.checkBalance(chain);
-        console.log(`Balance on ${chain}:`, balance);
+        const wndBalance = await tools.checkBalance('westend_asset_hub');
+        console.log('wndBalance:', wndBalance);
         return {
-          content: `Balance on ${chain}: ${balance.toFixed(4)}`,
+          content: `Balance : ${wndBalance.toFixed(4)}`,
           tool_call_id: `balance_${Date.now()}`,
         };
       } catch (error) {
+        console.error('Balance check error:', error);
         return {
-          content: `Error checking balance on ${chain}: ${error.message}`,
-          tool_call_id: `balance_error_${Date.now()}`,
+          content: JSON.stringify({
+            error: true,
+            message: `Failed to check balance: ${error instanceof Error ? error.message : String(error)}`,
+          }),
+          tool_call_id: `balance_${Date.now()}`,
         };
       }
     },
-  });
-};
+    {
+      name: 'checkBalance',
+      description: 'Check WND balance on Westend network',
+      schema: z.object({}),
+    },
+  );
