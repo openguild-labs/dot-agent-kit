@@ -1,12 +1,12 @@
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
-import { PolkadotTools } from '../../tools/index';
+import { PolkadotLangTools } from '../../tools/index';
 import { buildAccountSigner } from '../../types/account';
 import { teleportToRelayChain, teleportToParaChain } from '../../tools/xcm/teleport';
 import { substrateApi } from '../../tools/substrace';
 import { ChainMap, defaultChainMap } from '../../chain/chainMap';
 
-export const xcmTransfer = (tools: PolkadotTools, chainMap: ChainMap = defaultChainMap) =>
+export const xcmTransfer = (tools: PolkadotLangTools, chainMap: ChainMap = defaultChainMap) =>
   tool(
     async ({ chainName, amount, address }: { chainName: string; amount: number, address: string }) => {
       try {

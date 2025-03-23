@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { Telegraf } from 'telegraf';
 import { ChatOpenAI } from '@langchain/openai';
 import { PolkadotAgentKit } from '../../../src/agent/index';
-import { PolkadotTools } from '../../../src/tools/index';
+import { PolkadotLangTools } from '../../../src/tools/index';
 import { Tool } from '@langchain/core/tools';
 import { setupHandlers } from './handlers';
 import { xcmTransfer } from '../../../src/langchain/xcm/index';
@@ -58,7 +58,7 @@ export class TelegramBot {
       streaming: true,
     });
 
-    const tools = new PolkadotTools(this.agent);
+    const tools = new PolkadotLangTools(this.agent);
     const xcmTool = xcmTransfer(tools, this.chainMap) as unknown as Tool;
     const balanceTool = checkBalanceTool(tools) as unknown as Tool;
     const proxiesTool = checkProxiesTool(tools, this.chainMap) as unknown as Tool;

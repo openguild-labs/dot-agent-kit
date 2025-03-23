@@ -23,7 +23,7 @@ import { chainDescriptorRegistry } from '../chain/chainRegistry';
  * 
  * ```typescript
  * import { PolkadotAgentKit } from 'polkadot-agent-kit';
- * import { PolkadotTools } from 'polkadot-agent-kit/tools';
+ * import { PolkadotLangTools } from 'polkadot-agent-kit/tools';
  * 
  * // Initialize the agent with your account and chains
  * const agent = new PolkadotAgentKit({
@@ -52,7 +52,7 @@ import { chainDescriptorRegistry } from '../chain/chainRegistry';
  *     console.log('Transaction hash:', result.hash);
  *     
  *     // Use the tools helper
- *     const tools = new PolkadotTools(agent);
+ *     const tools = new PolkadotLangTools(agent);
  *     const balance = await tools.checkBalance('westend2');
  *     console.log('WND Balance:', balance);
  *     

@@ -1,6 +1,6 @@
 import { PolkadotAgentKit } from '../agent/index';
 
-export class PolkadotTools {
+export class PolkadotLangTools {
   private agent: PolkadotAgentKit;
 
   constructor(agent: PolkadotAgentKit) {

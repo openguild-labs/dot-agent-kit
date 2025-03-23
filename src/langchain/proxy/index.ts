@@ -1,9 +1,9 @@
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
-import { PolkadotTools } from '../../tools/index';
+import { PolkadotLangTools } from '../../tools/index';
 import { ChainMap, defaultChainMap } from '../../chain/chainMap';
 
-export const checkProxiesTool = (tools: PolkadotTools, chainMap: ChainMap = defaultChainMap) =>
+export const checkProxiesTool = (tools: PolkadotLangTools, chainMap: ChainMap = defaultChainMap) =>
   tool(
     async (input) => {
       try {

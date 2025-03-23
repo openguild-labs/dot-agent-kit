@@ -1,5 +1,9 @@
 import { ChainConfig, CHAINS } from '../types/xcmTypes';
 
+// Type definitions for chain registry
+export type ChainName = string;
+export type Multichain<T> = Record<ChainName, T>;
+
 /**
  * Dynamic chain descriptor registry
  * Instead of hardcoding chains, we'll use a dynamic approach where descriptors
@@ -56,27 +60,44 @@ export const typedApi = chainDescriptorRegistry.getAllDescriptors();
 
 /** Define the ChainRegistry class **/
 export class ChainRegistry {
-  private chains: Map<string, ChainConfig> = new Map();
+  private chains: Multichain<ChainConfig> = {};
 
+  /**
+   * Register a chain configuration
+   * @param config The chain configuration to register
+   */
   registerChain(config: ChainConfig): void {
-    this.chains.set(config.name.toLowerCase(), config);
+    this.chains[config.name.toLowerCase()] = config;
     if (config.parachainId) {
-      this.chains.set(config.parachainId.toString(), config);
+      this.chains[config.parachainId.toString()] = config;
     }
   }
 
-  getChain(name: string): ChainConfig | undefined {
-    return this.chains.get(name.toLowerCase()) || 
-           this.chains.get(name); 
+  /**
+   * Get a chain configuration by name
+   * @param name The name of the chain to get
+   * @returns The chain configuration or undefined if not found
+   */
+  getChain(name: ChainName): ChainConfig | undefined {
+    return this.chains[name.toLowerCase()] || 
+           this.chains[name]; 
   }
 
-  isValidChain(name: string): boolean {
-    return this.chains.has(name.toLowerCase()) || 
-           this.chains.has(name); 
+  /**
+   * Check if a chain exists by name
+   * @param name The name of the chain to check
+   * @returns True if the chain exists
+   */
+  isValidChain(name: ChainName): boolean {
+    return name.toLowerCase() in this.chains || name in this.chains; 
   }
-
-  isRelayChain(name: string): boolean {
-    const chain = this.getChain(name.toLowerCase());
+  /**
+   * Check if a chain is a relay chain
+   * @param name The chain name or identifier
+   * @returns True if the chain is a relay chain
+   */
+  isRelayChain(name: ChainName): boolean {
+    const chain = this.getChain(name);
     return chain?.type === CHAINS.RELAY_CHAIN;
   }
 }
