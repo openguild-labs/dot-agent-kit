@@ -8,13 +8,13 @@ let provider: ReturnType<typeof getWsProvider> | null = null;
 
 export type Chain = keyof typeof typedApi;
 
-export async function magicApi(config: SubstrateConnectorConfig, chain: Chain): Promise<{ api: TypedApi<typeof typedApi[Chain]>; disconnect: () => void }> {
+export async function substrateApi(config: SubstrateConnectorConfig, chain: Chain): Promise<{ api: TypedApi<typeof typedApi[Chain]>; disconnect: () => void }> {
 	provider = getWsProvider(config.url);
 	client = createClient(provider);
 	return { api: client.getTypedApi(typedApi[chain]), disconnect: client.destroy }; 
 }
 
-export type FullApi = Awaited<ReturnType<typeof magicApi>>;
+export type FullApi = Awaited<ReturnType<typeof substrateApi>>;
 export type ApiPromise = FullApi['api'];
 
 export async function connect(config: SubstrateConnectorConfig): Promise<boolean> {

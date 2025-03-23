@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { PolkadotTools } from '../../tools/index';
 import { buildAccountSigner } from '../../types/account';
 import { teleportToRelayChain, teleportToParaChain } from '../../tools/xcm/teleport';
-import { magicApi } from '../../tools/substrace';
+import { substrateApi } from '../../tools/substrace';
 import { ChainMap, defaultChainMap } from '../../chain/chainMap';
 
 export const xcmTransfer = (tools: PolkadotTools, chainMap: ChainMap = defaultChainMap) =>
@@ -17,7 +17,7 @@ export const xcmTransfer = (tools: PolkadotTools, chainMap: ChainMap = defaultCh
         const chainInfo = chainMap[chainName];
         let txHash: string;
 
-        const { api, disconnect } = await magicApi({ url: chainInfo.url, name: chainInfo.name }, chainInfo.apiKey);
+        const { api, disconnect } = await substrateApi({ url: chainInfo.url, name: chainInfo.name }, chainInfo.apiKey);
         const signer = buildAccountSigner();
 
         if (chainInfo.type === 'RelayChain') {

@@ -1,6 +1,6 @@
 import { Binary, TxCallData, TxFinalizedPayload } from "polkadot-api"
 import { addressOf, addressOfSubstrate, publicKeyOf, toMultiAddress } from "../config-tests/account"
-import { Chain, magicApi } from "../../src/tools/substrace"
+import { Chain, substrateApi } from "../../src/tools/substrace"
 import { callAsProxy, createProxy, removeProxy, transferKeepAlive} from "../../src/tools/pallet-proxy"
 
 /** Westend use SS58 address 42 **/
@@ -12,7 +12,7 @@ const myDelegatePublicKey = publicKeyOf(process.env.DELEGATE_PRIVATE_KEY)
 const myDelegateAddress = addressOfSubstrate(myDelegatePublicKey)
 
 async function main() {
-  const { api, disconnect } = await magicApi({ url: 'wss://westend-rpc.polkadot.io', name: 'westend' }, 'westend')
+  const { api, disconnect } = await substrateApi({ url: 'wss://westend-rpc.polkadot.io', name: 'westend' }, 'westend')
   console.log('My delegate address:', myDelegateAddress)
 
   /** 0. convert to myAccount and my delegate multi address **/

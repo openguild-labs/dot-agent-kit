@@ -1,6 +1,8 @@
-import { Chain, magicApi } from '../tools/substrace';
-import { addressOfSubstrate, publicKeyOf } from '../../test/config-tests/account';
+import { Chain, substrateApi } from '../tools/substrace';
 import { ChainConfig, ApiConnection, AgentConfig } from '../types/typeAgent';
+import { getPolkadotSigner } from 'polkadot-api/signer';
+import { ed25519 } from '@noble/curves/ed25519';
+import * as ss58 from '@subsquid/ss58';
 
 /**
  * # PolkadotAgentKit
@@ -23,8 +25,8 @@ import { ChainConfig, ApiConnection, AgentConfig } from '../types/typeAgent';
  * 
  * // Initialize the agent with your account and chains
  * const agent = new PolkadotAgentKit({
- *   privateKey: process.env.PRIVATE_KEY,
- *   delegatePrivateKey: process.env.DELEGATE_PRIVATE_KEY,
+ *   privateKey: '0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133', // or use process.env.PRIVATE_KEY
+ *   delegatePrivateKey: '0x8075991ce870b93a8870eca0c0f91913d12f47948ca0fd25b49c6fa7cdbeee8b', // optional
  *   chains: [
  *     { name: 'westend2', url: 'wss://westend-rpc.polkadot.io' },
  *     { name: 'westend2_asset_hub', url: 'wss://westend-asset-hub-rpc.polkadot.io', relayChain: 'westend2' }
@@ -69,7 +71,13 @@ export class PolkadotAgentKit {
   public delegateAddress?: string; 
   
   /** Map of chain connections indexed by chain name */
-  private connections: Map<string, ApiConnection>;
+  private connections: Map<string, ApiConnection> = new Map<string, ApiConnection>();
+
+  /** Private key bytes for the main account */
+  private mainPrivateKey: Uint8Array | null = null;
+  
+  /** Private key bytes for the delegate account */
+  private delegatePrivateKey: Uint8Array | null = null;
 
   /**
    * Creates a new PolkadotAgentKit instance
@@ -82,19 +90,46 @@ export class PolkadotAgentKit {
    * @throws Error if no private key is available
    */
   constructor(config: AgentConfig) {
-    const mainPrivateKey = config.privateKey || process.env.PRIVATE_KEY;
-    if (!mainPrivateKey) throw new Error("Main private key is required");
-    const mainPublicKey = publicKeyOf(mainPrivateKey);
-    this.address = addressOfSubstrate(mainPublicKey);
+    /* Get private key from config or env variable */
+    const privateKeyStr = config.privateKey || process.env.PRIVATE_KEY;
+    if (!privateKeyStr) throw new Error("Main private key is required");
+    
+    /* Convert private key to proper format using PAPI methods */
+    this.mainPrivateKey = this.normalizePrivateKey(privateKeyStr);
+    const mainPublicKey = ed25519.getPublicKey(this.mainPrivateKey);
+    
+    /* Generate address using ss58 codec (standard PAPI pattern) */
+    this.address = ss58.codec('substrate').encode(mainPublicKey);
 
+    /* Handle delegate key if provided */
     if (config.delegatePrivateKey) {
-      const delegatePublicKey = publicKeyOf(config.delegatePrivateKey);
-      this.delegateAddress = addressOfSubstrate(delegatePublicKey);
+      this.delegatePrivateKey = this.normalizePrivateKey(config.delegatePrivateKey);
+      const delegatePublicKey = ed25519.getPublicKey(this.delegatePrivateKey);
+      this.delegateAddress = ss58.codec('substrate').encode(delegatePublicKey);
     }
 
-    this.connections = new Map<string, ApiConnection>();
+    /* Initialize connections to all chains in the config */
     this.initializeConnections(config.chains);
-    
+  }
+
+  /**
+   * Normalize a private key string to Uint8Array format
+   * Handles hex strings with or without 0x prefix
+   * 
+   * @param key - Private key as string
+   * @returns Uint8Array representation of the key
+   * @private
+   */
+  private normalizePrivateKey(key: string): Uint8Array {
+    if (key.startsWith('0x')) {
+      return new Uint8Array(
+        key.substring(2).match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || []
+      );
+    } else {
+      return new Uint8Array(
+        key.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || []
+      );
+    }
   }
 
   /**
@@ -106,8 +141,8 @@ export class PolkadotAgentKit {
   private async initializeConnections(chains: ChainConfig[]): Promise<void> {
     for (const chain of chains) {
       try {
-        const connection = await magicApi(
-          { url: chain.url, name: chain.name },
+        const connection = await substrateApi(
+          chain,
           chain.name as Chain,
         );
         this.connections.set(chain.name, connection);
@@ -153,10 +188,8 @@ export class PolkadotAgentKit {
    * agent.disconnectAll();
    * ```
    */
-  public disconnectAll(): void {
-    for (const [chainName, connection] of this.connections) {
-      connection.disconnect();
-    }
+  public async disconnectAll(): Promise<void> {
+    await Promise.all(Array.from(this.connections.entries()).map(([_, connection]) => connection.disconnect()));
     this.connections.clear();
   }
 
@@ -166,7 +199,10 @@ export class PolkadotAgentKit {
    * @returns The public key as Uint8Array
    */
   public getMainPublicKey(): Uint8Array {
-    return publicKeyOf(process.env.PRIVATE_KEY || "");
+    if (!this.mainPrivateKey) {
+      throw new Error("Main private key not available");
+    }
+    return ed25519.getPublicKey(this.mainPrivateKey);
   }
 
   /**
@@ -175,6 +211,45 @@ export class PolkadotAgentKit {
    * @returns The delegate public key as Uint8Array or undefined if no delegate exists
    */
   public getDelegatePublicKey(): Uint8Array | undefined {
-    return this.delegateAddress ? publicKeyOf(this.delegateAddress) : undefined;
+    if (!this.delegatePrivateKey) {
+      return undefined;
+    }
+    return ed25519.getPublicKey(this.delegatePrivateKey);
+  }
+  
+  /**
+   * Create a signer for the main account using PAPI's getPolkadotSigner
+   * 
+   * @returns A PAPI compatible signer
+   */
+  public createMainSigner() {
+    if (!this.mainPrivateKey) {
+      throw new Error("Main private key not available");
+    }
+    
+    const publicKey = this.getMainPublicKey();
+    return getPolkadotSigner(
+      publicKey,
+      "Ed25519",
+      (input: Uint8Array) => ed25519.sign(input, this.mainPrivateKey as Uint8Array)
+    );
+  }
+  
+  /**
+   * Create a signer for the delegate account using PAPI's getPolkadotSigner
+   * 
+   * @returns A PAPI compatible signer or undefined if no delegate exists
+   */
+  public createDelegateSigner() {
+    if (!this.delegatePrivateKey) {
+      return undefined;
+    }
+    
+    const publicKey = this.getDelegatePublicKey() as Uint8Array;
+    return getPolkadotSigner(
+      publicKey,
+      "Ed25519",
+      (input: Uint8Array) => ed25519.sign(input, this.delegatePrivateKey as Uint8Array)
+    );
   }
 }

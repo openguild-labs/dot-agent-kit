@@ -1,5 +1,5 @@
 import { addressOfSubstrate, publicKeyOf, toMultiAddress } from "../config-tests/account"
-import { magicApi } from "../../src/tools/substrace"
+import { substrateApi } from "../../src/tools/substrace"
 import { createProxy, removeProxy } from "../../src/tools/pallet-proxy"
 import { teleportToParaChain, teleportToRelayChain } from "../../src/tools/xcm/teleport"
 
@@ -12,7 +12,7 @@ const myDelegatePublicKey = publicKeyOf(process.env.DELEGATE_PRIVATE_KEY)
 const myDelegateAddress = addressOfSubstrate(myDelegatePublicKey)
 
 async function main() {
-  const { api, disconnect } = await magicApi({ url: 'wss://westend-rpc.polkadot.io', name: 'westend' }, 'westend')
+  const { api, disconnect } = await substrateApi({ url: 'wss://westend-rpc.polkadot.io', name: 'westend' }, 'westend')
   console.log('My delegate address:', myDelegateAddress)
 
   /** 0. convert to myAccount and my delegate multi address **/
