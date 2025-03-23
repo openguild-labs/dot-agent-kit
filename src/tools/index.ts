@@ -26,15 +26,17 @@ export class PolkadotTools {
     try {
         const { api } = this.agent.getConnection(chainName);
         
-        // Find the proxy pallet dynamically by checking common naming patterns
+        /* Find the proxy pallet dynamically by checking common naming patterns */
         const proxyPallets = ['Proxy', 'proxy', 'ProxyPallet'];
-        const proxyPallet = proxyPallets.find(name => api.query[name]?.Proxies);
+        const proxyPallet = proxyPallets.find(name => 
+          (api.query[name as keyof typeof api.query] as any)?.Proxies !== undefined
+        );
         
         if (!proxyPallet) {
             return [{ error: `No proxy pallet found on chain ${chainName}` }];
         }
         
-        const proxiesInfo = await api.query[proxyPallet].Proxies.getValue(this.agent.address);
+        const proxiesInfo = await (api.query[proxyPallet as keyof typeof api.query] as any).Proxies.getValue(this.agent.address);
         const [proxies] = proxiesInfo;
 
         if (!proxies || proxies.length === 0) {
