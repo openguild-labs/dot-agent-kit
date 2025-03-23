@@ -12,8 +12,7 @@ try {
   // Use an immediately-invoked function expression to handle the async initialization
   (async () => {
     await initializeDefaultChainDescriptors();
-    console.log('✅ Chain descriptors initialized automatically');
   })();
 } catch (error) {
-  console.error('❌ Failed to auto-initialize chain descriptors:', error);
+  throw error;
 } 

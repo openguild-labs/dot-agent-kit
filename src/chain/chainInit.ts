@@ -1,6 +1,14 @@
 import { chainDescriptorRegistry } from './chainRegistry';
 
 /**
+ * Configuration for chain aliases
+ */
+interface ChainAliasConfig {
+  descriptorName: string;
+  aliases: string[];
+}
+
+/**
  * Register a chain descriptor
  * @param chainName The chain name identifier
  * @param descriptor The chain descriptor object
@@ -9,9 +17,7 @@ export function registerChainDescriptor(chainName: string, descriptor: any): voi
   try {
     // Register it in our registry
     chainDescriptorRegistry.registerDescriptor(chainName, descriptor);
-    console.log(`Successfully registered chain descriptor for ${chainName}`);
   } catch (error) {
-    console.error(`Failed to register chain descriptor for ${chainName}:`, error);
     throw error;
   }
 }
@@ -20,32 +26,38 @@ export function registerChainDescriptor(chainName: string, descriptor: any): voi
  * Initialize default chain descriptors by importing them directly
  * This avoids the dynamic import path issues with @polkadot-api/descriptors
  */
-export async function initializeDefaultChainDescriptors(): Promise<void> {
+export async function initializeDefaultChainDescriptors(
+  descriptors: Record<string, any> = {}, 
+  includeDefaults = true,
+  chainConfigs: ChainAliasConfig[] = []
+): Promise<void> {
   try {
-    // Import descriptors directly to avoid path resolution issues
-    // These imports are resolved at compile time rather than runtime
-    const { west, west_asset_hub, polkadot, polkadot_asset_hub, ksmcc3, ksmcc3_asset_hub } = await import('@polkadot-api/descriptors');
+    const defaultConfigs: ChainAliasConfig[] = includeDefaults ? [
+      { descriptorName: 'west', aliases: ['westend', 'westend2'] },
+      { descriptorName: 'west_asset_hub', aliases: ['westend_asset_hub', 'westend2_asset_hub'] },
+      { descriptorName: 'polkadot', aliases: ['polkadot'] },
+      { descriptorName: 'polkadot_asset_hub', aliases: ['polkadot_asset_hub'] },
+      { descriptorName: 'ksmcc3', aliases: ['kusama', 'ksmcc3'] },
+      { descriptorName: 'ksmcc3_asset_hub', aliases: ['kusama_asset_hub', 'ksmcc3_asset_hub'] }
+    ] : [];
     
-    // Register each descriptor with our registry - handle both naming conventions
-    // Westend chains - register both 'westend' and 'westend2' for compatibility
-    registerChainDescriptor('westend', west);
-    registerChainDescriptor('westend2', west);
-    registerChainDescriptor('westend_asset_hub', west_asset_hub);
-    registerChainDescriptor('westend2_asset_hub', west_asset_hub);
+    // Combine default and custom configurations
+    const allConfigs = [...defaultConfigs, ...(chainConfigs || [])];
     
-    // Polkadot chains
-    registerChainDescriptor('polkadot', polkadot);
-    registerChainDescriptor('polkadot_asset_hub', polkadot_asset_hub);
-    
-    // Kusama chains
-    registerChainDescriptor('kusama', ksmcc3);
-    registerChainDescriptor('ksmcc3', ksmcc3); // Alternative name
-    registerChainDescriptor('kusama_asset_hub', ksmcc3_asset_hub);
-    registerChainDescriptor('ksmcc3_asset_hub', ksmcc3_asset_hub); // Alternative name
-    
-    console.log('Successfully initialized default chain descriptors');
+    // Register all descriptors
+    for (const config of allConfigs) {
+      const descriptor = descriptors[config.descriptorName];
+      
+      if (!descriptor) {
+        continue;
+      }
+      
+      // Register all aliases for this descriptor
+      for (const alias of config.aliases) {
+        registerChainDescriptor(alias, descriptor);
+      }
+    }
   } catch (error) {
-    console.error('Failed to initialize default chain descriptors:', error);
     throw error;
   }
 } 
