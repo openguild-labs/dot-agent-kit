@@ -196,9 +196,9 @@ export class PolkadotAgentKit {
   /**
    * Get main account public key
    * 
-   * @returns The public key as Uint8Array
+   * @returns The public key as Uint8Array or undefined if no private key is available
    */
-  public getMainPublicKey(): Uint8Array {
+  public getMainPublicKey(): Uint8Array | undefined {
     if (!this.mainPrivateKey) {
       throw new Error("Main private key not available");
     }
@@ -229,7 +229,7 @@ export class PolkadotAgentKit {
     
     const publicKey = this.getMainPublicKey();
     return getPolkadotSigner(
-      publicKey,
+      publicKey as Uint8Array,
       "Ed25519",
       (input: Uint8Array) => ed25519.sign(input, this.mainPrivateKey as Uint8Array)
     );
