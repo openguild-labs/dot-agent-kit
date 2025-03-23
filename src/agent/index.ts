@@ -169,7 +169,7 @@ export class PolkadotAgentKit {
    * console.log('Balance:', balance.data.free.toString());
    * ```
    */
-  public getConnection(chainName: string): ApiConnection {
+  getConnection(chainName: string): ApiConnection {
     const connection = this.connections.get(chainName);
     if (!connection) {
       throw new Error(`No connection found for chain: ${chainName}`);
@@ -196,7 +196,21 @@ export class PolkadotAgentKit {
   /**
    * Get main account public key
    * 
-   * @returns The public key as Uint8Array or undefined if no private key is available
+   * @returns The public key as Uint8Array 
+   * @throws Error if no main private key is available
+   * 
+   * @example
+   * ```typescript
+   * // Get the main account public key
+   * const publicKey = agent.getMainPublicKey();
+   * 
+   * // Use it for signing or verification
+   * console.log('Main public key:', publicKey);
+   * 
+   * // Use it with a transaction
+   * const tx = api.tx.balances.transfer(destinationAddress, amount);
+   * await tx.signAndSend(publicKey);
+   * ```
    */
   public getMainPublicKey(): Uint8Array | undefined {
     if (!this.mainPrivateKey) {
@@ -209,6 +223,21 @@ export class PolkadotAgentKit {
    * Get delegate public key (if exists)
    * 
    * @returns The delegate public key as Uint8Array or undefined if no delegate exists
+   * 
+   * @example
+   * ```typescript
+   * // Get the delegate public key if it exists
+   * const delegateKey = agent.getDelegatePublicKey();
+   * 
+   * // Check if delegate key exists before using
+   * if (delegateKey) {
+   *   console.log('Delegate public key:', delegateKey);
+   *   
+   *   // Use it with a transaction
+   *   const tx = api.tx.balances.transfer(destinationAddress, amount);
+   *   await tx.signAndSend(delegateKey);
+   * }
+   * ```
    */
   public getDelegatePublicKey(): Uint8Array | undefined {
     if (!this.delegatePrivateKey) {
@@ -220,7 +249,18 @@ export class PolkadotAgentKit {
   /**
    * Create a signer for the main account using PAPI's getPolkadotSigner
    * 
-   * @returns A PAPI compatible signer
+   * @returns A PAPI compatible signer for use with the Polkadot API
+   * @throws Error if no main private key is available
+   * 
+   * @example
+   * ```typescript
+   * // Create a signer for the main account
+   * const signer = agent.createMainSigner();
+   * 
+   * // Use signer for a transaction
+   * const tx = api.tx.balances.transferKeepAlive(destination, amount);
+   * await tx.signAndSend(signer);
+   * ```
    */
   public createMainSigner() {
     if (!this.mainPrivateKey) {
@@ -238,7 +278,19 @@ export class PolkadotAgentKit {
   /**
    * Create a signer for the delegate account using PAPI's getPolkadotSigner
    * 
-   * @returns A PAPI compatible signer or undefined if no delegate exists
+   * @returns A PAPI compatible signer for use with the Polkadot API or undefined if no delegate exists
+   * 
+   * @example
+   * ```typescript
+   * // Create a signer for the delegate account
+   * const delegateSigner = agent.createDelegateSigner();
+   * 
+   * // Check if delegate signer exists before using
+   * if (delegateSigner) {
+   *   const tx = api.tx.balances.transferKeepAlive(destination, amount);
+   *   await tx.signAndSend(delegateSigner);
+   * }
+   * ```
    */
   public createDelegateSigner() {
     if (!this.delegatePrivateKey) {
