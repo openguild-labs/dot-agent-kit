@@ -91,6 +91,7 @@ export class ChainRegistry {
   isValidChain(name: ChainName): boolean {
     return name.toLowerCase() in this.chains || name in this.chains; 
   }
+
   /**
    * Check if a chain is a relay chain
    * @param name The chain name or identifier
@@ -100,4 +101,5 @@ export class ChainRegistry {
     const chain = this.getChain(name);
     return chain?.type === CHAINS.RELAY_CHAIN;
   }
+  
 }

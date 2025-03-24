@@ -12,7 +12,6 @@ export const checkBalanceTool = (tools: PolkadotLangTools) => {
     func: async ({ chain }) => {
       try {
         const balance = await tools.checkBalance(chain);
-        console.log(`Balance on ${chain}:`, balance);
         return {
           content: `Balance on ${chain}: ${balance.toFixed(4)}`,
           tool_call_id: `balance_${Date.now()}`,
