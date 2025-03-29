@@ -10,7 +10,7 @@
     "build": "esbuild index=./src --bundle --minify --outdir=dist --packages=external --platform=node",
     "start": "node dist",
     "test": "tsx",
-    "test:setup": "pnpm i polkadot-api && node src/scripts/setup-chains.js",
+    "test:setup": "node src/scripts/check-papi.js && pnpm i polkadot-api && node src/scripts/setup-chains.js",
     "test:key-types": "mocha -r ts-node/register test/config-tests/key-types.test.ts",
     "test:integration": "INTEGRATION=true mocha -r ts-node/register test/interaction-tests/key-types-integration.test.ts"
   },
@@ -26,7 +26,6 @@
     "@langchain/openai": "^0.3.17",
     "@noble/curves": "^1.6.0",
     "@noble/hashes": "^1.5.0",
-    "@polkadot-api/descriptors": "file:.papi/descriptors",
     "@polkadot-labs/hdkd": "^0.0.12",
     "@polkadot-labs/hdkd-helpers": "^0.0.12",
     "@polkadot/keyring": "^13.4.3",

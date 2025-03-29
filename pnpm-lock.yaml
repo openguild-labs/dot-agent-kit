@@ -26,9 +26,6 @@ importers:
       '@noble/hashes':
         specifier: ^1.5.0
         version: 1.7.1
-      '@polkadot-api/descriptors':
-        specifier: file:.papi/descriptors
-        version: file:.papi/descriptors(polkadot-api@1.9.4(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))
       '@polkadot-labs/hdkd':
         specifier: ^0.0.12
         version: 0.0.12
@@ -1228,11 +1225,6 @@ packages:
 
   '@polkadot-api/codegen@0.13.0':
     resolution: {integrity: sha512-VU0juJz7TWohFa/tUqOSUdauGlGBJT562+POFerz1/DdXeJ4P1U7BKGM+s57PJlN8D6cHfIv1uoPvuuwnfazgg==}
-
-  '@polkadot-api/descriptors@file:.papi/descriptors':
-    resolution: {directory: .papi/descriptors, type: directory}
-    peerDependencies:
-      polkadot-api: '*'
 
   '@polkadot-api/ink-contracts@0.2.5':
     resolution: {integrity: sha512-EqEub18L8IB1Z/QwnAe9Kn3MeRbM9y0gUpbMUg71v0pQVqBPlumA+oboItNTjLBKzd77QcJUr6bKqHr9rA1Utw==}
@@ -3917,10 +3909,6 @@ snapshots:
       '@polkadot-api/metadata-compatibility': 0.1.15
       '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/utils': 0.1.2
-
-  '@polkadot-api/descriptors@file:.papi/descriptors(polkadot-api@1.9.4(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))':
-    dependencies:
-      polkadot-api: 1.9.4(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
 
   '@polkadot-api/ink-contracts@0.2.5':
     dependencies:
