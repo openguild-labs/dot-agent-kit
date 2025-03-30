@@ -59,8 +59,8 @@
 
 | Phase | Task | Status |
 |-----------|-----------|------------|
-| Phase 1 | Build core library (Substrate, XCM, Proxy, NFT, DeFi) | Planned |
-| Phase 2 | Develop AI Interface and NLP | Planned |
+| Phase 1 | Build core library (Substrate, XCM, Proxy, NFT, DeFi) | Done |
+| Phase 2 | Develop AI Interface and NLP | Done |
 | Phase 3 | Integrate MPC wallets and enhanced security | Planned |
 
 ---
