@@ -10,7 +10,9 @@
     "build": "esbuild index=./src --bundle --minify --outdir=dist --packages=external --platform=node",
     "start": "node dist",
     "test": "tsx",
-    "test:setup": "pnpm i polkadot-api && node src/scripts/setup-chains.js"
+    "setup": "ts-node src/scripts/check-papi.ts && pnpm i polkadot-api && ts-node src/scripts/setup-chains.ts",
+    "test:key-types": "mocha -r ts-node/register test/config-tests/key-types.test.ts",
+    "test:integration": "INTEGRATION=true mocha -r ts-node/register test/interaction-tests/key-types-integration.test.ts"
   },
   "engines": {
     "node": "22"
@@ -54,12 +56,18 @@
     "node": "22.12.0"
   },
   "devDependencies": {
+    "@types/chai": "^5.2.1",
     "@types/express": "^4.17.17",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^22.12.0",
+    "@types/sinon": "^17.0.4",
+    "chai": "4.3.10",
     "esbuild": "^0.24.2",
+    "mocha": "^11.1.0",
     "nodemon": "^3.1.9",
     "prettier": "^3.4.2",
-    "ts-node": "^10.9.1",
+    "sinon": "^20.0.0",
+    "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5.0.4"
   }

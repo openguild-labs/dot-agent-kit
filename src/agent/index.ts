@@ -1,10 +1,12 @@
-import { Chain, substrateApi } from '../tools/substrace';
-import { ChainConfig, ApiConnection, AgentConfig } from '../types/typeAgent';
-import { getPolkadotSigner } from 'polkadot-api/signer';
+import { ChainConfig, ApiConnection, AgentConfig, KeyType } from '../types/typeAgent';
+import { substrateApi } from '../tools/substrace';
 import { ed25519 } from '@noble/curves/ed25519';
-import * as ss58 from '@subsquid/ss58';
-import { initializeDefaultChainDescriptors } from '../chain/chainInit';
+import { sr25519CreateDerive, ed25519CreateDerive } from '@polkadot-labs/hdkd';
+import { entropyToMiniSecret, mnemonicToEntropy } from '@polkadot-labs/hdkd-helpers';
 import { chainDescriptorRegistry } from '../chain/chainRegistry';
+import { initializeDefaultChainDescriptors } from '../chain/chainInit';
+import * as ss58 from '@subsquid/ss58';
+import { getPolkadotSigner } from 'polkadot-api/signer';
 
 /**
  * # PolkadotAgentKit
@@ -81,6 +83,12 @@ export class PolkadotAgentKit {
   /** Private key bytes for the delegate account */
   private delegatePrivateKey: Uint8Array | null = null;
 
+  /** Key type for the main account */
+  private mainKeyType: KeyType = 'Ed25519';
+
+  /** Key type for the delegate account */
+  private delegateKeyType: KeyType = 'Ed25519';
+
   /** Flag indicating if initialization is complete */
   private initialized: boolean = false;
   
@@ -91,33 +99,95 @@ export class PolkadotAgentKit {
    * Creates a new PolkadotAgentKit instance
    * 
    * @param config - The agent configuration
-   * @param config.privateKey - The private key for the main account (optional if set in PRIVATE_KEY env var)
+   * @param config.privateKey - The private key for the main account (optional if mnemonic is provided or set in PRIVATE_KEY env var)
+   * @param config.mnemonic - The mnemonic phrase for the main account (optional if privateKey is provided)
+   * @param config.derivationPath - The derivation path for the mnemonic (default: "")
+   * @param config.keyType - The key type to use (default: Ed25519)
    * @param config.delegatePrivateKey - An optional delegate account private key
+   * @param config.delegateMnemonic - An optional delegate mnemonic phrase
+   * @param config.delegateDerivationPath - The derivation path for the delegate mnemonic (default: "")
+   * @param config.delegateKeyType - The key type for the delegate (defaults to main keyType)
    * @param config.chains - Array of chain configurations to connect to
    * 
-   * @throws Error if no private key is available
+   * @throws Error if no private key or mnemonic is available
    */
   constructor(config: AgentConfig) {
-    /* Get private key from config or env variable */
-    const privateKeyStr = config.privateKey || process.env.PRIVATE_KEY;
-    if (!privateKeyStr) throw new Error("Main private key is required");
+    /* Set key types from config or use defaults */
+    this.mainKeyType = config.keyType || 'Ed25519';
+    this.delegateKeyType = config.delegateKeyType || this.mainKeyType;
     
-    /* Convert private key to proper format using PAPI methods */
-    this.mainPrivateKey = this.normalizePrivateKey(privateKeyStr);
-    const mainPublicKey = ed25519.getPublicKey(this.mainPrivateKey);
+    /* Handle main account - either from private key or mnemonic */
+    if (config.privateKey || process.env.PRIVATE_KEY) {
+      /* Get private key from config or env variable */
+      const privateKeyStr = config.privateKey || process.env.PRIVATE_KEY;
+      if (!privateKeyStr) throw new Error("Main private key is required if no mnemonic is provided");
+      
+      /* Convert private key to proper format */
+      this.mainPrivateKey = this.normalizePrivateKey(privateKeyStr);
+    } else if (config.mnemonic) {
+      /* Generate private key from mnemonic */
+      this.mainPrivateKey = this.generatePrivateKeyFromMnemonic(
+        config.mnemonic, 
+        config.derivationPath || "", 
+        this.mainKeyType
+      );
+    } else {
+      throw new Error("Either privateKey or mnemonic is required for the main account");
+    }
     
-    /* Generate address using ss58 codec (standard PAPI pattern) */
+    /* Generate public key based on key type */
+    const mainPublicKey = this.getMainPublicKey();
+    if (!mainPublicKey) throw new Error("Failed to generate main public key");
+    
+    /* Generate address using ss58 codec */
     this.address = ss58.codec('substrate').encode(mainPublicKey);
 
-    /* Handle delegate key if provided */
+    /* Handle delegate key if provided - either from private key or mnemonic */
     if (config.delegatePrivateKey) {
       this.delegatePrivateKey = this.normalizePrivateKey(config.delegatePrivateKey);
-      const delegatePublicKey = ed25519.getPublicKey(this.delegatePrivateKey);
-      this.delegateAddress = ss58.codec('substrate').encode(delegatePublicKey);
+    } else if (config.delegateMnemonic) {
+      this.delegatePrivateKey = this.generatePrivateKeyFromMnemonic(
+        config.delegateMnemonic,
+        config.delegateDerivationPath || "",
+        this.delegateKeyType
+      );
+    }
+    
+    /* Generate delegate address if we have a delegate key */
+    if (this.delegatePrivateKey) {
+      const delegatePublicKey = this.getDelegatePublicKey();
+      if (delegatePublicKey) {
+        this.delegateAddress = ss58.codec('substrate').encode(delegatePublicKey);
+      }
     }
 
     /* Start chain initialization */
     this.initPromise = this.initialize(config.chains);
+  }
+
+  /**
+   * Generate a private key from a mnemonic phrase
+   * 
+   * @param mnemonic - The mnemonic phrase
+   * @param path - The derivation path (default: "")
+   * @param keyType - The key type (Sr25519 or Ed25519)
+   * @returns The generated private key as Uint8Array
+   */
+  private generatePrivateKeyFromMnemonic(mnemonic: string, path: string = "", keyType: KeyType): Uint8Array {
+    const entropy = mnemonicToEntropy(mnemonic);
+    const miniSecret = entropyToMiniSecret(entropy);
+    
+    if (keyType === 'Sr25519') {
+      const derive = sr25519CreateDerive(miniSecret);
+      const keyPair = derive(path);
+      // Use the path in derive and store the result
+      return keyPair.sign(new Uint8Array(32)).slice(0, 32); // Create key from signature
+    } else {
+      const derive = ed25519CreateDerive(miniSecret);
+      const keyPair = derive(path);
+      // Use the path in derive and store the result
+      return keyPair.sign(new Uint8Array(32)).slice(0, 32); // Create key from signature
+    }
   }
 
   /**
@@ -262,7 +332,16 @@ export class PolkadotAgentKit {
     if (!this.mainPrivateKey) {
       throw new Error("Main private key not available");
     }
-    return ed25519.getPublicKey(this.mainPrivateKey);
+    
+    if (this.mainKeyType === 'Sr25519') {
+      // For Sr25519, use the derive function to get the public key
+      const derive = sr25519CreateDerive(this.mainPrivateKey as Uint8Array);
+      const keyPair = derive("");
+      return keyPair.publicKey;
+    } else {
+      // For Ed25519, use the ed25519 lib
+      return ed25519.getPublicKey(this.mainPrivateKey);
+    }
   }
 
   /**
@@ -289,7 +368,16 @@ export class PolkadotAgentKit {
     if (!this.delegatePrivateKey) {
       return undefined;
     }
-    return ed25519.getPublicKey(this.delegatePrivateKey);
+    
+    if (this.delegateKeyType === 'Sr25519') {
+      // For Sr25519, use the derive function to get the public key
+      const derive = sr25519CreateDerive(this.delegatePrivateKey as Uint8Array);
+      const keyPair = derive("");
+      return keyPair.publicKey;
+    } else {
+      // For Ed25519, use the ed25519 lib
+      return ed25519.getPublicKey(this.delegatePrivateKey);
+    }
   }
   
   /**
@@ -314,11 +402,25 @@ export class PolkadotAgentKit {
     }
     
     const publicKey = this.getMainPublicKey();
-    return getPolkadotSigner(
-      publicKey as Uint8Array,
-      "Ed25519",
-      (input: Uint8Array) => ed25519.sign(input, this.mainPrivateKey as Uint8Array)
-    );
+    
+    if (this.mainKeyType === 'Sr25519') {
+      // For Sr25519, use the derive function to create a signer
+      const derive = sr25519CreateDerive(this.mainPrivateKey as Uint8Array);
+      const keyPair = derive("");
+      
+      return getPolkadotSigner(
+        publicKey as Uint8Array,
+        "Sr25519",
+        keyPair.sign
+      );
+    } else {
+      // For Ed25519, use the ed25519 lib
+      return getPolkadotSigner(
+        publicKey as Uint8Array,
+        "Ed25519",
+        (input: Uint8Array) => ed25519.sign(input, this.mainPrivateKey as Uint8Array)
+      );
+    }
   }
   
   /**
@@ -344,10 +446,24 @@ export class PolkadotAgentKit {
     }
     
     const publicKey = this.getDelegatePublicKey() as Uint8Array;
-    return getPolkadotSigner(
-      publicKey,
-      "Ed25519",
-      (input: Uint8Array) => ed25519.sign(input, this.delegatePrivateKey as Uint8Array)
-    );
+    
+    if (this.delegateKeyType === 'Sr25519') {
+      // For Sr25519, use the derive function to create a signer
+      const derive = sr25519CreateDerive(this.delegatePrivateKey as Uint8Array);
+      const keyPair = derive("");
+      
+      return getPolkadotSigner(
+        publicKey,
+        "Sr25519",
+        keyPair.sign
+      );
+    } else {
+      // For Ed25519, use the ed25519 lib
+      return getPolkadotSigner(
+        publicKey,
+        "Ed25519",
+        (input: Uint8Array) => ed25519.sign(input, this.delegatePrivateKey as Uint8Array)
+      );
+    }
   }
 }
