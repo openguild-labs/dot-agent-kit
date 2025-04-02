@@ -22,8 +22,17 @@
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
-      "resolveJsonModule": true
+      "resolveJsonModule": true,
+      "baseUrl": "./",
+      "paths": {
+        "@agent/*": ["src/agent/*"],
+        "@tools": ["src/tools/index"],
+        "@langchain/xcm/*": ["src/langchain/xcm/*"],
+        "@langchain/balance/*": ["src/langchain/balance/*"],
+        "@langchain/proxy/*": ["src/langchain/proxy/*"],
+        "@chain/*": ["src/chain/*"]
+      }
     },
     "include": ["./**/*"],
-    "exclude": ["node_modules", "dist", "**/*.test.ts"]
+    "exclude": ["node_modules", "dist", "**/*.test.ts"], 
 }

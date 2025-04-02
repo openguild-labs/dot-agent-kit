@@ -1,14 +1,14 @@
 import dotenv from 'dotenv';
 import { Telegraf } from 'telegraf';
 import { ChatOpenAI } from '@langchain/openai';
-import { PolkadotAgentKit } from '../../src/agent/index';
-import { PolkadotLangTools } from '../../src/tools/index';
+import { PolkadotAgentKit } from '@agent/index';
+import { PolkadotLangTools } from '@tools';
 import { Tool } from '@langchain/core/tools';
 import { setupHandlers } from './handlers';
-import { xcmTransfer } from '../../src/langchain/xcm/index';
-import { checkBalanceTool } from '../../src/langchain/balance/index';
-import { checkProxiesTool } from '../../src/langchain/proxy/index';
-import { ChainInfo, ChainMap } from '../../src/chain/chainMap';
+import { xcmTransfer } from '@langchain/xcm/index';
+import { checkBalanceTool } from '@langchain/balance/index';
+import { checkProxiesTool } from '@langchain/proxy/index';
+import { ChainInfo, ChainMap } from '@chain/chainMap';
 
 dotenv.config();
 
