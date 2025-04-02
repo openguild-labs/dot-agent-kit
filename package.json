@@ -10,7 +10,7 @@
     "build": "esbuild index=./src --bundle --minify --outdir=dist --packages=external --platform=node",
     "start": "node dist",
     "test": "tsx",
-    "setup": "ts-node src/scripts/check-papi.ts && pnpm i polkadot-api && ts-node src/scripts/setup-chains.ts",
+    "setup": "ts-node /scripts/check-papi.ts && pnpm i polkadot-api && ts-node scripts/setup-chains.ts",
     "test:key-types": "mocha -r ts-node/register test/config-tests/key-types.test.ts",
     "test:integration": "INTEGRATION=true mocha -r ts-node/register test/interaction-tests/key-types-integration.test.ts"
   },
