@@ -11,8 +11,8 @@
     "start": "node dist",
     "test": "tsx",
     "setup": "ts-node /scripts/check-papi.ts && pnpm i polkadot-api && ts-node scripts/setup-chains.ts",
-    "test:key-types": "mocha -r ts-node/register test/config-tests/key-types.test.ts",
-    "test:integration": "INTEGRATION=true mocha -r ts-node/register test/interaction-tests/key-types-integration.test.ts"
+    "test:key-types": "mocha -r ts-node/register tests/config-tests/key-types.test.ts",
+    "test:integration": "INTEGRATION=true mocha -r ts-node/register tests/interaction-tests/key-types-integration.test.ts"
   },
   "engines": {
     "node": "22"
