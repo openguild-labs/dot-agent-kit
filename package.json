@@ -1,7 +1,7 @@
 {
   "name": "polkadot-agent-kit",
   "version": "1.0.0",
-  "description": "",
+  "description": "AI Agent Kit for Polkadot",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
