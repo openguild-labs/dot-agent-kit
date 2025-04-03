@@ -1,14 +1,9 @@
-import { defineConfig } from "eslint/config";
-import js from "@eslint/js";
+// @ts-check
+import antfu from '@antfu/eslint-config'
 
-export default defineConfig([
-	{ files: ["**/*.js"], plugins: { js }, extends: ["js/recommended"] },
-
-	{
-		rules: {
-			"no-unused-vars": "warn",
-			"no-undef": "warn",
-      "no-console": "warn",
-		},
-	},
-]);
+export default antfu(
+  {
+    type: 'lib',
+    pnpm: true,
+  },
+)
