@@ -26,11 +26,12 @@
       "baseUrl": "./",
       "paths": {
         "@agent/*": ["src/agent/*"],
-        "@tools": ["src/tools/index"],
-        "@langchain/xcm/*": ["src/langchain/xcm/*"],
-        "@langchain/balance/*": ["src/langchain/balance/*"],
-        "@langchain/proxy/*": ["src/langchain/proxy/*"],
-        "@chain/*": ["src/chain/*"]
+        "@tools/*": ["src/tools/*"],
+        "@langchain/*": ["src/langchain/*"],
+        "@chain/*": ["src/chain/*"],
+        "@types/*": ["src/types/*"],
+        "@config": ["src/config"],
+        "@utils/*": ["src/utils/*"]
       }
     },
     "include": ["./**/*"],
