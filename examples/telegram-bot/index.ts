@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { TelegramBot } from './TelegramBot';
-import {defaultChainMap} from '../../../src/chain/chainMap';
+import {defaultChainMap} from '../../src/chain/chainMap';
 
 dotenv.config();
 

@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@agent/*": ["src/agent/*"],
+      "@chain/*": ["src/chain/*"],
+      "@langchain/*": ["src/langchain/*"],
+      "@tools/*": ["src/tools/*"],
+      "@types/*": ["src/types/*"]
+    }
+  }
+} 

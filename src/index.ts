@@ -4,6 +4,7 @@
 export * from './agent';
 export * from './chain';
 export * from './tools';
+import 'module-alias/register';
 
 // Export types selectively to avoid naming conflicts
 export { ApiConnection, AgentConfig } from './types/typeAgent';

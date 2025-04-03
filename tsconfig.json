@@ -22,8 +22,18 @@
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
-      "resolveJsonModule": true
+      "resolveJsonModule": true,
+      "baseUrl": "./",
+      "paths": {
+        "@agent/*": ["src/agent/*"],
+        "@tools/*": ["src/tools/*"],
+        "@langchain/*": ["src/langchain/*"],
+        "@chain/*": ["src/chain/*"],
+        "@types/*": ["src/types/*"],
+        "@config": ["src/config"],
+        "@utils/*": ["src/utils/*"]
+      }
     },
     "include": ["./**/*"],
-    "exclude": ["node_modules", "dist", "**/*.test.ts"]
+    "exclude": ["node_modules", "dist", "**/*.test.ts"], 
 }
