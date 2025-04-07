@@ -4,14 +4,14 @@
   "version": "1.0.0",
   "packageManager": "pnpm@10.6.2",
   "description": "AI Agent Kit for Polkadot",
-  "author": "Your Name",
+  "author": "Open Guild Team",
   "license": "MIT",
-  "homepage": "https://github.com/your-username/polkadot-agent-kit#readme",
+  "homepage": "https://github.com/openguild-labs/dot-agent-kit#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/polkadot-agent-kit.git"
+    "url": "git+https://github.com/openguild-labs/dot-agent-kit.git"
   },
-  "bugs": "https://github.com/your-username/polkadot-agent-kit/issues",
+  "bugs": "https://github.com/openguild-labs/dot-agent-kit/issues",
   "keywords": [
     "polkadot",
     "ai",
