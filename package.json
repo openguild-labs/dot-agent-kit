@@ -9,7 +9,7 @@
     "lint:fix": "eslint --fix .",
     "build": "esbuild index=./src --bundle --minify --outdir=dist --packages=external --platform=node",
     "start": "node dist",
-    "setup": "ts-node /scripts/check-papi.ts && pnpm i polkadot-api && ts-node scripts/setup-chains.ts",
+    "setup": "pnpm i @polkadot-api/descriptors -w && ts-node ./scripts/check-papi.ts && pnpm i polkadot-api -w && ts-node scripts/setup-chains.ts",
     "test:key-types": "mocha -r ts-node/register tests/config-tests/key-types.test.ts",
     "test:integration": "INTEGRATION=true mocha -r ts-node/register tests/interaction-tests/key-types-integration.test.ts"
   },
