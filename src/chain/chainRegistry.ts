@@ -1,4 +1,4 @@
-import { ChainConfig, CHAINS } from '../types/xcmTypes';
+import { ChainConfig, CHAINS } from "../types/xcmTypes";
 
 // Type definitions for chain registry
 export type ChainName = string;
@@ -79,8 +79,7 @@ export class ChainRegistry {
    * @returns The chain configuration or undefined if not found
    */
   getChain(name: ChainName): ChainConfig | undefined {
-    return this.chains[name.toLowerCase()] || 
-           this.chains[name]; 
+    return this.chains[name.toLowerCase()] || this.chains[name];
   }
 
   /**
@@ -89,7 +88,7 @@ export class ChainRegistry {
    * @returns True if the chain exists
    */
   isValidChain(name: ChainName): boolean {
-    return name.toLowerCase() in this.chains || name in this.chains; 
+    return name.toLowerCase() in this.chains || name in this.chains;
   }
 
   /**
@@ -101,5 +100,4 @@ export class ChainRegistry {
     const chain = this.getChain(name);
     return chain?.type === CHAINS.RELAY_CHAIN;
   }
-  
 }

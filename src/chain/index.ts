@@ -1,10 +1,10 @@
 // Export all chain-related functionality
-export * from './chainRegistry';
-export * from './chainInit';
-export * from './chainMap';
+export * from "./chainRegistry";
+export * from "./chainInit";
+export * from "./chainMap";
 
 // Import the initialization function for convenient access
-import { initializeDefaultChainDescriptors } from './chainInit';
+import { initializeDefaultChainDescriptors } from "./chainInit";
 
 // Initialize default chain descriptors automatically when this module is imported
 // This makes the SDK work automatically without manual initialization
@@ -15,4 +15,4 @@ try {
   })();
 } catch (error) {
   throw error;
-} 
+}
