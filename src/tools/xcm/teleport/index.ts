@@ -7,8 +7,8 @@ import {
   XcmV3Junction,
 } from "@polkadot-api/descriptors"
 
-import { relayChainApi } from "../../../../test/config-tests/relay-chain"
-import { PARACHAIN_ID, paraChainApi } from "../../../../test/config-tests/para-chain"
+import { relayChainApi } from "../../../types/relay-chain"
+import { PARACHAIN_ID, paraChainApi } from "../../../types/para-chain"
 
 const encodeAccount = AccountId().enc
 
