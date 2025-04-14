@@ -56,7 +56,7 @@ async function attemptReconnection(endpoint: string): Promise<boolean> {
 		connection.client = client;
 		connection.isReconnecting = false;
 		
-		console.log(`✅ Reconnected successfully to ${endpoint}`);
+		
 		return true;
 	} catch (error) {
 		console.error(`❌ Failed to reconnect to ${endpoint}:`, error);
@@ -122,7 +122,7 @@ export async function substrateApi(config: SubstrateConnectorConfig, chain: Chai
 			// Destroy the client
 			client.destroy();
 			
-			console.log(`Disconnected from ${config.url}`);
+			
 		} catch (error) {
 			console.error(`Error during disconnect from ${config.url}:`, error);
 		}

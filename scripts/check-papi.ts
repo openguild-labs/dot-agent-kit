@@ -13,7 +13,7 @@ interface PackageJson {
 
 /* Check if the .papi directory exists */
 if (!fs.existsSync(papiDir)) {
-  console.log('❌ The .papi directory does not exist. Removing dependency @polkadot-api/descriptors from package.json...');
+  
   
   try {
     /* Read the contents of the package.json file */
@@ -25,17 +25,17 @@ if (!fs.existsSync(papiDir)) {
       
       /* Write back to the package.json file */
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-      console.log('✅ Successfully removed dependency @polkadot-api/descriptors!');
+      
     } else {
-      console.log('ℹ️ Dependency @polkadot-api/descriptors not found in package.json.');
+      
     }
   } catch (error) {
     console.error('❌ Error processing package.json file:', error);
     process.exit(1);
   }
 } else {
-  console.log('✅ The .papi directory exists, keeping the current configuration.');
+  
 }
 
 /* Continue the installation process */
-console.log('ℹ️ Continuing the installation process...'); 
+ 
