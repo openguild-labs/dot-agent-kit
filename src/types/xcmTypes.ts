@@ -1,7 +1,7 @@
 export enum CHAINS {
-  RELAY_CHAIN = 'RELAY_CHAIN',
-  SYSTEM_PARACHAIN = 'SYSTEM_PARACHAIN',
-  PARACHAIN = 'PARACHAIN'
+  RELAY_CHAIN = "RELAY_CHAIN",
+  SYSTEM_PARACHAIN = "SYSTEM_PARACHAIN",
+  PARACHAIN = "PARACHAIN",
 }
 
 export interface ChainConfig {
@@ -9,7 +9,7 @@ export interface ChainConfig {
   type: CHAINS;
   parachainId?: number;
   endpoint: string;
-  xcmPallet: 'xcmPallet' | 'polkadotXcm';
+  xcmPallet: "xcmPallet" | "polkadotXcm";
 }
 
 export interface XcmTransferParams {

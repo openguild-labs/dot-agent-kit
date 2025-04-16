@@ -31,7 +31,6 @@ export async function initializeSDK(options?: {
     // Check if descriptors are already initialized
     if (Object.keys(chainDescriptorRegistry.getAllDescriptors()).length > 0) {
       if (!options?.silent) {
-        
       }
       return;
     }
@@ -40,7 +39,6 @@ export async function initializeSDK(options?: {
     await initializeDefaultChainDescriptors();
 
     if (!options?.silent) {
-      
     }
   } catch (error) {
     console.error("❌ Failed to initialize Polkadot Agent Kit SDK:", error);

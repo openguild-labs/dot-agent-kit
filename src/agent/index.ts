@@ -59,13 +59,13 @@ import { getPolkadotSigner } from "polkadot-api/signer";
  *
  *     // Sign and submit transaction
  *     const result = await tx.signAndSend(agent.getMainPublicKey());
- *     
- *     
+ *
+ *
  *     // Use the tools helper
  *     const tools = new PolkadotLangTools(agent);
  *     const balance = await tools.checkBalance('westend2');
- *     
- *     
+ *
+ *
  *     // Always disconnect when done
  *     agent.disconnectAll();
  *   } catch (error) {
@@ -222,8 +222,9 @@ export class PolkadotAgentKit {
   private async initialize(chains: ChainConfig[]): Promise<void> {
     try {
       // Initialize chain descriptors if not already done by the auto-import
-      if (Object.keys(chainDescriptorRegistry.getAllDescriptors()).length === 0) {
-        
+      if (
+        Object.keys(chainDescriptorRegistry.getAllDescriptors()).length === 0
+      ) {
         await initializeDefaultChainDescriptors();
       }
 
@@ -232,7 +233,6 @@ export class PolkadotAgentKit {
 
       // Mark initialization as complete
       this.initialized = true;
-      
     } catch (error) {
       console.error("❌ Failed to initialize PolkadotAgentKit:", error);
       throw error;
@@ -305,7 +305,7 @@ export class PolkadotAgentKit {
    *
    * // Use API for queries
    * const balance = await api.query.System.Account.getValue(someAddress);
-   * 
+   *
    * ```
    */
   async getConnection(chainName: string): Promise<ApiConnection> {
@@ -351,8 +351,8 @@ export class PolkadotAgentKit {
    * const publicKey = agent.getMainPublicKey();
    *
    * // Use it for signing or verification
-   * 
-   * 
+   *
+   *
    * // Use it with a transaction
    * const tx = api.tx.balances.transfer(destinationAddress, amount);
    * await tx.signAndSend(publicKey);
@@ -386,8 +386,8 @@ export class PolkadotAgentKit {
    *
    * // Check if delegate key exists before using
    * if (delegateKey) {
-   *   
-   *   
+   *
+   *
    *   // Use it with a transaction
    *   const tx = api.tx.balances.transfer(destinationAddress, amount);
    *   await tx.signAndSend(delegateKey);

@@ -1,16 +1,16 @@
-import { SS58String, Binary, AccountId, Enum } from "polkadot-api"
+import { SS58String, Binary, AccountId, Enum } from "polkadot-api";
 import {
   XcmV3Junctions,
   XcmV3MultiassetAssetId,
   XcmV3MultiassetFungibility,
   XcmV3WeightLimit,
   XcmV3Junction,
-} from "@polkadot-api/descriptors"
+} from "@polkadot-api/descriptors";
 
-import { relayChainApi } from "../../../types/relay-chain"
-import { PARACHAIN_ID, paraChainApi } from "../../../types/para-chain"
+import { relayChainApi } from "../../../types/relay-chain";
+import { PARACHAIN_ID, paraChainApi } from "../../../types/para-chain";
 
-const encodeAccount = AccountId().enc
+const encodeAccount = AccountId().enc;
 
 const getBeneficiary = (address: SS58String) =>
   Enum("V3", {
@@ -21,7 +21,7 @@ const getBeneficiary = (address: SS58String) =>
         id: Binary.fromBytes(encodeAccount(address)),
       }),
     ),
-  })
+  });
 
 const getNativeAsset = (amount: bigint, parents: 1 | 0) =>
   Enum("V3", [
@@ -32,7 +32,7 @@ const getNativeAsset = (amount: bigint, parents: 1 | 0) =>
       }),
       fun: XcmV3MultiassetFungibility.Fungible(amount),
     },
-  ])
+  ]);
 
 export const teleportToParaChain = (address: SS58String, amount: bigint) =>
   relayChainApi.tx.XcmPallet.limited_teleport_assets({
@@ -44,7 +44,7 @@ export const teleportToParaChain = (address: SS58String, amount: bigint) =>
     assets: getNativeAsset(amount, 0),
     fee_asset_item: 0,
     weight_limit: XcmV3WeightLimit.Unlimited(),
-  })
+  });
 
 export const teleportToRelayChain = (address: SS58String, amount: bigint) =>
   paraChainApi.tx.PolkadotXcm.limited_teleport_assets({
@@ -53,7 +53,7 @@ export const teleportToRelayChain = (address: SS58String, amount: bigint) =>
       interior: XcmV3Junctions.Here(),
     }),
     beneficiary: getBeneficiary(address),
-    assets: getNativeAsset(amount,1),
+    assets: getNativeAsset(amount, 1),
     fee_asset_item: 0,
     weight_limit: XcmV3WeightLimit.Unlimited(),
-  })
+  });

@@ -1,13 +1,17 @@
-import { tool } from '@langchain/core/tools';
-import { z } from 'zod';
-import { PolkadotLangTools } from '../../tools/index';
+import { tool } from "@langchain/core/tools";
+import { z } from "zod";
+import { PolkadotLangTools } from "../../tools/index";
 
 export const checkBalanceTool = (tools: PolkadotLangTools) => {
   return tool({
     name: "check_balance",
     description: "Check balance of the agent's account on a specific chain",
     schema: z.object({
-      chain: z.string().describe("The chain name to check balance on (e.g., 'polkadot', 'kusama', 'westend', 'westend_asset_hub', etc.)"),
+      chain: z
+        .string()
+        .describe(
+          "The chain name to check balance on (e.g., 'polkadot', 'kusama', 'westend', 'westend_asset_hub', etc.)",
+        ),
     }),
     func: async ({ chain }) => {
       try {
