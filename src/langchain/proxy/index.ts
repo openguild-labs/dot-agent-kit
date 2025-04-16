@@ -65,13 +65,13 @@ export const checkProxiesTool = (
     {
       name: "checkProxies",
       description:
-        "Kiểm tra tất cả tài khoản proxy cho tài khoản mặc định trên chain được chỉ định",
+        "Check all proxy accounts for the default account on the specified chain",
       schema: z.object({
         chainName: z
           .string()
           .optional()
           .describe(
-            "Tên của chain để kiểm tra proxy (nếu không cung cấp, sẽ sử dụng chain đầu tiên trong chainMap)",
+            "The name of the chain to check proxies (if not provided, the first chain in chainMap will be used)",
           ),
       }),
     },
