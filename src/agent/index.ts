@@ -59,12 +59,12 @@ import { getPolkadotSigner } from "polkadot-api/signer";
  *
  *     // Sign and submit transaction
  *     const result = await tx.signAndSend(agent.getMainPublicKey());
- *     console.log('Transaction hash:', result.hash);
+ *
  *
  *     // Use the tools helper
  *     const tools = new PolkadotLangTools(agent);
  *     const balance = await tools.checkBalance('westend2');
- *     console.log('WND Balance:', balance);
+ *
  *
  *     // Always disconnect when done
  *     agent.disconnectAll();
@@ -225,7 +225,6 @@ export class PolkadotAgentKit {
       if (
         Object.keys(chainDescriptorRegistry.getAllDescriptors()).length === 0
       ) {
-        console.log("⚠️ No chain descriptors found, initializing them now...");
         await initializeDefaultChainDescriptors();
       }
 
@@ -234,7 +233,6 @@ export class PolkadotAgentKit {
 
       // Mark initialization as complete
       this.initialized = true;
-      console.log("🔄 PolkadotAgentKit initialized successfully");
     } catch (error) {
       console.error("❌ Failed to initialize PolkadotAgentKit:", error);
       throw error;
@@ -307,7 +305,7 @@ export class PolkadotAgentKit {
    *
    * // Use API for queries
    * const balance = await api.query.System.Account.getValue(someAddress);
-   * console.log('Balance:', balance.data.free.toString());
+   *
    * ```
    */
   async getConnection(chainName: string): Promise<ApiConnection> {
@@ -353,7 +351,7 @@ export class PolkadotAgentKit {
    * const publicKey = agent.getMainPublicKey();
    *
    * // Use it for signing or verification
-   * console.log('Main public key:', publicKey);
+   *
    *
    * // Use it with a transaction
    * const tx = api.tx.balances.transfer(destinationAddress, amount);
@@ -388,7 +386,7 @@ export class PolkadotAgentKit {
    *
    * // Check if delegate key exists before using
    * if (delegateKey) {
-   *   console.log('Delegate public key:', delegateKey);
+   *
    *
    *   // Use it with a transaction
    *   const tx = api.tx.balances.transfer(destinationAddress, amount);

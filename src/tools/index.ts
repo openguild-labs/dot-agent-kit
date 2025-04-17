@@ -1,4 +1,4 @@
-import { PolkadotAgentKit } from '../agent/index';
+import { PolkadotAgentKit } from "../agent/index";
 
 export class PolkadotLangTools {
   private agent: PolkadotAgentKit;
@@ -14,38 +14,48 @@ export class PolkadotLangTools {
    */
   async checkBalance(chainName: string): Promise<number> {
     const { api } = await this.agent.getConnection(chainName);
-    const accountInfo = await api.query.System.Account.getValue(this.agent.address);
+    const accountInfo = await api.query.System.Account.getValue(
+      this.agent.address,
+    );
 
     const planckBalance = BigInt(accountInfo.data.free.toString());
-    const wndBalance = Number(planckBalance) / Math.pow(10, 12); 
+    const wndBalance = Number(planckBalance) / Math.pow(10, 12);
 
     return wndBalance;
   }
 
   async checkProxies(chainName: string): Promise<any[]> {
     try {
-        const { api } = await this.agent.getConnection(chainName);
-        
-        /* Find the proxy pallet dynamically by checking common naming patterns */
-        const proxyPallets = ['Proxy', 'proxy', 'ProxyPallet'];
-        const proxyPallet = proxyPallets.find(name => 
-          (api.query[name as keyof typeof api.query] as any)?.Proxies !== undefined
-        );
-        
-        if (!proxyPallet) {
-            return [{ error: `No proxy pallet found on chain ${chainName}` }];
-        }
-        
-        const proxiesInfo = await (api.query[proxyPallet as keyof typeof api.query] as any).Proxies.getValue(this.agent.address);
-        const [proxies] = proxiesInfo;
+      const { api } = await this.agent.getConnection(chainName);
 
-        if (!proxies || proxies.length === 0) {
-            return [];
-        }
-        return proxies;
+      /* Find the proxy pallet dynamically by checking common naming patterns */
+      const proxyPallets = ["Proxy", "proxy", "ProxyPallet"];
+      const proxyPallet = proxyPallets.find(
+        (name) =>
+          (api.query[name as keyof typeof api.query] as any)?.Proxies !==
+          undefined,
+      );
+
+      if (!proxyPallet) {
+        return [{ error: `No proxy pallet found on chain ${chainName}` }];
+      }
+
+      const proxiesInfo = await (
+        api.query[proxyPallet as keyof typeof api.query] as any
+      ).Proxies.getValue(this.agent.address);
+      const [proxies] = proxiesInfo;
+
+      if (!proxies || proxies.length === 0) {
+        return [];
+      }
+      return proxies;
     } catch (error) {
-        console.error(`Error checking proxies on ${chainName}:`, error);
-        return [{ error: `Failed to check proxies: ${error instanceof Error ? error.message : String(error)}` }];
+      console.error(`Error checking proxies on ${chainName}:`, error);
+      return [
+        {
+          error: `Failed to check proxies: ${error instanceof Error ? error.message : String(error)}`,
+        },
+      ];
     }
   }
 }

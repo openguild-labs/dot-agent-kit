@@ -1,9 +1,8 @@
 import tseslint from '@typescript-eslint/eslint-plugin';
 import prettier from 'eslint-config-prettier';
-
 export default [
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.ts'],
     ignores: ['**/node_modules/**', '**/dist/**', '**/build/**'],
     languageOptions: {
       parser: require('@typescript-eslint/parser'),

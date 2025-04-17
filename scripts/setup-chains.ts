@@ -32,7 +32,7 @@ const rl = readline.createInterface({
 function setupPapiDirectory(): boolean {
   try {
     fs.mkdirSync(path.resolve(process.cwd(), './.papi/descriptors'), { recursive: true });
-    console.log('✅ The .papi/descriptors directory has been created or already exists');
+    
     return true;
   } catch (error) {
     console.error('❌ Error creating directory:', error);
@@ -47,7 +47,7 @@ function saveConfig(chains: Chain[], configPath: string): boolean {
   try {
     const config = { chains };
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-    console.log(`✅ Configuration has been saved to ${configPath}`);
+    
     return true;
   } catch (error) {
     console.error('❌ Error saving configuration:', error);
@@ -76,11 +76,11 @@ function loadConfig(configPath: string): Chain[] {
  */
 function installChain(chain: Chain): boolean {
   try {
-    console.log(`🔄 Installing chain ${chain.id} with name ${chain.name}...`);
+    
     const command = `npx papi add ${chain.id} -n ${chain.name}`;
-    console.log(`$ ${command}`);
+    
     execSync(command, { stdio: 'inherit' });
-    console.log(`✅ Successfully installed chain ${chain.id}`);
+    
     return true;
   } catch (error) {
     console.error(`❌ Error installing chain ${chain.id}:`, error instanceof Error ? error.message : String(error));
@@ -115,11 +115,11 @@ Examples:
   }
 
   if (args.includes('--list')) {
-    console.log('\nList of common chains:');
+    
     COMMON_CHAINS.forEach((chain, index) => {
-      console.log(`  ${index + 1}. ${chain.id} (${chain.name}): ${chain.description}`);
+      
     });
-    console.log('');
+    
     rl.close();
     return;
   }
@@ -182,15 +182,15 @@ Examples:
   }
 
   /* Interactive mode */
-  console.log('\n🔧 Welcome to the Polkadot chain setup tool!\n');
+  
   
   /* Show main menu */
   function showMainMenu(): void {
-    console.log('\nChoose an option:');
-    console.log('1. Install common chains');
-    console.log('2. Add custom chain');
-    console.log('3. Install from configuration file');
-    console.log('4. Exit');
+    
+    
+    
+    
+    
     
     rl.question('\nEnter your choice (1-4): ', async (choice) => {
       switch (choice) {
@@ -204,11 +204,11 @@ Examples:
           await installFromConfig();
           break;
         case '4':
-          console.log('\n👋 Thank you for using the Polkadot chain setup tool!');
+          
           rl.close();
           break;
         default:
-          console.log('❌ Invalid choice, please try again.');
+          
           showMainMenu();
       }
     });
@@ -216,11 +216,11 @@ Examples:
 
   /* Show common chains menu */
   async function showCommonChainsMenu(): Promise<void> {
-    console.log('\nList of common chains:');
+    
     COMMON_CHAINS.forEach((chain, index) => {
-      console.log(`${index + 1}. ${chain.id} (${chain.name}): ${chain.description}`);
+      
     });
-    console.log('0. Go back');
+    
     
     rl.question('\nEnter the numbers of the chains you want to install (comma-separated, or enter "all" to install all): ', async (input) => {
       if (input === '0') {
@@ -240,14 +240,14 @@ Examples:
       }
       
       if (selectedChains.length === 0) {
-        console.log('❌ No chains selected.');
+        
         showCommonChainsMenu();
         return;
       }
       
-      console.log('\nYou have selected the following chains:');
+      
       selectedChains.forEach(chain => {
-        console.log(`- ${chain.id} (${chain.name}): ${chain.description}`);
+        
       });
       
       rl.question('\nDo you want to proceed with the installation? (y/n): ', async (confirm) => {
@@ -263,7 +263,7 @@ Examples:
             if (answer.toLowerCase() === 'y') {
               showMainMenu();
             } else {
-              console.log('\n👋 Thank you for using the Polkadot chain setup tool!');
+              
               rl.close();
             }
           });
@@ -282,14 +282,14 @@ Examples:
       rl.question('\nEnter chain ID (or press Enter to finish): ', (id) => {
         if (!id) {
           if (customChains.length === 0) {
-            console.log('❌ No chains added.');
+            
             showMainMenu();
             return;
           }
           
-          console.log('\nYour custom chain list:');
+          
           customChains.forEach(chain => {
-            console.log(`- ${chain.id} (${chain.name})${chain.description ? ': ' + chain.description : ''}`);
+            
           });
           
           rl.question('\nDo you want to proceed with the installation? (y/n): ', async (confirm) => {
@@ -305,7 +305,7 @@ Examples:
                 if (answer.toLowerCase() === 'y') {
                   showMainMenu();
                 } else {
-                  console.log('\n👋 Thank you for using the Polkadot chain setup tool!');
+                  
                   rl.close();
                 }
               });
@@ -321,7 +321,7 @@ Examples:
           
           rl.question(`Enter description for chain ${id} (optional): `, (description) => {
             customChains.push({ id, name, description });
-            console.log(`✅ Added chain ${id} (${name})`);
+            
             promptForChain();
           });
         });
@@ -347,9 +347,9 @@ Examples:
         return;
       }
       
-      console.log('\nChain list from configuration file:');
+      
       chains.forEach(chain => {
-        console.log(`- ${chain.id} (${chain.name})${chain.description ? ': ' + chain.description : ''}`);
+        
       });
       
       rl.question('\nDo you want to proceed with the installation? (y/n): ', async (confirm) => {
@@ -362,7 +362,7 @@ Examples:
             if (answer.toLowerCase() === 'y') {
               showMainMenu();
             } else {
-              console.log('\n👋 Thank you for using the Polkadot chain setup tool!');
+              
               rl.close();
             }
           });

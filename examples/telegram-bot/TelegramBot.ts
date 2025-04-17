@@ -73,7 +73,7 @@ export class TelegramBot {
   public async start(): Promise<void> {
     try {
       await this.bot.launch();
-      console.log('Telegram bot is running...');
+      
     } catch (error) {
       console.error('Failed to start bot:', error);
       throw error;
@@ -83,6 +83,6 @@ export class TelegramBot {
   public stop(): void {
     this.agent.disconnectAll();
     this.bot.stop();
-    console.log('Bot stopped.');
+    
   }
 }

@@ -1,9 +1,9 @@
-import { ApiPromise } from '../tools/substrace';
+import { ApiPromise } from "../tools/substrace";
 
 /** Define type for chain configuration **/
 export interface ChainConfig {
   url: string;
-  name: string; 
+  name: string;
 }
 
 /** Define interface for API connection **/
@@ -13,7 +13,7 @@ export interface ApiConnection {
 }
 
 /** Key type supported by the agent */
-export type KeyType = 'Sr25519' | 'Ed25519';
+export type KeyType = "Sr25519" | "Ed25519";
 
 /** Define configuration for PolkadotAgentKit **/
 export interface AgentConfig {
@@ -33,6 +33,6 @@ export interface AgentConfig {
   delegateDerivationPath?: string;
   /** Optional delegate key type (defaults to main keyType) */
   delegateKeyType?: KeyType;
-  /** Chain configurations */ 
-  chains: ChainConfig[]; 
+  /** Chain configurations */
+  chains: ChainConfig[];
 }
