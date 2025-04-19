@@ -17,7 +17,7 @@
   "engines": {
     "node": "22"
   },
-  "keywords": [],
+  "keywords": ["polkadot", "ai", "llm", "agent"],
   "license": "ISC",
   "dependencies": {
     "@langchain/community": "^0.3.19",

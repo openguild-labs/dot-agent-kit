@@ -1,20 +1,15 @@
 // Main entry point for the Polkadot Agent Kit SDK
 
-// Export core modules
-export * from "./agent";
-export * from "./chain";
-export * from "./tools";
+// Export modules
+export * from "./llm";
+export * from "./polkadot";
+export * from "./common";
+
 import "module-alias/register";
 
-// Export types selectively to avoid naming conflicts
-export { ApiConnection, AgentConfig } from "./types/typeAgent";
-// Re-export these types explicitly from xcmTypes
-export { CHAINS, XcmTransferParams } from "./types/xcmTypes";
-export * from "./types/connect";
-
 // Import initialization functions
-import { initializeDefaultChainDescriptors } from "./chain/chainInit";
-import { chainDescriptorRegistry } from "./chain/chainRegistry";
+import { initializeDefaultChainDescriptors } from "./polkadot/chain/chainInit";
+import { chainDescriptorRegistry } from "./polkadot/chain/chainRegistry";
 
 /**
  * Initialize the Polkadot Agent Kit SDK manually
