@@ -26,7 +26,7 @@ export default [
       }),
       codecovRollupPlugin({
         enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
-        bundleName: 'agent-kit-common',
+        bundleName: 'agent-kit-llm',
         uploadToken: process.env.CODECOV_TOKEN,
         debug: true,
         uploadOverrides: {
@@ -41,3 +41,4 @@ export default [
     plugins: [dts()]
   }
 ]
+
