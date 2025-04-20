@@ -34,7 +34,7 @@
       "test:watch": "vitest"
     },
     "dependencies": {
-      "polkadot-api": "^1.9.13"
+        "@polkadot/api": "^15.8.1"
     },
     "devDependencies": {
       "@babel/plugin-syntax-import-attributes": "^7.26.0",

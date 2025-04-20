@@ -3,7 +3,7 @@ import { getPolkadotSigner, PolkadotSigner } from "polkadot-api/signer";
 import "dotenv/config";
 import { process } from "std-env";
 import { getSs58AddressInfo } from "polkadot-api";
-import { MultiAddress } from "@polkadot-api/descriptors";
+// import { MultiAddress } from "@polkadot-api/descriptors";
 export type Hex = Uint8Array | string;
 
 import * as ss58 from "@subsquid/ss58";
@@ -73,6 +73,6 @@ export function addressOfSubstrate(address: Uint8Array): string {
   return ss58.codec("substrate").encode(value);
 }
 
-export function toMultiAddress(address: string): MultiAddress {
-  return MultiAddress.Id(address);
-}
+// export function toMultiAddress(address: string): MultiAddress {
+//   return MultiAddress.Id(address);
+// }

@@ -1,5 +1,6 @@
-import { ApiPromise } from "../tools/substrace";
+// import { ApiPromise } from "../tools/substrace";
 
+import { ApiPromise } from "@polkadot/api";
 /** Define type for chain configuration **/
 export interface ChainConfig {
   url: string;

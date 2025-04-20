@@ -1,13 +1,13 @@
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
-import { PolkadotLangTools } from "../../tools/index";
-import { buildAccountSigner } from "../../types/account";
+import { PolkadotLangTools } from "@openguild-labs/agent-kit-polkadot";
+import { buildAccountSigner } from "@openguild-labs/agent-kit-common";
 import {
   teleportToRelayChain,
   teleportToParaChain,
-} from "../../tools/xcm/teleport";
-import { substrateApi } from "../../tools/substrace";
-import { ChainMap, defaultChainMap } from "../../chain/chainMap";
+} from "@openguild-labs/agent-kit-polkadot";
+// import { substrateApi } from "../../tools/substrace";
+import { ChainMap, defaultChainMap } from "@openguild-labs/agent-kit-polkadot";
 
 export const xcmTransfer = (
   tools: PolkadotLangTools,
@@ -51,10 +51,11 @@ export const xcmTransfer = (
         const destChainInfo = chainMap[destinationChain];
 
         // Connect to source chain
-        const { api, disconnect } = await substrateApi(
-          { url: sourceChainInfo.url, name: sourceChainInfo.name },
-          sourceChainInfo.apiKey,
-        );
+        // TODO: Uncomment this when substrateApi is implemented
+        // const { api, disconnect } = await substrateApi(
+        //   { url: sourceChainInfo.url, name: sourceChainInfo.name },
+        //   sourceChainInfo.apiKey,
+        // );
 
         const signer = buildAccountSigner();
         let txHash: string;

@@ -1,15 +1,9 @@
 // Main entry point for the Polkadot Agent Kit SDK
 
-// Export modules
-export * from "./llm";
-export * from "./polkadot";
-export * from "../../common/src";
 
-import "module-alias/register";
 
 // Import initialization functions
-import { initializeDefaultChainDescriptors } from "./polkadot/chain/chainInit";
-import { chainDescriptorRegistry } from "./polkadot/chain/chainRegistry";
+import { initializeDefaultChainDescriptors, chainDescriptorRegistry } from "@openguild-labs/agent-kit-polkadot";
 
 /**
  * Initialize the Polkadot Agent Kit SDK manually

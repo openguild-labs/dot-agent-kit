@@ -1,7 +1,7 @@
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
-import { PolkadotLangTools } from "../../tools/index";
-import { ChainMap, defaultChainMap } from "../../chain/chainMap";
+import { PolkadotLangTools } from "@openguild-labs/agent-kit-polkadot";
+import { ChainMap, defaultChainMap } from "@openguild-labs/agent-kit-polkadot";
 
 export const checkProxiesTool = (
   tools: PolkadotLangTools,
