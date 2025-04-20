@@ -34,7 +34,8 @@
       "test:watch": "vitest"
     },
     "dependencies": {
-        "@polkadot/api": "^15.8.1"
+        "@polkadot/api": "^15.8.1",
+        "@openguild-labs/agent-kit-polkadot": "workspace:*"
     },
     "devDependencies": {
       "@babel/plugin-syntax-import-attributes": "^7.26.0",

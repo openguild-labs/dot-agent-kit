@@ -246,6 +246,9 @@ importers:
 
   packages/sdk:
     dependencies:
+      '@openguild-labs/agent-kit-polkadot':
+        specifier: workspace:*
+        version: link:../polkadot
       '@polkadot/api':
         specifier: ^15.8.1
         version: 15.9.2
