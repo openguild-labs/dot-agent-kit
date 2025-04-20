@@ -189,6 +189,52 @@ importers:
         specifier: ^6.2.1
         version: 6.2.1(rollup@4.40.0)(typescript@5.8.3)
 
+  packages/polkadot:
+    dependencies:
+      polkadot-api:
+        specifier: ^1.9.13
+        version: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
+    devDependencies:
+      '@babel/plugin-syntax-import-attributes':
+        specifier: ^7.26.0
+        version: 7.26.0(@babel/core@7.26.10)
+      '@babel/preset-env':
+        specifier: ^7.26.9
+        version: 7.26.9(@babel/core@7.26.10)
+      '@codecov/rollup-plugin':
+        specifier: ^1.9.0
+        version: 1.9.0(rollup@4.40.0)
+      '@polkadot/api':
+        specifier: ^15.8.1
+        version: 15.9.2
+      '@polkadot/types':
+        specifier: ^15.8.1
+        version: 15.9.2
+      '@rollup/plugin-babel':
+        specifier: ^6.0.4
+        version: 6.0.4(@babel/core@7.26.10)(rollup@4.40.0)
+      '@rollup/plugin-json':
+        specifier: ^6.1.0
+        version: 6.1.0(rollup@4.40.0)
+      '@rollup/plugin-typescript':
+        specifier: ^12.1.2
+        version: 12.1.2(rollup@4.40.0)(tslib@2.8.1)(typescript@5.8.3)
+      '@vitest/coverage-v8':
+        specifier: ^3.0.9
+        version: 3.1.1(vitest@3.1.1(@types/debug@4.1.12)(@types/node@22.14.1)(jiti@2.4.2)(tsx@4.19.3)(yaml@2.7.0))
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      prettier:
+        specifier: ^3.5.3
+        version: 3.5.3
+      rollup:
+        specifier: ^4.37.0
+        version: 4.40.0
+      rollup-plugin-dts:
+        specifier: ^6.2.1
+        version: 6.2.1(rollup@4.40.0)(typescript@5.8.3)
+
 packages:
 
   '@actions/core@1.11.1':
