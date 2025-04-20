@@ -1,4 +1,4 @@
-import { ChainConfig, CHAINS } from "../types/xcmTypes";
+import { ChainConfig, CHAINS } from "@openguild-labs/agent-kit-common";
 
 // Type definitions for chain registry
 export type ChainName = string;

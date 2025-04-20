@@ -194,6 +194,12 @@ importers:
 
   packages/polkadot:
     dependencies:
+      '@openguild-labs/agent-kit-common':
+        specifier: workspace:*
+        version: link:../common
+      '@openguild-labs/agent-kit-llm':
+        specifier: workspace:*
+        version: link:../llm
       polkadot-api:
         specifier: ^1.9.13
         version: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
