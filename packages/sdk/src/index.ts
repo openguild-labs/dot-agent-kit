@@ -3,7 +3,7 @@
 // Export modules
 export * from "./llm";
 export * from "./polkadot";
-export * from "./common";
+export * from "../../common/src";
 
 import "module-alias/register";
 

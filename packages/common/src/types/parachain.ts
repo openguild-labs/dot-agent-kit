@@ -1,6 +1,6 @@
 import { TypedApi, createClient } from "polkadot-api";
 import { getSmProvider } from "polkadot-api/sm-provider";
-import { smoldotRelayChain } from "./relay-chain";
+import { smoldotRelayChain } from "./relaychain";
 import { west_asset_hub } from "@polkadot-api/descriptors";
 import { smoldot } from "./smoldot";
 
