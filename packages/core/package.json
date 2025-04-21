@@ -1,11 +1,11 @@
 {
-  "name": "@openguild-labs/agent-kit-polkadot",
+  "name": "@dot-agent-kit/core",
   "version": "1.0.0",
-  "description": "SDK Polkadot for Polkadot Agent Kit",
+  "description": "Core Package for Polkadot Agent Kit",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/openguild-labs/dot-agent-kit.git",
-    "directory": "packages/polkadot"
+    "directory": "packages/core"
   },
   "license": "MIT",
   "type": "module",

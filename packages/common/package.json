@@ -1,5 +1,5 @@
 {
-  "name": "@openguild-labs/agent-kit-common",
+  "name": "@dot-agent-kit/common",
   "version": "1.0.0",
   "description": "SDK common code for Polkadot Agent Kit for developers",
   "repository": {

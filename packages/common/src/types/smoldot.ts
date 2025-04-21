@@ -1,5 +1,3 @@
-import { start } from "polkadot-api/smoldot";
+import { start } from "polkadot-api/smoldot"
 
-export const smoldot = start();
-
-
+export const smoldot = start()

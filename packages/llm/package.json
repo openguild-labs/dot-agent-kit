@@ -1,5 +1,5 @@
 {
-  "name": "@openguild-labs/agent-kit-llm",
+  "name": "@dot-agent-kit/llm",
   "version": "1.0.0",
   "description": "SDK LLM for Polkadot Agent Kit",
   "repository": {

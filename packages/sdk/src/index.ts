@@ -1,9 +1,7 @@
 // Main entry point for the Polkadot Agent Kit SDK
 
-
-
 // Import initialization functions
-import { initializeDefaultChainDescriptors, chainDescriptorRegistry } from "@openguild-labs/agent-kit-polkadot";
+import { initializeDefaultChainDescriptors, chainDescriptorRegistry } from "../../core/dist"
 
 /**
  * Initialize the Polkadot Agent Kit SDK manually
@@ -14,33 +12,33 @@ import { initializeDefaultChainDescriptors, chainDescriptorRegistry } from "@ope
  * @returns Promise that resolves when initialization is complete
  */
 export async function initializeSDK(options?: {
-  silent?: boolean; // Whether to suppress console logs
+  silent?: boolean // Whether to suppress console logs
 }): Promise<void> {
   try {
     // Check if descriptors are already initialized
     if (Object.keys(chainDescriptorRegistry.getAllDescriptors()).length > 0) {
       if (!options?.silent) {
       }
-      return;
+      return
     }
 
     // Initialize chain descriptors
-    await initializeDefaultChainDescriptors();
+    await initializeDefaultChainDescriptors()
 
     if (!options?.silent) {
     }
   } catch (error) {
-    console.error("❌ Failed to initialize Polkadot Agent Kit SDK:", error);
-    throw error;
+    console.error("❌ Failed to initialize Polkadot Agent Kit SDK:", error)
+    throw error
   }
 }
 
 // Auto-initialize the SDK on import
 // This makes it work like a normal SDK without manual setup
 try {
-  (async () => {
-    await initializeSDK({ silent: true });
-  })();
+  ;(async () => {
+    await initializeSDK({ silent: true })
+  })()
 } catch (error) {
-  console.error("❌ SDK auto-initialization failed:", error);
+  console.error("❌ SDK auto-initialization failed:", error)
 }

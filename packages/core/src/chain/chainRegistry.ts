@@ -1,8 +1,8 @@
-import { CHAINS, ChainConfigXCM } from "@openguild-labs/agent-kit-common";
+import { CHAINS, ChainConfigXCM } from "@openguild-labs/agent-kit-common"
 
 // Type definitions for chain registry
-export type ChainName = string;
-export type Multichain<T> = Record<ChainName, T>;
+export type ChainName = string
+export type Multichain<T> = Record<ChainName, T>
 
 /**
  * Dynamic chain descriptor registry
@@ -10,7 +10,7 @@ export type Multichain<T> = Record<ChainName, T>;
  * can be loaded and registered at runtime
  */
 export class ChainDescriptorRegistry {
-  private descriptors: Map<string, any> = new Map();
+  private descriptors: Map<string, any> = new Map()
 
   /**
    * Register a chain descriptor
@@ -18,7 +18,7 @@ export class ChainDescriptorRegistry {
    * @param descriptor The chain descriptor from @polkadot-api/descriptors
    */
   registerDescriptor(chainName: string, descriptor: any): void {
-    this.descriptors.set(chainName.toLowerCase(), descriptor);
+    this.descriptors.set(chainName.toLowerCase(), descriptor)
   }
 
   /**
@@ -27,7 +27,7 @@ export class ChainDescriptorRegistry {
    * @returns The chain descriptor or undefined if not found
    */
   getDescriptor(chainName: string): any | undefined {
-    return this.descriptors.get(chainName.toLowerCase());
+    return this.descriptors.get(chainName.toLowerCase())
   }
 
   /**
@@ -36,7 +36,7 @@ export class ChainDescriptorRegistry {
    * @returns True if a descriptor exists
    */
   hasDescriptor(chainName: string): boolean {
-    return this.descriptors.has(chainName.toLowerCase());
+    return this.descriptors.has(chainName.toLowerCase())
   }
 
   /**
@@ -44,32 +44,32 @@ export class ChainDescriptorRegistry {
    * @returns An object containing all descriptors
    */
   getAllDescriptors(): Record<string, any> {
-    const result: Record<string, any> = {};
+    const result: Record<string, any> = {}
     this.descriptors.forEach((descriptor, name) => {
-      result[name] = descriptor;
-    });
-    return result;
+      result[name] = descriptor
+    })
+    return result
   }
 }
 
 // Create and export a singleton instance
-export const chainDescriptorRegistry = new ChainDescriptorRegistry();
+export const chainDescriptorRegistry = new ChainDescriptorRegistry()
 
 // For backwards compatibility during migration
-export const typedApi = chainDescriptorRegistry.getAllDescriptors();
+export const typedApi = chainDescriptorRegistry.getAllDescriptors()
 
 /** Define the ChainRegistry class **/
 export class ChainRegistry {
-  private chains: Multichain<ChainConfigXCM> = {};
+  private chains: Multichain<ChainConfigXCM> = {}
 
   /**
    * Register a chain configuration
    * @param config The chain configuration to register
    */
   registerChain(config: ChainConfigXCM): void {
-    this.chains[config.name.toLowerCase()] = config;
+    this.chains[config.name.toLowerCase()] = config
     if (config?.parachainId) {
-      this.chains[config.parachainId.toString()] = config;
+      this.chains[config.parachainId.toString()] = config
     }
   }
 
@@ -79,7 +79,7 @@ export class ChainRegistry {
    * @returns The chain configuration or undefined if not found
    */
   getChain(name: ChainName): ChainConfigXCM | undefined {
-    return this.chains[name.toLowerCase()] || this.chains[name];
+    return this.chains[name.toLowerCase()] || this.chains[name]
   }
 
   /**
@@ -88,7 +88,7 @@ export class ChainRegistry {
    * @returns True if the chain exists
    */
   isValidChain(name: ChainName): boolean {
-    return name.toLowerCase() in this.chains || name in this.chains;
+    return name.toLowerCase() in this.chains || name in this.chains
   }
 
   /**
@@ -97,7 +97,7 @@ export class ChainRegistry {
    * @returns True if the chain is a relay chain
    */
   isRelayChain(name: ChainName): boolean {
-    const chain = this.getChain(name);
-    return chain?.type === CHAINS.RELAY_CHAIN;
+    const chain = this.getChain(name)
+    return chain?.type === CHAINS.RELAY_CHAIN
   }
 }

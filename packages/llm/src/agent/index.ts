@@ -1,20 +1,12 @@
-import {
-  ChainConfig,
-  ApiConnection,
-  AgentConfig,
-  KeyType,
-} from "@openguild-labs/agent-kit-common";
-import { substrateApi } from "@openguild-labs/agent-kit-polkadot";
-import { ed25519 } from "@noble/curves/ed25519";
-import { sr25519CreateDerive, ed25519CreateDerive } from "@polkadot-labs/hdkd";
-import {
-  entropyToMiniSecret,
-  mnemonicToEntropy,
-} from "@polkadot-labs/hdkd-helpers";
-import { chainDescriptorRegistry } from "@openguild-labs/agent-kit-polkadot";
-import { initializeDefaultChainDescriptors } from "@openguild-labs/agent-kit-polkadot";
-import * as ss58 from "@subsquid/ss58";
-import { getPolkadotSigner } from "polkadot-api/signer";
+import { ChainConfig, ApiConnection, AgentConfig, KeyType } from "@openguild-labs/agent-kit-common"
+import { substrateApi } from "../../../core/dist"
+import { ed25519 } from "@noble/curves/ed25519"
+import { sr25519CreateDerive, ed25519CreateDerive } from "@polkadot-labs/hdkd"
+import { entropyToMiniSecret, mnemonicToEntropy } from "@polkadot-labs/hdkd-helpers"
+import { chainDescriptorRegistry } from "../../../core/dist"
+import { initializeDefaultChainDescriptors } from "../../../core/dist"
+import * as ss58 from "@subsquid/ss58"
+import { getPolkadotSigner } from "polkadot-api/signer"
 
 /**
  * # PolkadotAgentKit
@@ -77,34 +69,31 @@ import { getPolkadotSigner } from "polkadot-api/signer";
  */
 export class PolkadotAgentKit {
   /** The main account address in SS58 format */
-  public address: string;
+  public address: string
 
   /** The delegate address in SS58 format, if a delegate private key was provided */
-  public delegateAddress?: string;
+  public delegateAddress?: string
 
   /** Map of chain connections indexed by chain name */
-  private connections: Map<string, ApiConnection> = new Map<
-    string,
-    ApiConnection
-  >();
+  private connections: Map<string, ApiConnection> = new Map<string, ApiConnection>()
 
   /** Private key bytes for the main account */
-  private mainPrivateKey: Uint8Array | null = null;
+  private mainPrivateKey: Uint8Array | null = null
 
   /** Private key bytes for the delegate account */
-  private delegatePrivateKey: Uint8Array | null = null;
+  private delegatePrivateKey: Uint8Array | null = null
 
   /** Key type for the main account */
-  private mainKeyType: KeyType = "Ed25519";
+  private mainKeyType: KeyType = "Ed25519"
 
   /** Key type for the delegate account */
-  private delegateKeyType: KeyType = "Ed25519";
+  private delegateKeyType: KeyType = "Ed25519"
 
   /** Flag indicating if initialization is complete */
-  private initialized: boolean = false;
+  private initialized: boolean = false
 
   /** Promise that resolves when initialization is complete */
-  private initPromise: Promise<void> | null = null;
+  private initPromise: Promise<void> | null = null
 
   /**
    * Creates a new PolkadotAgentKit instance
@@ -124,65 +113,56 @@ export class PolkadotAgentKit {
    */
   constructor(config: AgentConfig) {
     /* Set key types from config or use defaults */
-    this.mainKeyType = config.keyType || "Ed25519";
-    this.delegateKeyType = config.delegateKeyType || this.mainKeyType;
+    this.mainKeyType = config.keyType || "Ed25519"
+    this.delegateKeyType = config.delegateKeyType || this.mainKeyType
 
     /* Handle main account - either from private key or mnemonic */
     if (config.privateKey || process.env.PRIVATE_KEY) {
       /* Get private key from config or env variable */
-      const privateKeyStr = config.privateKey || process.env.PRIVATE_KEY;
-      if (!privateKeyStr)
-        throw new Error(
-          "Main private key is required if no mnemonic is provided",
-        );
+      const privateKeyStr = config.privateKey || process.env.PRIVATE_KEY
+      if (!privateKeyStr) throw new Error("Main private key is required if no mnemonic is provided")
 
       /* Convert private key to proper format */
-      this.mainPrivateKey = this.normalizePrivateKey(privateKeyStr);
+      this.mainPrivateKey = this.normalizePrivateKey(privateKeyStr)
     } else if (config.mnemonic) {
       /* Generate private key from mnemonic */
       this.mainPrivateKey = this.generatePrivateKeyFromMnemonic(
         config.mnemonic,
         config.derivationPath || "",
-        this.mainKeyType,
-      );
+        this.mainKeyType
+      )
     } else {
-      throw new Error(
-        "Either privateKey or mnemonic is required for the main account",
-      );
+      throw new Error("Either privateKey or mnemonic is required for the main account")
     }
 
     /* Generate public key based on key type */
-    const mainPublicKey = this.getMainPublicKey();
-    if (!mainPublicKey) throw new Error("Failed to generate main public key");
+    const mainPublicKey = this.getMainPublicKey()
+    if (!mainPublicKey) throw new Error("Failed to generate main public key")
 
     /* Generate address using ss58 codec */
-    this.address = ss58.codec("substrate").encode(mainPublicKey);
+    this.address = ss58.codec("substrate").encode(mainPublicKey)
 
     /* Handle delegate key if provided - either from private key or mnemonic */
     if (config.delegatePrivateKey) {
-      this.delegatePrivateKey = this.normalizePrivateKey(
-        config.delegatePrivateKey,
-      );
+      this.delegatePrivateKey = this.normalizePrivateKey(config.delegatePrivateKey)
     } else if (config.delegateMnemonic) {
       this.delegatePrivateKey = this.generatePrivateKeyFromMnemonic(
         config.delegateMnemonic,
         config.delegateDerivationPath || "",
-        this.delegateKeyType,
-      );
+        this.delegateKeyType
+      )
     }
 
     /* Generate delegate address if we have a delegate key */
     if (this.delegatePrivateKey) {
-      const delegatePublicKey = this.getDelegatePublicKey();
+      const delegatePublicKey = this.getDelegatePublicKey()
       if (delegatePublicKey) {
-        this.delegateAddress = ss58
-          .codec("substrate")
-          .encode(delegatePublicKey);
+        this.delegateAddress = ss58.codec("substrate").encode(delegatePublicKey)
       }
     }
 
     /* Start chain initialization */
-    this.initPromise = this.initialize(config.chains);
+    this.initPromise = this.initialize(config.chains)
   }
 
   /**
@@ -196,21 +176,21 @@ export class PolkadotAgentKit {
   private generatePrivateKeyFromMnemonic(
     mnemonic: string,
     path: string = "",
-    keyType: KeyType,
+    keyType: KeyType
   ): Uint8Array {
-    const entropy = mnemonicToEntropy(mnemonic);
-    const miniSecret = entropyToMiniSecret(entropy);
+    const entropy = mnemonicToEntropy(mnemonic)
+    const miniSecret = entropyToMiniSecret(entropy)
 
     if (keyType === "Sr25519") {
-      const derive = sr25519CreateDerive(miniSecret);
-      const keyPair = derive(path);
+      const derive = sr25519CreateDerive(miniSecret)
+      const keyPair = derive(path)
       // Use the path in derive and store the result
-      return keyPair.sign(new Uint8Array(32)).slice(0, 32); // Create key from signature
+      return keyPair.sign(new Uint8Array(32)).slice(0, 32) // Create key from signature
     } else {
-      const derive = ed25519CreateDerive(miniSecret);
-      const keyPair = derive(path);
+      const derive = ed25519CreateDerive(miniSecret)
+      const keyPair = derive(path)
       // Use the path in derive and store the result
-      return keyPair.sign(new Uint8Array(32)).slice(0, 32); // Create key from signature
+      return keyPair.sign(new Uint8Array(32)).slice(0, 32) // Create key from signature
     }
   }
 
@@ -222,20 +202,18 @@ export class PolkadotAgentKit {
   private async initialize(chains: ChainConfig[]): Promise<void> {
     try {
       // Initialize chain descriptors if not already done by the auto-import
-      if (
-        Object.keys(chainDescriptorRegistry.getAllDescriptors()).length === 0
-      ) {
-        await initializeDefaultChainDescriptors();
+      if (Object.keys(chainDescriptorRegistry.getAllDescriptors()).length === 0) {
+        await initializeDefaultChainDescriptors()
       }
 
       // Initialize connections to chains
-      await this.initializeConnections(chains);
+      await this.initializeConnections(chains)
 
       // Mark initialization as complete
-      this.initialized = true;
+      this.initialized = true
     } catch (error) {
-      console.error("❌ Failed to initialize PolkadotAgentKit:", error);
-      throw error;
+      console.error("❌ Failed to initialize PolkadotAgentKit:", error)
+      throw error
     }
   }
 
@@ -244,8 +222,8 @@ export class PolkadotAgentKit {
    * @returns Promise that resolves when initialization is complete
    */
   public async waitForInitialization(): Promise<void> {
-    if (this.initialized) return;
-    if (this.initPromise) await this.initPromise;
+    if (this.initialized) return
+    if (this.initPromise) await this.initPromise
   }
 
   /**
@@ -262,12 +240,10 @@ export class PolkadotAgentKit {
         key
           .substring(2)
           .match(/.{1,2}/g)
-          ?.map((byte) => parseInt(byte, 16)) || [],
-      );
+          ?.map(byte => parseInt(byte, 16)) || []
+      )
     } else {
-      return new Uint8Array(
-        key.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || [],
-      );
+      return new Uint8Array(key.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || [])
     }
   }
 
@@ -280,13 +256,13 @@ export class PolkadotAgentKit {
   private async initializeConnections(chains: ChainConfig[]): Promise<void> {
     for (const chain of chains) {
       try {
-        const connection = await substrateApi(chain, chain.name);
-        this.connections.set(chain.name, connection);
+        const connection = await substrateApi(chain, chain.name)
+        this.connections.set(chain.name, connection)
       } catch (error) {
-        console.error(`Connection to ${chain.name} failed:`, error);
+        console.error(`Connection to ${chain.name} failed:`, error)
         throw new Error(
-          `Connection to ${chain.name} failed: ${error instanceof Error ? error.message : String(error)}`,
-        );
+          `Connection to ${chain.name} failed: ${error instanceof Error ? error.message : String(error)}`
+        )
       }
     }
   }
@@ -310,13 +286,13 @@ export class PolkadotAgentKit {
    */
   async getConnection(chainName: string): Promise<ApiConnection> {
     // Wait for initialization to complete
-    await this.waitForInitialization();
+    await this.waitForInitialization()
 
-    const connection = this.connections.get(chainName);
+    const connection = this.connections.get(chainName)
     if (!connection) {
-      throw new Error(`No connection found for chain: ${chainName}`);
+      throw new Error(`No connection found for chain: ${chainName}`)
     }
-    return connection;
+    return connection
   }
 
   /**
@@ -332,11 +308,9 @@ export class PolkadotAgentKit {
    */
   public async disconnectAll(): Promise<void> {
     await Promise.all(
-      Array.from(this.connections.entries()).map(([_, connection]) =>
-        connection.disconnect(),
-      ),
-    );
-    this.connections.clear();
+      Array.from(this.connections.entries()).map(([_, connection]) => connection.disconnect())
+    )
+    this.connections.clear()
   }
 
   /**
@@ -360,17 +334,17 @@ export class PolkadotAgentKit {
    */
   public getMainPublicKey(): Uint8Array | undefined {
     if (!this.mainPrivateKey) {
-      throw new Error("Main private key not available");
+      throw new Error("Main private key not available")
     }
 
     if (this.mainKeyType === "Sr25519") {
       // For Sr25519, use the derive function to get the public key
-      const derive = sr25519CreateDerive(this.mainPrivateKey as Uint8Array);
-      const keyPair = derive("");
-      return keyPair.publicKey;
+      const derive = sr25519CreateDerive(this.mainPrivateKey as Uint8Array)
+      const keyPair = derive("")
+      return keyPair.publicKey
     } else {
       // For Ed25519, use the ed25519 lib
-      return ed25519.getPublicKey(this.mainPrivateKey);
+      return ed25519.getPublicKey(this.mainPrivateKey)
     }
   }
 
@@ -396,17 +370,17 @@ export class PolkadotAgentKit {
    */
   public getDelegatePublicKey(): Uint8Array | undefined {
     if (!this.delegatePrivateKey) {
-      return undefined;
+      return undefined
     }
 
     if (this.delegateKeyType === "Sr25519") {
       // For Sr25519, use the derive function to get the public key
-      const derive = sr25519CreateDerive(this.delegatePrivateKey as Uint8Array);
-      const keyPair = derive("");
-      return keyPair.publicKey;
+      const derive = sr25519CreateDerive(this.delegatePrivateKey as Uint8Array)
+      const keyPair = derive("")
+      return keyPair.publicKey
     } else {
       // For Ed25519, use the ed25519 lib
-      return ed25519.getPublicKey(this.delegatePrivateKey);
+      return ed25519.getPublicKey(this.delegatePrivateKey)
     }
   }
 
@@ -428,29 +402,22 @@ export class PolkadotAgentKit {
    */
   public createMainSigner() {
     if (!this.mainPrivateKey) {
-      throw new Error("Main private key not available");
+      throw new Error("Main private key not available")
     }
 
-    const publicKey = this.getMainPublicKey();
+    const publicKey = this.getMainPublicKey()
 
     if (this.mainKeyType === "Sr25519") {
       // For Sr25519, use the derive function to create a signer
-      const derive = sr25519CreateDerive(this.mainPrivateKey as Uint8Array);
-      const keyPair = derive("");
+      const derive = sr25519CreateDerive(this.mainPrivateKey as Uint8Array)
+      const keyPair = derive("")
 
-      return getPolkadotSigner(
-        publicKey as Uint8Array,
-        "Sr25519",
-        keyPair.sign,
-      );
+      return getPolkadotSigner(publicKey as Uint8Array, "Sr25519", keyPair.sign)
     } else {
       // For Ed25519, use the ed25519 lib
-      return getPolkadotSigner(
-        publicKey as Uint8Array,
-        "Ed25519",
-        (input: Uint8Array) =>
-          ed25519.sign(input, this.mainPrivateKey as Uint8Array),
-      );
+      return getPolkadotSigner(publicKey as Uint8Array, "Ed25519", (input: Uint8Array) =>
+        ed25519.sign(input, this.mainPrivateKey as Uint8Array)
+      )
     }
   }
 
@@ -473,22 +440,22 @@ export class PolkadotAgentKit {
    */
   public createDelegateSigner() {
     if (!this.delegatePrivateKey) {
-      return undefined;
+      return undefined
     }
 
-    const publicKey = this.getDelegatePublicKey() as Uint8Array;
+    const publicKey = this.getDelegatePublicKey() as Uint8Array
 
     if (this.delegateKeyType === "Sr25519") {
       // For Sr25519, use the derive function to create a signer
-      const derive = sr25519CreateDerive(this.delegatePrivateKey as Uint8Array);
-      const keyPair = derive("");
+      const derive = sr25519CreateDerive(this.delegatePrivateKey as Uint8Array)
+      const keyPair = derive("")
 
-      return getPolkadotSigner(publicKey, "Sr25519", keyPair.sign);
+      return getPolkadotSigner(publicKey, "Sr25519", keyPair.sign)
     } else {
       // For Ed25519, use the ed25519 lib
       return getPolkadotSigner(publicKey, "Ed25519", (input: Uint8Array) =>
-        ed25519.sign(input, this.delegatePrivateKey as Uint8Array),
-      );
+        ed25519.sign(input, this.delegatePrivateKey as Uint8Array)
+      )
     }
   }
 }

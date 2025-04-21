@@ -1,9 +1,9 @@
-import { ApiPromise } from "../substrace";
-import { Enum, TxCallData } from "polkadot-api";
+import { ApiPromise } from "../substrace"
+import { Enum, TxCallData } from "polkadot-api"
 import {
   buildAccountSigner,
-  buildAccountDelegateProxySigner,
-} from "@openguild-labs/agent-kit-common";
+  buildAccountDelegateProxySigner
+} from "@openguild-labs/agent-kit-common"
 // import { MultiAddress } from "@polkadot-api/descriptors";
 
 // export async function createProxy(
