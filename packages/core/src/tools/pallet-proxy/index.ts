@@ -3,7 +3,7 @@ import { Enum, TxCallData } from "polkadot-api"
 import {
   buildAccountSigner,
   buildAccountDelegateProxySigner
-} from "@openguild-labs/agent-kit-common"
+} from "@dot-agent-kit/common"
 // import { MultiAddress } from "@polkadot-api/descriptors";
 
 // export async function createProxy(

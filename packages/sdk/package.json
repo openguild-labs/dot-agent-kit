@@ -35,7 +35,7 @@
     },
     "dependencies": {
         "@polkadot/api": "^15.8.1",
-        "@openguild-labs/agent-kit-polkadot": "workspace:*"
+        "@dot-agent-kit/core": "workspace:*"
     },
     "devDependencies": {
       "@babel/plugin-syntax-import-attributes": "^7.26.0",

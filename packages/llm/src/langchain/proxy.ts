@@ -1,7 +1,7 @@
 import { tool } from "@langchain/core/tools"
 import { z } from "zod"
-import { PolkadotLangTools } from "../../../core/dist"
-import { ChainMap, defaultChainMap } from "../../../core/dist"
+import { PolkadotLangTools } from "@dot-agent-kit/core"
+import { ChainMap, defaultChainMap } from "@dot-agent-kit/core"
 
 export const checkProxiesTool = (tools: PolkadotLangTools, chainMap: ChainMap = defaultChainMap) =>
   tool(

@@ -1,10 +1,10 @@
 import { tool } from "@langchain/core/tools"
 import { z } from "zod"
-import { PolkadotLangTools } from "../../../core/dist"
-import { buildAccountSigner } from "@openguild-labs/agent-kit-common"
-import { teleportToRelayChain, teleportToParaChain } from "../../../core/dist"
-import { substrateApi } from "../../../core/dist"
-import { ChainMap, defaultChainMap } from "../../../core/dist"
+import { PolkadotLangTools } from "@dot-agent-kit/core"
+import { buildAccountSigner } from "@dot-agent-kit/common"
+import { teleportToRelayChain, teleportToParaChain } from "@dot-agent-kit/core"
+import { substrateApi } from "@dot-agent-kit/core"
+import { ChainMap, defaultChainMap } from "@dot-agent-kit/core"
 
 export const xcmTransfer = (tools: PolkadotLangTools, chainMap: ChainMap = defaultChainMap) => {
   const availableChains = Object.keys(chainMap)

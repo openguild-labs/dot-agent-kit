@@ -1,4 +1,4 @@
-import { CHAINS, ChainConfigXCM } from "@openguild-labs/agent-kit-common"
+import { CHAINS, ChainConfigXCM } from "@dot-agent-kit/common"
 
 // Type definitions for chain registry
 export type ChainName = string

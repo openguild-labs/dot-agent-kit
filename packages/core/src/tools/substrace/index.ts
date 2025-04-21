@@ -1,4 +1,4 @@
-import { SubstrateConnectorConfig } from "@openguild-labs/agent-kit-common"
+import { SubstrateConnectorConfig } from "@dot-agent-kit/common"
 import { createClient, TypedApi } from "polkadot-api"
 import { getWsProvider } from "polkadot-api/ws-provider/node"
 import { chainDescriptorRegistry } from "../../chain/chainRegistry"

@@ -1,4 +1,4 @@
-import { PolkadotAgentKit } from "@openguild-labs/agent-kit-llm"
+import { PolkadotAgentKit } from "@dot-agent-kit/llm"
 
 export class PolkadotLangTools {
   private agent: PolkadotAgentKit

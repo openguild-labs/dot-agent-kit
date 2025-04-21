@@ -1,7 +1,7 @@
 // Main entry point for the Polkadot Agent Kit SDK
 
 // Import initialization functions
-import { initializeDefaultChainDescriptors, chainDescriptorRegistry } from "../../core/dist"
+import { initializeDefaultChainDescriptors, chainDescriptorRegistry } from "@dot-agent-kit/core"
 
 /**
  * Initialize the Polkadot Agent Kit SDK manually

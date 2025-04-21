@@ -35,8 +35,8 @@
     "setup": "tsx ./scripts/setup-chains.ts"
   },
   "dependencies": {
-    "@openguild-labs/agent-kit-common": "workspace:*",
-    "@openguild-labs/agent-kit-llm": "workspace:*",
+    "@dot-agent-kit/common": "workspace:*",
+    "@dot-agent-kit/llm": "workspace:*",
     "@polkadot-api/descriptors": "file:.papi/descriptors",
     "polkadot-api": "^1.9.13"
   },

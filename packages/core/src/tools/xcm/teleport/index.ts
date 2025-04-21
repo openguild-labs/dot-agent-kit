@@ -7,8 +7,8 @@ import {
   XcmV3Junction
 } from "@polkadot-api/descriptors"
 
-import { relayChainApi } from "@openguild-labs/agent-kit-common"
-import { PARACHAIN_ID, paraChainApi } from "@openguild-labs/agent-kit-common"
+import { relayChainApi } from "@dot-agent-kit/common"
+import { PARACHAIN_ID, paraChainApi } from "@dot-agent-kit/common"
 
 const encodeAccount = AccountId().enc
 

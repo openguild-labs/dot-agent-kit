@@ -64,15 +64,15 @@ importers:
 
   packages/common:
     dependencies:
+      '@dot-agent-kit/core':
+        specifier: workspace:*
+        version: link:../core
       '@noble/curves':
         specifier: ^1.6.0
         version: 1.8.2
       '@noble/hashes':
         specifier: ^1.5.0
         version: 1.7.2
-      '@openguild-labs/agent-kit-polkadot':
-        specifier: workspace:*
-        version: link:../polkadot
       '@polkadot-api/descriptors':
         specifier: file:.papi/descriptors
         version: file:packages/common/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))
@@ -144,8 +144,69 @@ importers:
         specifier: ^5.0.4
         version: 5.8.3
 
+  packages/core:
+    dependencies:
+      '@dot-agent-kit/common':
+        specifier: workspace:*
+        version: link:../common
+      '@dot-agent-kit/llm':
+        specifier: workspace:*
+        version: link:../llm
+      '@polkadot-api/descriptors':
+        specifier: file:.papi/descriptors
+        version: file:packages/core/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))
+      polkadot-api:
+        specifier: ^1.9.13
+        version: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
+    devDependencies:
+      '@babel/plugin-syntax-import-attributes':
+        specifier: ^7.26.0
+        version: 7.26.0(@babel/core@7.26.10)
+      '@babel/preset-env':
+        specifier: ^7.26.9
+        version: 7.26.9(@babel/core@7.26.10)
+      '@codecov/rollup-plugin':
+        specifier: ^1.9.0
+        version: 1.9.0(rollup@4.40.0)
+      '@polkadot/api':
+        specifier: ^15.8.1
+        version: 15.9.2
+      '@polkadot/types':
+        specifier: ^15.8.1
+        version: 15.9.2
+      '@rollup/plugin-babel':
+        specifier: ^6.0.4
+        version: 6.0.4(@babel/core@7.26.10)(rollup@4.40.0)
+      '@rollup/plugin-json':
+        specifier: ^6.1.0
+        version: 6.1.0(rollup@4.40.0)
+      '@rollup/plugin-typescript':
+        specifier: ^12.1.2
+        version: 12.1.2(rollup@4.40.0)(tslib@2.8.1)(typescript@5.8.3)
+      '@vitest/coverage-v8':
+        specifier: ^3.0.9
+        version: 3.1.1(vitest@3.1.1(@types/debug@4.1.12)(@types/node@22.14.1)(jiti@2.4.2)(tsx@4.19.3)(yaml@2.7.0))
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      prettier:
+        specifier: ^3.5.3
+        version: 3.5.3
+      rollup:
+        specifier: ^4.37.0
+        version: 4.40.0
+      rollup-plugin-dts:
+        specifier: ^6.2.1
+        version: 6.2.1(rollup@4.40.0)(typescript@5.8.3)
+
   packages/llm:
     dependencies:
+      '@dot-agent-kit/common':
+        specifier: workspace:*
+        version: link:../common
+      '@dot-agent-kit/core':
+        specifier: workspace:*
+        version: link:../core
       '@langchain/community':
         specifier: ^0.3.19
         version: 0.3.41(@browserbasehq/sdk@2.5.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.52.0)(deepmerge@4.3.1)(dotenv@16.4.7)(openai@4.95.1(ws@8.18.1)(zod@3.24.3))(zod@3.24.3))(@ibm-cloud/watsonx-ai@1.6.4(@langchain/core@0.3.45(openai@4.95.1(ws@8.18.1)(zod@3.24.3))))(@langchain/core@0.3.45(openai@4.95.1(ws@8.18.1)(zod@3.24.3)))(axios@1.8.4)(ibm-cloud-sdk-core@5.3.2)(ignore@5.3.2)(jsonwebtoken@9.0.2)(openai@4.95.1(ws@8.18.1)(zod@3.24.3))(playwright@1.52.0)(ws@8.18.1)
@@ -161,12 +222,6 @@ importers:
       '@noble/curves':
         specifier: ^1.6.0
         version: 1.8.2
-      '@openguild-labs/agent-kit-common':
-        specifier: workspace:*
-        version: link:../common
-      '@openguild-labs/agent-kit-polkadot':
-        specifier: workspace:*
-        version: link:../polkadot
       '@polkadot-labs/hdkd':
         specifier: ^0.0.13
         version: 0.0.13
@@ -220,66 +275,11 @@ importers:
         specifier: ^6.2.1
         version: 6.2.1(rollup@4.40.0)(typescript@5.8.3)
 
-  packages/polkadot:
-    dependencies:
-      '@openguild-labs/agent-kit-common':
-        specifier: workspace:*
-        version: link:../common
-      '@openguild-labs/agent-kit-llm':
-        specifier: workspace:*
-        version: link:../llm
-      '@polkadot-api/descriptors':
-        specifier: file:.papi/descriptors
-        version: file:packages/polkadot/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))
-      polkadot-api:
-        specifier: ^1.9.13
-        version: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
-    devDependencies:
-      '@babel/plugin-syntax-import-attributes':
-        specifier: ^7.26.0
-        version: 7.26.0(@babel/core@7.26.10)
-      '@babel/preset-env':
-        specifier: ^7.26.9
-        version: 7.26.9(@babel/core@7.26.10)
-      '@codecov/rollup-plugin':
-        specifier: ^1.9.0
-        version: 1.9.0(rollup@4.40.0)
-      '@polkadot/api':
-        specifier: ^15.8.1
-        version: 15.9.2
-      '@polkadot/types':
-        specifier: ^15.8.1
-        version: 15.9.2
-      '@rollup/plugin-babel':
-        specifier: ^6.0.4
-        version: 6.0.4(@babel/core@7.26.10)(rollup@4.40.0)
-      '@rollup/plugin-json':
-        specifier: ^6.1.0
-        version: 6.1.0(rollup@4.40.0)
-      '@rollup/plugin-typescript':
-        specifier: ^12.1.2
-        version: 12.1.2(rollup@4.40.0)(tslib@2.8.1)(typescript@5.8.3)
-      '@vitest/coverage-v8':
-        specifier: ^3.0.9
-        version: 3.1.1(vitest@3.1.1(@types/debug@4.1.12)(@types/node@22.14.1)(jiti@2.4.2)(tsx@4.19.3)(yaml@2.7.0))
-      dotenv:
-        specifier: ^16.4.7
-        version: 16.4.7
-      prettier:
-        specifier: ^3.5.3
-        version: 3.5.3
-      rollup:
-        specifier: ^4.37.0
-        version: 4.40.0
-      rollup-plugin-dts:
-        specifier: ^6.2.1
-        version: 6.2.1(rollup@4.40.0)(typescript@5.8.3)
-
   packages/sdk:
     dependencies:
-      '@openguild-labs/agent-kit-polkadot':
+      '@dot-agent-kit/core':
         specifier: workspace:*
-        version: link:../polkadot
+        version: link:../core
       '@polkadot/api':
         specifier: ^15.8.1
         version: 15.9.2
@@ -1641,8 +1641,8 @@ packages:
     peerDependencies:
       polkadot-api: '>=1.9.11'
 
-  '@polkadot-api/descriptors@file:packages/polkadot/.papi/descriptors':
-    resolution: {directory: packages/polkadot/.papi/descriptors, type: directory}
+  '@polkadot-api/descriptors@file:packages/core/.papi/descriptors':
+    resolution: {directory: packages/core/.papi/descriptors, type: directory}
     peerDependencies:
       polkadot-api: '>=1.9.11'
 
@@ -5610,7 +5610,7 @@ snapshots:
     dependencies:
       polkadot-api: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
 
-  '@polkadot-api/descriptors@file:packages/polkadot/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))':
+  '@polkadot-api/descriptors@file:packages/core/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))':
     dependencies:
       polkadot-api: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
 
@@ -7277,7 +7277,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.8.4(debug@4.4.0))
+      retry-axios: 2.6.0(axios@1.8.4)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -8056,7 +8056,7 @@ snapshots:
       onetime: 7.0.0
       signal-exit: 4.1.0
 
-  retry-axios@2.6.0(axios@1.8.4(debug@4.4.0)):
+  retry-axios@2.6.0(axios@1.8.4):
     dependencies:
       axios: 1.8.4(debug@4.4.0)
 
