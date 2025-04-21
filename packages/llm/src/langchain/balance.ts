@@ -1,6 +1,6 @@
 import { tool } from "@langchain/core/tools"
 import { z } from "zod"
-import { PolkadotLangTools } from "../../../core/dist"
+import { PolkadotLangTools } from "@dot-agent-kit/core"
 
 export const checkBalanceTool = (tools: PolkadotLangTools) => {
   return tool(

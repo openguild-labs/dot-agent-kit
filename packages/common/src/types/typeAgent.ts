@@ -1,4 +1,4 @@
-import { ApiPromise } from "../../../core/dist"
+import { ApiPromise } from "@dot-agent-kit/core"
 /** Define type for chain configuration **/
 export interface ChainConfig {
   url: string
