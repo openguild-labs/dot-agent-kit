@@ -3,8 +3,8 @@ import {
   ApiConnection,
   AgentConfig,
   KeyType,
-} from "@polkadot-labs/agent-kit-common";
-// import { substrateApi } from "../tools/substrace";
+} from "@openguild-labs/agent-kit-common";
+import { substrateApi } from "@openguild-labs/agent-kit-polkadot";
 import { ed25519 } from "@noble/curves/ed25519";
 import { sr25519CreateDerive, ed25519CreateDerive } from "@polkadot-labs/hdkd";
 import {
@@ -277,19 +277,19 @@ export class PolkadotAgentKit {
    * @param chains - Array of chain configurations
    * @private
    */
-  // private async initializeConnections(chains: ChainConfig[]): Promise<void> {
-  //   for (const chain of chains) {
-  //     try {
-  //       const connection = await substrateApi(chain, chain.name);
-  //       this.connections.set(chain.name, connection);
-  //     } catch (error) {
-  //       console.error(`Connection to ${chain.name} failed:`, error);
-  //       throw new Error(
-  //         `Connection to ${chain.name} failed: ${error instanceof Error ? error.message : String(error)}`,
-  //       );
-  //     }
-  //   }
-  // }
+  private async initializeConnections(chains: ChainConfig[]): Promise<void> {
+    for (const chain of chains) {
+      try {
+        const connection = await substrateApi(chain, chain.name);
+        this.connections.set(chain.name, connection);
+      } catch (error) {
+        console.error(`Connection to ${chain.name} failed:`, error);
+        throw new Error(
+          `Connection to ${chain.name} failed: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
+    }
+  }
 
   /**
    * Get the API connection for a specific chain

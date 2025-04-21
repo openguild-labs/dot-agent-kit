@@ -6,7 +6,7 @@ import {
   teleportToRelayChain,
   teleportToParaChain,
 } from "@openguild-labs/agent-kit-polkadot";
-// import { substrateApi } from "../../tools/substrace";
+import { substrateApi } from "@openguild-labs/agent-kit-polkadot";
 import { ChainMap, defaultChainMap } from "@openguild-labs/agent-kit-polkadot";
 
 export const xcmTransfer = (
@@ -15,24 +15,8 @@ export const xcmTransfer = (
 ) => {
   const availableChains = Object.keys(chainMap);
 
-  return tool({
-    name: "xcmTransfer",
-    description: `Transfer tokens between chains using XCM with your account. Available chains: ${availableChains.join(", ")}`,
-    schema: z.object({
-      sourceChain: z
-        .string()
-        .describe(
-          "Name of the source chain sending the tokens (must exist in chainMap)",
-        ),
-      destinationChain: z
-        .string()
-        .describe(
-          "Name of the destination chain receiving the tokens (must exist in chainMap)",
-        ),
-      amount: z.number().positive().describe("Amount of tokens to transfer"),
-      address: z.string().describe("Address to receive tokens"),
-    }),
-    func: async ({ sourceChain, destinationChain, amount, address }) => {
+  return tool(
+    async ({ sourceChain, destinationChain, amount, address }: { sourceChain: string, destinationChain: string, amount: number, address: string }) => {
       try {
         // Validate both chains exist
         if (!chainMap[sourceChain]) {
@@ -52,10 +36,10 @@ export const xcmTransfer = (
 
         // Connect to source chain
         // TODO: Uncomment this when substrateApi is implemented
-        // const { api, disconnect } = await substrateApi(
-        //   { url: sourceChainInfo.url, name: sourceChainInfo.name },
-        //   sourceChainInfo.apiKey,
-        // );
+        const { api, disconnect } = await substrateApi(
+          { url: sourceChainInfo.url, name: sourceChainInfo.name },
+          sourceChainInfo.apiKey,
+        );
 
         const signer = buildAccountSigner();
         let txHash: string;
@@ -109,7 +93,24 @@ export const xcmTransfer = (
         };
       }
     },
-  });
+    {
+      name: "xcmTransfer",
+      description: `Transfer tokens between chains using XCM with your account. Available chains: ${availableChains.join(", ")}`,
+      schema: z.object({
+        sourceChain: z
+          .string()
+          .describe(
+            "Name of the source chain sending the tokens (must exist in chainMap)",
+          ),
+        destinationChain: z
+          .string()
+          .describe(
+            "Name of the destination chain receiving the tokens (must exist in chainMap)",
+          ),
+        amount: z.number().positive().describe("Amount of tokens to transfer"),
+        address: z.string().describe("Address to receive tokens"),
+      })
+    }
+  );
 };
-
 

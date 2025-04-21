@@ -4,7 +4,7 @@ export enum CHAINS {
   PARACHAIN = "PARACHAIN",
 }
 
-export interface ChainConfig {
+export interface ChainConfigXCM {
   name: string;
   type: CHAINS;
   parachainId?: number;

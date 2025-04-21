@@ -5,5 +5,6 @@ export * from "./relaychain";
 export * from "./smoldot";
 export * from "./xcmTypes";
 export * from "./polkadotConfig";
+export * from "./typeAgent";
 
 

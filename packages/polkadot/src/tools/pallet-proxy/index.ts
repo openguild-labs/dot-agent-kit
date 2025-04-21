@@ -6,7 +6,6 @@ import {
 } from "@openguild-labs/agent-kit-common";
 // import { MultiAddress } from "@polkadot-api/descriptors";
 
-// TODO: Uncomment this when MultiAddress is implemented
 // export async function createProxy(
 //   api: ApiPromise,
 //   delegate: MultiAddress,

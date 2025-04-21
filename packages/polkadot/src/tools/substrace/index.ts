@@ -191,3 +191,10 @@ export async function getBlockNumber(): Promise<number | null> {
 export async function disconnect(): Promise<void> {
   // This is a no-op as each connection manages its own disconnect
 }
+
+export default {
+  substrateApi,
+  connect,
+  getBlockNumber,
+  disconnect,
+};

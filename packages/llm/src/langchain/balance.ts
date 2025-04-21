@@ -3,17 +3,8 @@ import { z } from "zod";
 import { PolkadotLangTools } from "@openguild-labs/agent-kit-polkadot";
 
 export const checkBalanceTool = (tools: PolkadotLangTools) => {
-  return tool({
-    name: "check_balance",
-    description: "Check balance of the agent's account on a specific chain",
-    schema: z.object({
-      chain: z
-        .string()
-        .describe(
-          "The chain name to check balance on (e.g., 'polkadot', 'kusama', 'westend', 'westend_asset_hub', etc.)",
-        ),
-    }),
-    func: async ({ chain }) => {
+  return tool(
+    async ({ chain }: { chain: string }) => {
       try {
         const balance = await tools.checkBalance(chain);
         return {
@@ -27,7 +18,19 @@ export const checkBalanceTool = (tools: PolkadotLangTools) => {
         };
       }
     },
-  });
+    {
+      name: "check_balance",
+      description: "Check balance of the agent's account on a specific chain",
+      schema: z.object({
+        chain: z
+          .string()
+          .describe(
+            "The chain name to check balance on (e.g., 'polkadot', 'kusama', 'westend', 'westend_asset_hub', etc.)",
+          ),
+      })
+    }
+  );
 };
+
 
 

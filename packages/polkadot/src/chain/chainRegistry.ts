@@ -1,4 +1,4 @@
-import { ChainConfig, CHAINS } from "@openguild-labs/agent-kit-common";
+import { CHAINS, ChainConfigXCM } from "@openguild-labs/agent-kit-common";
 
 // Type definitions for chain registry
 export type ChainName = string;
@@ -60,15 +60,15 @@ export const typedApi = chainDescriptorRegistry.getAllDescriptors();
 
 /** Define the ChainRegistry class **/
 export class ChainRegistry {
-  private chains: Multichain<ChainConfig> = {};
+  private chains: Multichain<ChainConfigXCM> = {};
 
   /**
    * Register a chain configuration
    * @param config The chain configuration to register
    */
-  registerChain(config: ChainConfig): void {
+  registerChain(config: ChainConfigXCM): void {
     this.chains[config.name.toLowerCase()] = config;
-    if (config.parachainId) {
+    if (config?.parachainId) {
       this.chains[config.parachainId.toString()] = config;
     }
   }
@@ -78,7 +78,7 @@ export class ChainRegistry {
    * @param name The name of the chain to get
    * @returns The chain configuration or undefined if not found
    */
-  getChain(name: ChainName): ChainConfig | undefined {
+  getChain(name: ChainName): ChainConfigXCM | undefined {
     return this.chains[name.toLowerCase()] || this.chains[name];
   }
 

@@ -31,7 +31,8 @@
     "format:write": "prettier --write src",
     "test": "vitest run",
     "test:cov": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "setup": "tsx ./scripts/setup-chains.ts"
   },
   "dependencies": {
     "@openguild-labs/agent-kit-common": "workspace:*",

@@ -1,6 +1,4 @@
-// import { ApiPromise } from "../tools/substrace";
-
-import { ApiPromise } from "@polkadot/api";
+import { ApiPromise } from "@openguild-labs/agent-kit-polkadot";
 /** Define type for chain configuration **/
 export interface ChainConfig {
   url: string;
