@@ -1,14 +1,7 @@
-import { ApiPromise } from "@dot-agent-kit/core"
 /** Define type for chain configuration **/
 export interface ChainConfig {
   url: string
   name: string
-}
-
-/** Define interface for API connection **/
-export interface ApiConnection {
-  api: ApiPromise
-  disconnect: () => void
 }
 
 /** Key type supported by the agent */

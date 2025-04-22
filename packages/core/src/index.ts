@@ -1,3 +1,3 @@
-// Polkadot Module exports
-export * from "./chain"
-export * from "./tools"
+// Polkadot Core exports
+export * from "./pallets/assets"
+export * from "./api"

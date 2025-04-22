@@ -1,3 +1,3 @@
-import { start } from "polkadot-api/smoldot"
+import type { Client } from "polkadot-api/smoldot"
 
-export const smoldot = start()
+export type SmoldotClient = Client

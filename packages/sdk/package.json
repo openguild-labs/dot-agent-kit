@@ -35,7 +35,11 @@
     },
     "dependencies": {
         "@polkadot/api": "^15.8.1",
-        "@dot-agent-kit/core": "workspace:*"
+        "@dot-agent-kit/core": "workspace:*",
+        "@dot-agent-kit/llm": "workspace:*",
+        "@dot-agent-kit/common": "workspace:*",
+        "polkadot-api": "^1.9.13",
+        "@noble/curves": "^1.6.0"
     },
     "devDependencies": {
       "@babel/plugin-syntax-import-attributes": "^7.26.0",

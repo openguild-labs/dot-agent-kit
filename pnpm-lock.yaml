@@ -64,9 +64,6 @@ importers:
 
   packages/common:
     dependencies:
-      '@dot-agent-kit/core':
-        specifier: workspace:*
-        version: link:../core
       '@noble/curves':
         specifier: ^1.6.0
         version: 1.8.2
@@ -149,9 +146,6 @@ importers:
       '@dot-agent-kit/common':
         specifier: workspace:*
         version: link:../common
-      '@dot-agent-kit/llm':
-        specifier: workspace:*
-        version: link:../llm
       '@polkadot-api/descriptors':
         specifier: file:.papi/descriptors
         version: file:packages/core/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))
@@ -234,6 +228,9 @@ importers:
       '@subsquid/ss58':
         specifier: ^2.0.2
         version: 2.0.2
+      polkadot-api:
+        specifier: ^1.9.13
+        version: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
       zod:
         specifier: ^3.24.3
         version: 3.24.3
@@ -277,12 +274,24 @@ importers:
 
   packages/sdk:
     dependencies:
+      '@dot-agent-kit/common':
+        specifier: workspace:*
+        version: link:../common
       '@dot-agent-kit/core':
         specifier: workspace:*
         version: link:../core
+      '@dot-agent-kit/llm':
+        specifier: workspace:*
+        version: link:../llm
+      '@noble/curves':
+        specifier: ^1.6.0
+        version: 1.8.2
       '@polkadot/api':
         specifier: ^15.8.1
         version: 15.9.2
+      polkadot-api:
+        specifier: ^1.9.13
+        version: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
     devDependencies:
       '@babel/plugin-syntax-import-attributes':
         specifier: ^7.26.0
