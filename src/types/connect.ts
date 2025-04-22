@@ -9,4 +9,3 @@ export type SubstrateConnectorConfig = {
   url: string;
   isWebSocket?: boolean;
 };
-

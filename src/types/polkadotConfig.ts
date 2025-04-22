@@ -1,8 +1,8 @@
 type ChainConfig = {
-    wss: string;
-    client: any;
+  wss: string;
+  client: any;
 };
 
 export type PolkadotConfig = {
-    [chain: string]: ChainConfig;
+  [chain: string]: ChainConfig;
 };

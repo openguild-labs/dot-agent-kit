@@ -59,8 +59,8 @@
 
 | Phase | Task | Status |
 |-----------|-----------|------------|
-| Phase 1 | Build core library (Substrate, XCM, Proxy, NFT, DeFi) | Planned |
-| Phase 2 | Develop AI Interface and NLP | Planned |
+| Phase 1 | Build core library (Substrate, XCM, Proxy, NFT, DeFi) | Done |
+| Phase 2 | Develop AI Interface and NLP | Done |
 | Phase 3 | Integrate MPC wallets and enhanced security | Planned |
 
 ---
@@ -115,16 +115,16 @@ The setup script supports various command line options for more flexibility:
 
 ```bash
 # Show all available options
-pnpm run test:setup -- --help
+pnpm run setup -- --help
 
 # List all common predefined chains
-pnpm run test:setup -- --list
+pnpm run setup -- --list
 
 # Install specific chains directly
-pnpm run test:setup -- --install west,west_asset_hub
+pnpm run setup -- --install west,west_asset_hub
 
 # Install chains from a configuration file
-pnpm run test:setup -- --config ./my-chains.json
+pnpm run setup -- --config ./my-chains.json
 ```
 
 ### Custom Chain Configuration
@@ -291,3 +291,72 @@ const { api } = await agent.getConnection('westend');
 // Even if the connection drops temporarily, it will reconnect in the background
 // and your code can continue to use the same API object
 ```
+
+## Key Types and Mnemonic Support
+
+The Polkadot AI Agent Kit now supports both Sr25519 and Ed25519 key types with dynamic configuration, as well as mnemonic phrase key generation.
+
+### Key Type Configuration
+
+You can specify which key type to use when creating your agent:
+
+```typescript
+// Create an agent with Sr25519 keys
+const agent = new PolkadotAgentKit({
+  privateKey: process.env.PRIVATE_KEY,
+  keyType: 'Sr25519',  // Use Sr25519 for signing (default is Ed25519)
+  chains: [
+    { name: 'westend', url: 'wss://westend-rpc.polkadot.io' }
+  ]
+});
+```
+
+### Mnemonic Phrase Support
+
+You can now create an agent using a mnemonic phrase instead of a raw private key:
+
+```typescript
+// Create an agent from a mnemonic phrase
+const agent = new PolkadotAgentKit({
+  mnemonic: 'word1 word2 word3 ... word12',  // Your 12 or 24 word mnemonic
+  derivationPath: '',  // Optional derivation path (default: '')
+  keyType: 'Sr25519',  // Optional key type (default: Ed25519)
+  chains: [
+    { name: 'westend', url: 'wss://westend-rpc.polkadot.io' }
+  ]
+});
+```
+
+### Using Both Key Types and Delegation
+
+You can mix key types and use both private keys and mnemonics with delegation:
+
+```typescript
+// Advanced configuration with different key types
+const agent = new PolkadotAgentKit({
+  // Main account with mnemonic
+  mnemonic: 'word1 word2 word3 ... word12',
+  derivationPath: '//0',
+  keyType: 'Sr25519',
+  
+  // Delegate account with private key
+  delegatePrivateKey: '0x1234...',
+  delegateKeyType: 'Ed25519',
+  
+  // Or delegate with mnemonic
+  // delegateMnemonic: 'word1 word2 word3 ... word12',
+  // delegateDerivationPath: '//1',
+  // delegateKeyType: 'Sr25519',
+  
+  chains: [
+    { name: 'westend', url: 'wss://westend-rpc.polkadot.io' }
+  ]
+});
+```
+
+### Available Key Types
+
+| Key Type | Description |
+|----------|-------------|
+| `Ed25519` | Edwards-curve Digital Signature Algorithm (EdDSA) with 255-bit curve. Default key type. |
+| `Sr25519` | Schnorrkel/Ristretto signatures on the Ristretto group on curve25519. Used by Polkadot ecosystem for account keys. |

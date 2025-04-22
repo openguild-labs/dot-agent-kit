@@ -38,7 +38,7 @@ export function setupHandlers(
 
   bot.on('text', async (ctx) => {
     const message = ctx.message.text;
-    console.log(`Received message: ${message}`);
+    
     if (message.startsWith('/')) return;
 
     try {
@@ -49,14 +49,14 @@ export function setupHandlers(
       ];
 
       const aiMessage = await llmWithTools.invoke(messages);
-      console.log('aiMessage:', JSON.stringify(aiMessage, null, 2));
+      
       if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
         for (const toolCall of aiMessage.tool_calls) {
-          console.log('toolCall:', JSON.stringify(toolCall, null, 2));
+          
           const selectedTool = toolsByName[toolCall.name];
           if (selectedTool) {
             const toolMessage = await selectedTool.invoke(toolCall);
-            console.log('toolMessage:', JSON.stringify(toolMessage, null, 2));
+            
             if (!toolMessage || !toolMessage.content) {
               await ctx.reply('Tool did not return a response.');
               return;
@@ -73,7 +73,7 @@ export function setupHandlers(
         }
       } else {
         const content = String(aiMessage.content || 'No response from LLM.');
-        console.log('LLM content:', content);
+        
         await ctx.reply(content);
       }
     } catch (error) {
