@@ -1,5 +1,8 @@
 {
   "name": "dot-agent-kit",
+  "description": "A toolkit for building agents on Polkadot",
+  "author": "OpenGuild Team",
+  "keywords": ["polkadot", "agent", "ai", "polkadot agent kit"],
   "private": true,
   "type": "module",
   "devDependencies": {
@@ -16,7 +19,9 @@
     "turbo": "^2.4.4",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0",
-    "vitest": "^3.0.9"
+    "vitest": "^3.0.9",
+    "@changesets/cli": "^2.27.12",
+    "@typescript-eslint/eslint-plugin": "^8.28.0"
   },
   "engines": {
     "node": ">=22"
@@ -39,9 +44,15 @@
     "test:watch": "turbo run test:watch",
     "test:integration": "turbo run test:integration",
     "test:e2e": "turbo run test:e2e",
+    "clean": "turbo run clean",
     "build": "turbo run build",
     "build:packages": "pnpm --filter \"./packages/*\" build",
-    "build:apps": "pnpm --filter \"./apps/*\" build"
+    "build:common": "pnpm --filter \"./packages/common\" build",
+    "build:core": "pnpm --filter \"./packages/core\" build",
+    "build:sdk": "pnpm --filter \"./packages/sdk\" build",
+    "build:llm": "pnpm --filter \"./packages/llm\" build",
+    "version-packages": "changeset version",
+    "publish-packages": "turbo run build && changeset publish"
   },
   "packageManager": "pnpm@10.6.5",
   "dependencies": {
