@@ -35,8 +35,8 @@ export class TelegramBot {
 
     this.bot = new Telegraf(botToken);
 
-    this.agent = new PolkadotAgentKit(config.privateKey as string, {keyType: 'Sr25519'});
-
+    this.agent = new PolkadotAgentKit(privateKey as string, {keyType: 'Sr25519'});
+    console.log("agent", this.agent.getAddress('polkadot'));
 
     this.llm = new ChatOpenAI({
       modelName: 'gpt-4',
@@ -45,8 +45,8 @@ export class TelegramBot {
       streaming: true,
     });
 
-
-    const balanceTool = this.agent.getNativeBalanceTool(polkadot as unknown as KnowChainId);
+    const balanceTool = this.agent.getNativeBalanceTool('polkadot');
+    console.log("balanceTool", balanceTool);
     // const tools = new PolkadotLangTools(this.agent);
     // const xcmTool = xcmTransfer(tools, this.chainMap) as unknown as Tool;
     // const balanceTool = checkBalanceTool(tools) as unknown as Tool;
@@ -62,6 +62,7 @@ export class TelegramBot {
   public async start(): Promise<void> {
     try {
       await this.bot.launch();
+      console.log('Bot is running!');
       
     } catch (error) {
       console.error('Failed to start bot:', error);

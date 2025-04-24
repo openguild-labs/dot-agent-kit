@@ -11,7 +11,8 @@ import {
   getChainByName,
   getAllSupportedChains,
   isSupportedChain,
-  AgentConfig
+  AgentConfig,
+  getChainById
 } from "@dot-agent-kit/common"
 import { DynamicStructuredTool } from "@langchain/core/tools"
 import { sr25519CreateDerive, ed25519CreateDerive } from "@polkadot-labs/hdkd"
@@ -41,7 +42,6 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
   }
 
   initializeApi(): Promise<void> {
-
     return this.polkadotApi.initializeApi()
   }
 
@@ -66,7 +66,8 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    * ```
    */
   getNativeBalanceTool(chainId: KnowChainId): DynamicStructuredTool {
-    return this.agentApi.getNativeBalanceTool(chainId)
+    let currentAddress = this.getAddress(chainId)
+    return this.agentApi.getNativeBalanceTool(chainId, currentAddress)
   }
 
   /**
@@ -111,12 +112,13 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    * ```
    */
   public getAddress(chainId: KnowChainId): string {
+    const chain = getChainById(chainId, getAllSupportedChains())
     const publicKey = this.getPublicKey()
     const value = publicKey
     if (!value) {
       return ""
     }
-    return ss58.codec(chainId).encode(value)
+    return ss58.codec(chain.prefix).encode(value)
   }
 
   /**

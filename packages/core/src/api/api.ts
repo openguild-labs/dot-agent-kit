@@ -6,8 +6,7 @@ import {
   getApi,
   getChainSpec,
   disconnect,
-  getAllSupportedChains,
-
+  getAllSupportedChains
 } from "@dot-agent-kit/common"
 
 import { start } from "polkadot-api/smoldot"
@@ -48,12 +47,12 @@ export class PolkadotApi implements IPolkadotApi {
     try {
       const supportedChains = getAllSupportedChains()
       const chainSpecs: Record<KnowChainId, string> = {
-        polkadot: '',
-        west: '',
-        polkadot_asset_hub: '',
-        west_asset_hub: ''
+        polkadot: "",
+        west: "",
+        polkadot_asset_hub: "",
+        west_asset_hub: ""
       }
-      
+
       for (const chain of supportedChains) {
         chainSpecs[chain.id as KnowChainId] = this.getChainSpec(chain)
       }

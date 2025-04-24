@@ -10,7 +10,7 @@ import { PolkadotApi } from "@dot-agent-kit/core"
  * Defines the interface that all Polkadot chain types must follow
  */
 export interface IPolkadotAgentApi {
-  getNativeBalanceTool(chainId: KnowChainId): DynamicStructuredTool
+  getNativeBalanceTool(chainId: KnowChainId, address: string): DynamicStructuredTool
   transferNativeTool(chainId: KnowChainId): DynamicStructuredTool
 }
 
@@ -20,11 +20,11 @@ export class PolkadotAgentApi implements IPolkadotAgentApi {
     this.api = api
   }
 
-  getNativeBalanceTool(chainId: KnowChainId): DynamicStructuredTool {
-    return checkBalanceTool(this.api.getApi(chainId))
+  getNativeBalanceTool(chainId: KnowChainId, address: string): DynamicStructuredTool {
+    return checkBalanceTool(this.api.getApi(chainId), address)
   }
 
   transferNativeTool(chainId: KnowChainId): DynamicStructuredTool {
-    return transferNativeTool(this.api.getApi(chainId)) 
+    return transferNativeTool(this.api.getApi(chainId))
   }
 }

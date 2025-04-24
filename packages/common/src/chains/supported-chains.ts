@@ -16,7 +16,8 @@ export const polkadotChain = createChain({
   relay: "polkadot",
   type: "relay",
   chainId: null,
-  blockExplorerUrl: "https://polkadot.subscan.io"
+  blockExplorerUrl: "https://polkadot.subscan.io",
+  prefix: 0
 })
 
 export const polkadotAssetHubChain = createChain({
@@ -27,7 +28,8 @@ export const polkadotAssetHubChain = createChain({
   relay: "polkadot",
   type: "system",
   chainId: 1000,
-  blockExplorerUrl: "https://assethub-polkadot.subscan.io"
+  blockExplorerUrl: "https://assethub-polkadot.subscan.io",
+  prefix: 0
 })
 
 export const westendChain = createChain({
@@ -39,7 +41,8 @@ export const westendChain = createChain({
   type: "relay",
   chainId: null,
   blockExplorerUrl: "https://westend.subscan.io",
-  xcmExtrinsic: "limited_teleport_assets"
+  xcmExtrinsic: "limited_teleport_assets",
+  prefix: 42 // default
 })
 
 export const westendAssetHubChain = createChain({
@@ -50,5 +53,6 @@ export const westendAssetHubChain = createChain({
   relay: "west",
   type: "system",
   chainId: 1000,
-  blockExplorerUrl: "https://assethub-westend.subscan.io"
+  blockExplorerUrl: "https://assethub-westend.subscan.io",
+  prefix: 42 // default
 })

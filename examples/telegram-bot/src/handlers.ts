@@ -25,6 +25,7 @@ export function setupHandlers(
   llm: ChatOpenAI,
   toolsByName: Record<string, DynamicStructuredTool>,
 ): void {
+
   bot.start((ctx) => {
     ctx.reply(
       'Welcome to Polkadot Bot!\n' +
@@ -36,51 +37,67 @@ export function setupHandlers(
     );
   });
 
+
   bot.on('text', async (ctx) => {
     const message = ctx.message.text;
     
     if (message.startsWith('/')) return;
 
     try {
+      console.log('Received message:', message);
+
       const llmWithTools = llm.bindTools(Object.values(toolsByName));
       const messages = [
         new SystemMessage({ content: SYSTEM_PROMPT }),
         new HumanMessage({ content: message }),
       ];
 
+      console.log('Sending request to LLM with messages:', messages);
+
       const aiMessage = await llmWithTools.invoke(messages);
+      
+      console.log('LLM response:', aiMessage);
       
       if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
         for (const toolCall of aiMessage.tool_calls) {
+          console.log('Processing tool call:', toolCall);
           
           const selectedTool = toolsByName[toolCall.name];
           if (selectedTool) {
             const toolMessage = await selectedTool.invoke(toolCall);
+            console.log('Tool response:', toolMessage);
             
             if (!toolMessage || !toolMessage.content) {
               await ctx.reply('Tool did not return a response.');
               return;
             }
             const response = JSON.parse(toolMessage.content || '{}');
+            console.log('Parsed tool response:', response);
+            
             if (response.error) {
               await ctx.reply(`Error: ${response.message}`);
             } else {
               await ctx.reply(response.message || response.content || 'No message from tool.');
             }
           } else {
+            console.warn(`Tool not found: ${toolCall.name}`);
             await ctx.reply(`Tool ${toolCall.name} not found.`);
           }
         }
       } else {
         const content = String(aiMessage.content || 'No response from LLM.');
-        
+        console.log('Sending response to user:', content);
         await ctx.reply(content);
       }
     } catch (error) {
       console.error('Error handling message:', error);
+      if (error instanceof Error) {
+        console.error('Error stack:', error.stack);
+      }
       await ctx.reply(`Sorry, an error occurred: ${error instanceof Error ? error.message : String(error)}`);
     }
   });
+
 
   bot.catch((err, ctx) => {
     console.error(`Error for ${ctx.updateType}`, err);
