@@ -16,6 +16,7 @@ import {
 import { DynamicStructuredTool } from "@langchain/core/tools"
 import { sr25519CreateDerive, ed25519CreateDerive } from "@polkadot-labs/hdkd"
 import * as ss58 from "@subsquid/ss58"
+import { MultiAddress } from "@dot-agent-kit/common/.papi/descriptors"
 
 export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
   private polkadotApi: PolkadotApi
@@ -50,6 +51,10 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
 
   getNativeBalanceTool(address: string): DynamicStructuredTool {
     return this.agentApi.getNativeBalanceTool(address)
+  }
+
+  transferNativeTool(to: MultiAddress, amount: bigint): DynamicStructuredTool {
+    return this.agentApi.transferNativeTool(to, amount)
   }
 
   /**
