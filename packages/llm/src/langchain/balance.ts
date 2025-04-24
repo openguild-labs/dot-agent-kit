@@ -1,6 +1,6 @@
 import { tool } from "@langchain/core/tools"
 import { z } from "zod"
-import { getNativeBalance } from "@dot-agent-kit/core"
+import { getNativeBalance, PolkadotApi } from "@dot-agent-kit/core"
 import { Api, KnowChainId } from "@dot-agent-kit/common"
 
 export const checkBalanceTool = (api: Api<KnowChainId>) => {

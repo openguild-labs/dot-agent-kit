@@ -22,27 +22,27 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
   private polkadotApi: PolkadotApi
   private agentApi: PolkadotAgentApi
 
-  public chainId: string
   public wallet: Uint8Array
   public config: AgentConfig
 
-  constructor(chainId: string, wallet: string, config: AgentConfig) {
+  constructor(wallet: string, config: AgentConfig) {
     this.polkadotApi = new PolkadotApi()
-    this.agentApi = new PolkadotAgentApi(this.polkadotApi.api)
+    this.agentApi = new PolkadotAgentApi(this.polkadotApi)
     this.wallet = this.normalizePrivateKey(wallet)
-    this.chainId = chainId
     this.config = config
   }
 
-  setApi(api?: Api<KnowChainId>): void {
-    this.polkadotApi.setApi(api)
+  setApi(chainId: KnowChainId, api?: Api<KnowChainId>) {
+    this.polkadotApi.setApi(chainId, api)
+  }
+
+  getApi(chainId: KnowChainId): Api<KnowChainId> {
+    return this.polkadotApi.getApi(chainId)
   }
 
   initializeApi(): Promise<void> {
-    if (!isSupportedChain(this.chainId)) {
-      throw new Error(`Chain ${this.chainId} is not supported`)
-    }
-    return this.polkadotApi.initializeApi(getChainByName(this.chainId, getAllSupportedChains()))
+
+    return this.polkadotApi.initializeApi()
   }
 
   disconnect(): Promise<void> {
@@ -65,8 +65,8 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    * const result = await balanceTool.call({ address });
    * ```
    */
-  getNativeBalanceTool(address: string): DynamicStructuredTool {
-    return this.agentApi.getNativeBalanceTool(address)
+  getNativeBalanceTool(chainId: KnowChainId): DynamicStructuredTool {
+    return this.agentApi.getNativeBalanceTool(chainId)
   }
 
   /**
@@ -94,8 +94,8 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    *
    * @throws {Error} If the transfer fails or parameters are invalid
    */
-  transferNativeTool(to: MultiAddress, amount: bigint): DynamicStructuredTool {
-    return this.agentApi.transferNativeTool(to, amount)
+  transferNativeTool(chainId: KnowChainId): DynamicStructuredTool {
+    return this.agentApi.transferNativeTool(chainId)
   }
 
   /**
@@ -110,13 +110,13 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    * const address = agent.getAddress();
    * ```
    */
-  public getAddress(): string {
+  public getAddress(chainId: KnowChainId): string {
     const publicKey = this.getPublicKey()
     const value = publicKey
     if (!value) {
       return ""
     }
-    return ss58.codec(this.chainId).encode(value)
+    return ss58.codec(chainId).encode(value)
   }
 
   /**

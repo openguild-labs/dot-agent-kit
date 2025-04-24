@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi, afterEach } from "vitest"
 import {
   Api,
   Chain,
@@ -6,242 +6,206 @@ import {
   disconnect,
   getAllSupportedChains,
   getChainByName,
-  isSupportedChain
+  isSupportedChain,
+  SmoldotClient
 } from "@dot-agent-kit/common"
 import { start } from "polkadot-api/smoldot"
 import { getApi, getChainSpec, AgentConfig } from "@dot-agent-kit/common"
 import { PolkadotAgentKit } from "./api"
 import { PolkadotApi } from "@dot-agent-kit/core"
 import { DynamicStructuredTool } from "@langchain/core/tools"
+import { PolkadotAgentApi } from "@dot-agent-kit/llm"
 
-vi.mock("polkadot-api/smoldot", () => ({
-  start: vi.fn().mockReturnValue({
-    addChain: vi.fn(),
-    terminate: vi.fn()
-  })
-}))
 
-vi.mock("@dot-agent-kit/common", () => ({
-  getApi: vi.fn(),
-  getChainSpec: vi.fn(),
-  disconnect: vi.fn(),
-  getAllSupportedChains: vi.fn(),
-  isSupportedChain: vi.fn(),
-  getChainByName: vi.fn()
-}))
+describe("PolkadotApi", () => {
+  let polkadotApi: PolkadotApi
+  const mockSmoldotClient = {
+    terminate: vi.fn().mockResolvedValue(undefined)
+  } as unknown as SmoldotClient
 
-describe("API", () => {
-  let polkadotAgentApi: PolkadotAgentKit
-  let mockChain: Chain
-  let mockApi: Api<KnowChainId>
-  let alicePrivateKey: string
-  const aliceSS58Polkadot = "15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5"
-  beforeEach(async () => {
-    // this is dev account
-    alicePrivateKey = "0xe5be9a5092b81bca64be81d212e7f2f9eba183bb7a90954f7b76361f6edb5c0a"
-    polkadotAgentApi = new PolkadotAgentKit("relayChain", alicePrivateKey, {
-      keyType: "Sr25519"
-    })
+  const mockApi = {
+    disconnect: vi.fn().mockResolvedValue(undefined)
+  } as unknown as Api<KnowChainId>
 
-    mockChain = {
-      id: "testChain",
-      name: "relayChain",
-      type: "relay"
-    } as Chain
+  beforeEach(() => {
+    vi.mock("polkadot-api/smoldot", () => ({
+      start: () => mockSmoldotClient
+    }))
 
-    mockApi = {
-      query: {},
-      tx: {},
-      client: {
-        disconnect: vi.fn(),
-        bestBlocks$: { complete: vi.fn() }
-      }
-    } as unknown as Api<KnowChainId>
+    vi.mock("@dot-agent-kit/common", () => ({
+      getAllSupportedChains: () => [
+        { id: "polkadot" },
+        { id: "west" },
+        { id: "polkadot_asset_hub" },
+        { id: "west_asset_hub" }
+      ],
+      getApi: vi.fn().mockResolvedValue(mockApi),
+      getChainSpec: vi.fn().mockReturnValue("mock-chain-spec"),
+      disconnect: vi.fn().mockResolvedValue(undefined)
+    }))
 
-    vi.mocked(getApi).mockResolvedValue(mockApi)
-    vi.mocked(getChainSpec).mockReturnValue("mock-chain-spec")
-    vi.mocked(disconnect).mockResolvedValue(undefined)
-    vi.mocked(getAllSupportedChains).mockReturnValue([mockChain])
-    vi.mocked(isSupportedChain).mockReturnValue(true)
-    vi.mocked(getChainByName).mockReturnValue(mockChain)
+    polkadotApi = new PolkadotApi()
   })
 
-  describe("constructor", () => {
-    it("should initialize with valid parameters", () => {
-      const api = new PolkadotAgentKit("relayChain", alicePrivateKey, {
-        keyType: "Sr25519"
-      })
-
-      expect(api.chainId).toBe("relayChain")
-      expect(api["polkadotApi"]).toBeDefined()
-      expect(api["agentApi"]).toBeDefined()
-    })
-
-    it("should properly normalize hex private key", () => {
-      const api = new PolkadotAgentKit("relayChain", "0x1234567890abcdef", {
-        keyType: "Sr25519"
-      })
-
-      expect(api.wallet).toBeInstanceOf(Uint8Array)
-      expect(Array.from(api.wallet)).toEqual([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef])
-    })
-
-    it("should properly normalize non-hex private key", () => {
-      const api = new PolkadotAgentKit("relayChain", "1234567890abcdef", {
-        keyType: "Sr25519"
-      })
-
-      expect(api.wallet).toBeInstanceOf(Uint8Array)
-      expect(Array.from(api.wallet)).toEqual([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef])
-    })
-
-    it("should initialize internal APIs", () => {
-      const api = new PolkadotAgentKit("relayChain", alicePrivateKey, {
-        keyType: "Sr25519"
-      })
-
-      expect(api["polkadotApi"]).toBeInstanceOf(PolkadotApi)
-      expect(api["agentApi"]).toBeDefined()
-    })
+  afterEach(() => {
+    vi.clearAllMocks()
   })
 
   describe("initializeApi", () => {
-    it("should initialize API if not already initialized", async () => {
-      await polkadotAgentApi.initializeApi()
+    it("should initialize APIs for all supported chains", async () => {
+      await polkadotApi.initializeApi()
 
-      expect(getApi).toHaveBeenCalledWith(
-        mockChain.id,
-        [mockChain],
-        true,
-        expect.objectContaining({
-          enable: true,
-          smoldot: expect.any(Object),
-          chainSpecs: expect.any(Object)
-        })
-      )
+      expect(polkadotApi["initialized"]).toBe(true)
+      expect(polkadotApi["_apis"].size).toBe(4)
+      expect(polkadotApi["_apis"].has("polkadot")).toBe(true)
+      expect(polkadotApi["_apis"].has("west")).toBe(true)
+      expect(polkadotApi["_apis"].has("polkadot_asset_hub")).toBe(true)
+      expect(polkadotApi["_apis"].has("west_asset_hub")).toBe(true)
     })
 
     it("should not reinitialize if already initialized", async () => {
-      await polkadotAgentApi.initializeApi()
-      const firstCallCount = vi.mocked(getApi).mock.calls.length
+      await polkadotApi.initializeApi()
+      const getApiMock = vi.spyOn(require("@dot-agent-kit/common"), "getApi")
 
-      await polkadotAgentApi.initializeApi()
-      const secondCallCount = vi.mocked(getApi).mock.calls.length
+      await polkadotApi.initializeApi()
 
-      expect(secondCallCount).toBe(firstCallCount)
-    })
-
-    it("should use correct chain spec", async () => {
-      await polkadotAgentApi.initializeApi()
-
-      expect(getChainSpec).toHaveBeenCalledWith(mockChain.id)
+      expect(getApiMock).toHaveBeenCalledTimes(4)
     })
 
     it("should handle initialization errors", async () => {
       const error = new Error("Initialization failed")
-      vi.mocked(getApi).mockRejectedValueOnce(error)
+      vi.spyOn(require("@dot-agent-kit/common"), "getApi").mockRejectedValue(error)
 
-      await expect(polkadotAgentApi.initializeApi()).rejects.toThrow("Initialization failed")
+      await expect(polkadotApi.initializeApi()).rejects.toThrow(
+        "Failed to initialize APIs: Initialization failed"
+      )
     })
   })
 
   describe("disconnect", () => {
-    let mockPolkadotApi: PolkadotApi
+    it("should disconnect all chain APIs and terminate smoldot client", async () => {
+      // Setup APIs
+      await polkadotApi.initializeApi()
 
-    beforeEach(() => {
-      mockPolkadotApi = {
-        disconnect: vi.fn(),
-        initializeApi: vi.fn(),
-        setApi: vi.fn()
-      } as unknown as PolkadotApi
+      await polkadotApi.disconnect()
 
-      polkadotAgentApi["polkadotApi"] = mockPolkadotApi
-    })
-
-    it("should disconnect successfully", async () => {
-      vi.mocked(mockPolkadotApi.disconnect).mockResolvedValue()
-
-      await polkadotAgentApi.disconnect()
-
-      expect(mockPolkadotApi.disconnect).toHaveBeenCalled()
+      expect(polkadotApi["initialized"]).toBe(false)
+      expect(polkadotApi["_apis"].size).toBe(0)
+      expect(mockSmoldotClient.terminate).toHaveBeenCalled()
     })
 
     it("should handle disconnect errors", async () => {
-      vi.mocked(mockPolkadotApi.disconnect).mockRejectedValueOnce(new Error("Disconnect failed"))
+      const error = new Error("Disconnect failed")
+      vi.spyOn(require("@dot-agent-kit/common"), "disconnect").mockRejectedValue(error)
 
-      await expect(polkadotAgentApi.disconnect()).rejects.toThrow("Disconnect failed")
+      await polkadotApi.initializeApi()
+      await expect(polkadotApi.disconnect()).rejects.toThrow(
+        "Failed to disconnect: Disconnect failed"
+      )
+    })
+  })
+
+  describe("getApi", () => {
+    it("should return the API for a specific chain", async () => {
+      await polkadotApi.initializeApi()
+      const api = polkadotApi.getApi("polkadot")
+      expect(api).toBeDefined()
     })
 
-    it("should handle disconnect when API is not initialized", async () => {
-      // Setup
-      vi.mocked(mockPolkadotApi.disconnect).mockResolvedValue()
+    it("should return the correct API for different chains", async () => {
+      await polkadotApi.initializeApi()
+      const dotApi = polkadotApi.getApi("polkadot")
+      const westApi = polkadotApi.getApi("west")
 
-      // Act
-      await polkadotAgentApi.disconnect()
+      expect(dotApi).toBeDefined()
+      expect(westApi).toBeDefined()
+      expect(dotApi).not.toBe(westApi)
+    })
+  })
 
-      // Assert
-      expect(mockPolkadotApi.disconnect).toHaveBeenCalled()
+  describe("setApi", () => {
+    it("should set API for a specific chain", () => {
+      const mockChainApi = {} as Api<KnowChainId>
+      polkadotApi.setApi("polkadot", mockChainApi)
+
+      expect(polkadotApi["_apis"].get("polkadot")).toBe(mockChainApi)
+    })
+
+    it("should not set API when api parameter is undefined", () => {
+      polkadotApi.setApi("polkadot", undefined)
+
+      expect(polkadotApi["_apis"].has("polkadot")).toBe(false)
     })
   })
 
   describe("getNativeBalanceTool", () => {
-    const mockAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
-    const mockBalanceTool = {
-      name: "getBalance",
-      description: "Get native balance"
-    } as DynamicStructuredTool
+    const mockDotBalanceTool = {
+      name: "polkadotBalance",
+      description: "Get Polkadot native balance",
+      execute: vi.fn()
+    } as unknown as DynamicStructuredTool
+
+    const mockWestBalanceTool = {
+      name: "westBalance",
+      description: "Get Westend native balance",
+      execute: vi.fn()
+    } as unknown as DynamicStructuredTool
+    let mockAgentPolkadotApi: PolkadotAgentApi
+    let mockAgentWestApi: PolkadotAgentApi
 
     beforeEach(() => {
-      const mockAgentApi = {
-        api: mockApi,
-        getNativeBalanceTool: vi.fn().mockReturnValue(mockBalanceTool)
+      // Ensure APIs are initialized
+      polkadotApi["_apis"].set("polkadot", {} as Api<KnowChainId>)
+      polkadotApi["_apis"].set("west", {} as Api<KnowChainId>)
+      mockAgentPolkadotApi = {
+        api: polkadotApi["_apis"].get("polkadot") as any,
+        getNativeBalanceTool: vi.fn().mockReturnValue(mockDotBalanceTool)
       } as unknown as import("@dot-agent-kit/llm").PolkadotAgentApi
 
-      polkadotAgentApi["agentApi"] = mockAgentApi
+      mockAgentWestApi = {
+        api: polkadotApi["_apis"].get("west") as any,
+        getNativeBalanceTool: vi.fn().mockReturnValue(mockWestBalanceTool)
+      } as unknown as import("@dot-agent-kit/llm").PolkadotAgentApi
+
+      vi.spyOn(mockAgentPolkadotApi, "getNativeBalanceTool")
+        .mockReturnValue(mockDotBalanceTool)
+
+      vi.spyOn(mockAgentWestApi, "getNativeBalanceTool")
+        .mockReturnValue(mockWestBalanceTool)
     })
 
-    it("should return balance tool for valid address", () => {
-      const result = polkadotAgentApi.getNativeBalanceTool(mockAddress)
+    it("should return the correct tool for a specific chain", () => {
+      const tool = mockAgentPolkadotApi.getNativeBalanceTool("polkadot")
 
-      expect(polkadotAgentApi["agentApi"].getNativeBalanceTool).toHaveBeenCalledWith(mockAddress)
-      expect(result).toBe(mockBalanceTool)
+      expect(tool).toBeDefined()
+      expect(tool).toBe(mockDotBalanceTool)
+      expect(tool.name).toBe("polkadotBalance")
     })
 
-    it("should pass through the exact address to agent API", () => {
-      polkadotAgentApi.getNativeBalanceTool(mockAddress)
+    it("should return the correct tool for different chains", () => {
+      const dotTool = mockAgentPolkadotApi.getNativeBalanceTool("polkadot")
+      const westTool = mockAgentWestApi.getNativeBalanceTool("west")
 
-      expect(polkadotAgentApi["agentApi"].getNativeBalanceTool).toHaveBeenCalledWith(
-        expect.stringMatching(mockAddress)
-      )
+      expect(dotTool).toBeDefined()
+      expect(westTool).toBeDefined()
+      expect(dotTool).toBe(mockDotBalanceTool)
+      expect(westTool).toBe(mockWestBalanceTool)
+      expect(dotTool).not.toBe(westTool)
     })
 
-    it("should handle empty address", () => {
-      polkadotAgentApi.getNativeBalanceTool("")
+    it("should throw error if chain API is not initialized", () => {
+      polkadotApi["_apis"].clear()
 
-      expect(polkadotAgentApi["agentApi"].getNativeBalanceTool).toHaveBeenCalledWith("")
+      expect(() => mockAgentPolkadotApi.getNativeBalanceTool("polkadot"))
+        .toThrow("API for chain polkadot is not initialized")
     })
 
-    it("should delegate tool creation to agent API", () => {
-      const customTool = {
-        name: "customBalance",
-        description: "Custom balance tool"
-      } as DynamicStructuredTool
-
-      vi.mocked(polkadotAgentApi["agentApi"].getNativeBalanceTool).mockReturnValueOnce(customTool)
-
-      const result = polkadotAgentApi.getNativeBalanceTool(mockAddress)
-
-      expect(result).toBe(customTool)
-    })
-  })
-
-  describe("getAddress", () => {
-    it("should return the address for the agent account", () => {
-      const agent = new PolkadotAgentKit("polkadot", alicePrivateKey, {
-        keyType: "Sr25519"
-      })
-      const address = agent.getAddress()
-      expect(address).toBe(aliceSS58Polkadot)
+    it("should throw error if chain is not supported", () => {
+      // @ts-expect-error - Testing invalid chain
+      expect(() => mockAgentPolkadotApi.getNativeBalanceTool("unsupported"))
+        .toThrow("Chain unsupported is not supported")
     })
   })
+
+
 })

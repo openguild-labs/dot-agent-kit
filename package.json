@@ -55,6 +55,7 @@
   },
   "packageManager": "pnpm@10.6.5",
   "dependencies": {
+    "polkadot-api": "^1.9.13",
     "@polkadot-api/descriptors": "file:.papi/descriptors"
   }
 }

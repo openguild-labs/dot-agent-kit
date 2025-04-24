@@ -3,27 +3,28 @@ import { DynamicStructuredTool } from "@langchain/core/tools"
 import { MultiAddress } from "@polkadot-api/descriptors"
 import { checkBalanceTool } from "../langchain/balance"
 import { transferNativeTool } from "../langchain/transfer"
+import { PolkadotApi } from "@dot-agent-kit/core"
 
 /**
  * Interface for Polkadot API implementations
  * Defines the interface that all Polkadot chain types must follow
  */
 export interface IPolkadotAgentApi {
-  getNativeBalanceTool(address: string): DynamicStructuredTool
-  transferNativeTool(to: MultiAddress, amount: bigint): DynamicStructuredTool
+  getNativeBalanceTool(chainId: KnowChainId): DynamicStructuredTool
+  transferNativeTool(chainId: KnowChainId): DynamicStructuredTool
 }
 
 export class PolkadotAgentApi implements IPolkadotAgentApi {
-  private api: Api<KnowChainId>
-  constructor(api: Api<KnowChainId>) {
+  private api: PolkadotApi
+  constructor(api: PolkadotApi) {
     this.api = api
   }
 
-  getNativeBalanceTool(address: string): DynamicStructuredTool {
-    return checkBalanceTool(this.api)
+  getNativeBalanceTool(chainId: KnowChainId): DynamicStructuredTool {
+    return checkBalanceTool(this.api.getApi(chainId))
   }
 
-  transferNativeTool(to: MultiAddress, amount: bigint): DynamicStructuredTool {
-    return transferNativeTool(this.api)
+  transferNativeTool(chainId: KnowChainId): DynamicStructuredTool {
+    return transferNativeTool(this.api.getApi(chainId)) 
   }
 }

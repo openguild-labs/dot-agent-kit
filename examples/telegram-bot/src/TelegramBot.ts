@@ -3,6 +3,8 @@ import { ChatOpenAI } from '@langchain/openai';
 import { Tool } from '@langchain/core/tools';
 import { setupHandlers } from './handlers';
 import { PolkadotAgentKit } from '@dot-agent-kit/sdk';
+import { getChainByName, KnowChainId, getAllSupportedChains } from '@dot-agent-kit/common';
+import { polkadot } from '@polkadot-api/descriptors';
 
 
 interface BotConfig {
@@ -33,9 +35,8 @@ export class TelegramBot {
 
     this.bot = new Telegraf(botToken);
 
-    this.agent = new PolkadotAgentKit("polkadot", config.privateKey as string);
+    this.agent = new PolkadotAgentKit(config.privateKey as string, {keyType: 'Sr25519'});
 
-    // this.agent = new PolkadotApi();
 
     this.llm = new ChatOpenAI({
       modelName: 'gpt-4',
@@ -44,7 +45,8 @@ export class TelegramBot {
       streaming: true,
     });
 
-    const balanceTool = this.agent.getNativeBalanceTool("5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY");
+
+    const balanceTool = this.agent.getNativeBalanceTool(polkadot as unknown as KnowChainId);
     // const tools = new PolkadotLangTools(this.agent);
     // const xcmTool = xcmTransfer(tools, this.chainMap) as unknown as Tool;
     // const balanceTool = checkBalanceTool(tools) as unknown as Tool;
