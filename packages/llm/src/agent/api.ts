@@ -1,9 +1,8 @@
-import { Api, Chain, ChainId, KnowChainId } from "@dot-agent-kit/common"
-import { DynamicStructuredTool, Tool } from "@langchain/core/tools"
-import { PolkadotClient } from "polkadot-api"
+import { Api, KnowChainId } from "@dot-agent-kit/common"
+import { DynamicStructuredTool } from "@langchain/core/tools"
+import { MultiAddress } from "@polkadot-api/descriptors"
 import { checkBalanceTool } from "../langchain/balance"
 import { transferNativeTool } from "../langchain/transfer"
-import { MultiAddress } from "@dot-agent-kit/common/.papi/descriptors"
 
 /**
  * Interface for Polkadot API implementations

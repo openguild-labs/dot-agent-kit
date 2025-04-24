@@ -4,20 +4,13 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@polkadot/types-codec': ^15.8.1
-  '@polkadot/api': ^15.8.1
-  '@polkadot/types': ^15.8.1
-  react-is: 19.0.0
-  '@crypto-dex-sdk/chain': 0.1.2
-
 importers:
 
   .:
     dependencies:
       '@polkadot-api/descriptors':
-        specifier: ^0.0.1
-        version: 0.0.1
+        specifier: file:.papi/descriptors
+        version: file:.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))
     devDependencies:
       '@changesets/cli':
         specifier: ^2.27.12
@@ -76,9 +69,6 @@ importers:
       '@noble/hashes':
         specifier: ^1.5.0
         version: 1.7.2
-      '@polkadot-api/descriptors':
-        specifier: file:.papi/descriptors
-        version: file:packages/common/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))
       '@polkadot/api':
         specifier: ^15.8.1
         version: 15.9.2
@@ -88,9 +78,6 @@ importers:
       polkadot-api:
         specifier: ^1.9.13
         version: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
-      std-env:
-        specifier: ^3.9.0
-        version: 3.9.0
     devDependencies:
       '@babel/plugin-syntax-import-attributes':
         specifier: ^7.26.0
@@ -1721,11 +1708,8 @@ packages:
   '@polkadot-api/codegen@0.13.4':
     resolution: {integrity: sha512-CKI24KlFPorzkSsbCw+90Sd7HWJj7Y3W70WP874KOxHQWIZdB7V9qRw/60syJk2cT4PkqJqtYTLRQubXbgySuA==}
 
-  '@polkadot-api/descriptors@0.0.1':
-    resolution: {integrity: sha512-p9esC+idLWlaeLy2V0z3x45xwRdAcNdiUSEeJaDDw6LJxj/WiyIOuhm3ki6gzl4oOZ0wAMuay3zhpVBDFgSEeQ==}
-
-  '@polkadot-api/descriptors@file:packages/common/.papi/descriptors':
-    resolution: {directory: packages/common/.papi/descriptors, type: directory}
+  '@polkadot-api/descriptors@file:.papi/descriptors':
+    resolution: {directory: .papi/descriptors, type: directory}
     peerDependencies:
       polkadot-api: '>=1.9.11'
 
@@ -3978,8 +3962,8 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  react-is@19.0.0:
-    resolution: {integrity: sha512-H91OHcwjZsbq3ClIDHMzBShc1rotbfACdWENsmEf0IFvZ3FgGPtdHMcsv45bQ1hAbgdfiA8SnxTKfDS+x/8m2g==}
+  react-is@16.13.1:
+    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
   read-pkg@9.0.1:
     resolution: {integrity: sha512-9viLL4/n1BJUCT1NXVTdS1jtm80yDEgR5T4yCelII49Mbj0v1rZdKqj7zCiYdbB0CuCgdrvHcNogAKTFPBocFA==}
@@ -6082,9 +6066,7 @@ snapshots:
       '@polkadot-api/substrate-bindings': 0.11.1
       '@polkadot-api/utils': 0.1.2
 
-  '@polkadot-api/descriptors@0.0.1': {}
-
-  '@polkadot-api/descriptors@file:packages/common/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))':
+  '@polkadot-api/descriptors@file:.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))':
     dependencies:
       polkadot-api: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
 
@@ -8635,7 +8617,7 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-      react-is: 19.0.0
+      react-is: 16.13.1
 
   propagate@2.0.1: {}
 
@@ -8653,7 +8635,7 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  react-is@19.0.0: {}
+  react-is@16.13.1: {}
 
   read-pkg@9.0.1:
     dependencies:

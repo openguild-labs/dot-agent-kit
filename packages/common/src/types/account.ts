@@ -1,9 +1,6 @@
 import { ed25519 } from "@noble/curves/ed25519"
 import { getPolkadotSigner, PolkadotSigner } from "polkadot-api/signer"
-import "dotenv/config"
-import { process } from "std-env"
 import { getSs58AddressInfo } from "polkadot-api"
-// import { MultiAddress } from "@polkadot-api/descriptors";
 export type Hex = Uint8Array | string
 
 import * as ss58 from "@subsquid/ss58"

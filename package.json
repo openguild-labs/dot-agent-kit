@@ -2,13 +2,20 @@
   "name": "dot-agent-kit",
   "description": "A toolkit for building agents on Polkadot",
   "author": "OpenGuild Team",
-  "keywords": ["polkadot", "agent", "ai", "polkadot agent kit"],
+  "keywords": [
+    "polkadot",
+    "agent",
+    "ai",
+    "polkadot agent kit"
+  ],
   "private": true,
   "type": "module",
   "devDependencies": {
+    "@changesets/cli": "^2.27.12",
     "@eslint/js": "^9.23.0",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/node": "^22.13.13",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-react": "^7.37.4",
@@ -19,19 +26,10 @@
     "turbo": "^2.4.4",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0",
-    "vitest": "^3.0.9",
-    "@changesets/cli": "^2.27.12",
-    "@typescript-eslint/eslint-plugin": "^8.28.0"
+    "vitest": "^3.0.9"
   },
   "engines": {
     "node": ">=22"
-  },
-  "resolutions": {
-    "@polkadot/types-codec": "^15.8.1",
-    "@polkadot/api": "^15.8.1",
-    "@polkadot/types": "^15.8.1",
-    "react-is": "19.0.0",
-    "@crypto-dex-sdk/chain": "0.1.2"
   },
   "scripts": {
     "compile": "turbo run compile",
@@ -52,10 +50,11 @@
     "build:sdk": "pnpm --filter \"./packages/sdk\" build",
     "build:llm": "pnpm --filter \"./packages/llm\" build",
     "version-packages": "changeset version",
-    "publish-packages": "turbo run build && changeset publish"
+    "publish-packages": "turbo run build && changeset publish",
+    "papi": "papi generate"
   },
   "packageManager": "pnpm@10.6.5",
   "dependencies": {
-    "@polkadot-api/descriptors": "^0.0.1"
+    "@polkadot-api/descriptors": "file:.papi/descriptors"
   }
 }
