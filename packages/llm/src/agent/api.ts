@@ -1,12 +1,10 @@
 
-
-
-
-
 import { Api, Chain, ChainId, KnowChainId } from "@dot-agent-kit/common";
 import { DynamicStructuredTool, Tool } from "@langchain/core/tools";
 import { PolkadotClient } from "polkadot-api";
 import { checkBalanceTool } from "../langchain/balance";
+import { transferNativeTool } from "../langchain/transfer";
+import { MultiAddress } from "@dot-agent-kit/common/.papi/descriptors";
 
 /**
  * Interface for Polkadot API implementations
@@ -16,6 +14,7 @@ export interface IPolkadotAgentApi {
 
 
     getNativeBalanceTool(address: string): DynamicStructuredTool;
+    transferNativeTool(to: MultiAddress, amount: bigint): DynamicStructuredTool;
 
 }
 
@@ -28,5 +27,9 @@ export class PolkadotAgentApi implements IPolkadotAgentApi {
 
     getNativeBalanceTool(address: string): DynamicStructuredTool {
         return checkBalanceTool(this.api)
+    }
+
+    transferNativeTool(to: MultiAddress, amount: bigint): DynamicStructuredTool {
+        return transferNativeTool(this.api)
     }
 }

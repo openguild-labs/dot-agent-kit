@@ -9,7 +9,7 @@ import {
   isSupportedChain
 } from "@dot-agent-kit/common"
 import { start } from "polkadot-api/smoldot"
-import { getApi, getChainSpec } from "@dot-agent-kit/common"
+import { getApi, getChainSpec, AgentConfig } from "@dot-agent-kit/common"
 import { PolkadotAgentKit } from "./api"
 import { PolkadotApi } from "@dot-agent-kit/core"
 import { DynamicStructuredTool } from "@langchain/core/tools"
@@ -34,9 +34,14 @@ describe("API", () => {
   let polkadotAgentApi: PolkadotAgentKit
   let mockChain: Chain
   let mockApi: Api<KnowChainId>
-
+  let alicePrivateKey: string
+  const aliceSS58Polkadot = "15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5"
   beforeEach(async () => {
-    polkadotAgentApi = new PolkadotAgentKit("relayChain", "0x1234567890abcdef")
+    // this is dev account
+    alicePrivateKey = "0xe5be9a5092b81bca64be81d212e7f2f9eba183bb7a90954f7b76361f6edb5c0a"
+    polkadotAgentApi = new PolkadotAgentKit("relayChain", alicePrivateKey, {
+      keyType: "Sr25519"
+    })
 
     mockChain = {
       id: "testChain",
@@ -63,7 +68,9 @@ describe("API", () => {
 
   describe("constructor", () => {
     it("should initialize with valid parameters", () => {
-      const api = new PolkadotAgentKit("relayChain", "0x1234567890abcdef")
+      const api = new PolkadotAgentKit("relayChain", alicePrivateKey, {
+        keyType: "Sr25519"
+      })
 
       expect(api.chainId).toBe("relayChain")
       expect(api["polkadotApi"]).toBeDefined()
@@ -71,21 +78,27 @@ describe("API", () => {
     })
 
     it("should properly normalize hex private key", () => {
-      const api = new PolkadotAgentKit("relayChain", "0x1234567890abcdef")
+      const api = new PolkadotAgentKit("relayChain", "0x1234567890abcdef", {
+        keyType: "Sr25519"
+      })
 
       expect(api.wallet).toBeInstanceOf(Uint8Array)
       expect(Array.from(api.wallet)).toEqual([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef])
     })
 
     it("should properly normalize non-hex private key", () => {
-      const api = new PolkadotAgentKit("relayChain", "1234567890abcdef")
+      const api = new PolkadotAgentKit("relayChain", "1234567890abcdef", {
+        keyType: "Sr25519"
+      })
 
       expect(api.wallet).toBeInstanceOf(Uint8Array)
       expect(Array.from(api.wallet)).toEqual([0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef])
     })
 
     it("should initialize internal APIs", () => {
-      const api = new PolkadotAgentKit("relayChain", "0x1234567890abcdef")
+      const api = new PolkadotAgentKit("relayChain", alicePrivateKey, {
+        keyType: "Sr25519"
+      })
 
       expect(api["polkadotApi"]).toBeInstanceOf(PolkadotApi)
       expect(api["agentApi"]).toBeDefined()
@@ -154,7 +167,6 @@ describe("API", () => {
     })
 
     it("should handle disconnect errors", async () => {
-
       vi.mocked(mockPolkadotApi.disconnect).mockRejectedValueOnce(new Error("Disconnect failed"))
 
       await expect(polkadotAgentApi.disconnect()).rejects.toThrow("Disconnect failed")
@@ -174,53 +186,62 @@ describe("API", () => {
 
   describe("getNativeBalanceTool", () => {
     const mockAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
-    const mockBalanceTool = { 
-        name: "getBalance", 
-        description: "Get native balance" 
+    const mockBalanceTool = {
+      name: "getBalance",
+      description: "Get native balance"
     } as DynamicStructuredTool
 
     beforeEach(() => {
-        const mockAgentApi = {
-            api: mockApi,
-            getNativeBalanceTool: vi.fn().mockReturnValue(mockBalanceTool)
-        } as unknown as import("@dot-agent-kit/llm").PolkadotAgentApi
+      const mockAgentApi = {
+        api: mockApi,
+        getNativeBalanceTool: vi.fn().mockReturnValue(mockBalanceTool)
+      } as unknown as import("@dot-agent-kit/llm").PolkadotAgentApi
 
-        polkadotAgentApi["agentApi"] = mockAgentApi
+      polkadotAgentApi["agentApi"] = mockAgentApi
     })
 
     it("should return balance tool for valid address", () => {
-        const result = polkadotAgentApi.getNativeBalanceTool(mockAddress)
+      const result = polkadotAgentApi.getNativeBalanceTool(mockAddress)
 
-        expect(polkadotAgentApi["agentApi"].getNativeBalanceTool).toHaveBeenCalledWith(mockAddress)
-        expect(result).toBe(mockBalanceTool)
+      expect(polkadotAgentApi["agentApi"].getNativeBalanceTool).toHaveBeenCalledWith(mockAddress)
+      expect(result).toBe(mockBalanceTool)
     })
 
     it("should pass through the exact address to agent API", () => {
-        polkadotAgentApi.getNativeBalanceTool(mockAddress)
+      polkadotAgentApi.getNativeBalanceTool(mockAddress)
 
-        expect(polkadotAgentApi["agentApi"].getNativeBalanceTool).toHaveBeenCalledWith(
-            expect.stringMatching(mockAddress)
-        )
+      expect(polkadotAgentApi["agentApi"].getNativeBalanceTool).toHaveBeenCalledWith(
+        expect.stringMatching(mockAddress)
+      )
     })
 
     it("should handle empty address", () => {
-        polkadotAgentApi.getNativeBalanceTool("")
+      polkadotAgentApi.getNativeBalanceTool("")
 
-        expect(polkadotAgentApi["agentApi"].getNativeBalanceTool).toHaveBeenCalledWith("")
+      expect(polkadotAgentApi["agentApi"].getNativeBalanceTool).toHaveBeenCalledWith("")
     })
 
     it("should delegate tool creation to agent API", () => {
-        const customTool = { 
-            name: "customBalance", 
-            description: "Custom balance tool" 
-        } as DynamicStructuredTool
+      const customTool = {
+        name: "customBalance",
+        description: "Custom balance tool"
+      } as DynamicStructuredTool
 
-        vi.mocked(polkadotAgentApi["agentApi"].getNativeBalanceTool)
-            .mockReturnValueOnce(customTool)
+      vi.mocked(polkadotAgentApi["agentApi"].getNativeBalanceTool).mockReturnValueOnce(customTool)
 
-        const result = polkadotAgentApi.getNativeBalanceTool(mockAddress)
+      const result = polkadotAgentApi.getNativeBalanceTool(mockAddress)
 
-        expect(result).toBe(customTool)
+      expect(result).toBe(customTool)
+    })
+  })
+
+  describe("getAddress", () => {
+    it("should return the address for the agent account", () => {
+      const agent = new PolkadotAgentKit("polkadot", alicePrivateKey, {
+        keyType: "Sr25519"
+      })
+      const address = agent.getAddress()
+      expect(address).toBe(aliceSS58Polkadot)
     })
   })
 })

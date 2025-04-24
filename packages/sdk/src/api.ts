@@ -1,49 +1,3 @@
-// // Main entry point for the Polkadot Agent Kit SDK
-
-// // Import initialization functions
-// import { PolkadotAgentKit } from "@dot-agent-kit/llm";
-// import { RelayChainTools, ParaChainTools } from "@dot-agent-kit/core";
-
-// /**
-//  * Initialize the Polkadot Agent Kit SDK manually
-//  * This is optional as the SDK initializes automatically on import,
-//  * but this function allows for explicit initialization and error handling
-//  *
-//  * @param options Configuration options for SDK initialization
-//  * @returns Promise that resolves when initialization is complete
-//  */
-// export async function initializeSDK(options?: {
-//   silent?: boolean // Whether to suppress console logs
-// }): Promise<void> {
-//   try {
-//     // Check if descriptors are already initialized
-//     if (Object.keys(chainDescriptorRegistry.getAllDescriptors()).length > 0) {
-//       if (!options?.silent) {
-//       }
-//       return
-//     }
-
-//     // Initialize chain descriptors
-//     await initializeDefaultChainDescriptors()
-
-//     if (!options?.silent) {
-//     }
-//   } catch (error) {
-//     console.error("❌ Failed to initialize Polkadot Agent Kit SDK:", error)
-//     throw error
-//   }
-// }
-
-// // Auto-initialize the SDK on import
-// // This makes it work like a normal SDK without manual setup
-// try {
-//   ;(async () => {
-//     await initializeSDK({ silent: true })
-//   })()
-// } catch (error) {
-//   console.error("❌ SDK auto-initialization failed:", error)
-// }
-
 import { IPolkadotAgentApi, PolkadotAgentApi } from "@dot-agent-kit/llm"
 import { IPolkadotApi, PolkadotApi } from "@dot-agent-kit/core"
 import {
@@ -56,9 +10,12 @@ import {
   SmoldotClient,
   getChainByName,
   getAllSupportedChains,
-  isSupportedChain
+  isSupportedChain,
+  AgentConfig
 } from "@dot-agent-kit/common"
 import { DynamicStructuredTool } from "@langchain/core/tools"
+import { sr25519CreateDerive, ed25519CreateDerive } from "@polkadot-labs/hdkd"
+import * as ss58 from "@subsquid/ss58"
 
 export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
   private polkadotApi: PolkadotApi
@@ -66,12 +23,14 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
 
   public chainId: string
   public wallet: Uint8Array
+  public config: AgentConfig
 
-  constructor(chainId: string, wallet: string) {
+  constructor(chainId: string, wallet: string, config: AgentConfig) {
     this.polkadotApi = new PolkadotApi()
     this.agentApi = new PolkadotAgentApi(this.polkadotApi.api)
     this.wallet = this.normalizePrivateKey(wallet)
     this.chainId = chainId
+    this.config = config
   }
 
   setApi(api?: Api<KnowChainId>): void {
@@ -92,6 +51,53 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
   getNativeBalanceTool(address: string): DynamicStructuredTool {
     return this.agentApi.getNativeBalanceTool(address)
   }
+
+  /**
+   * Get Address
+   *
+   * @returns The address as string
+   * @throws Error if no main private key is available
+   *
+   * @example
+   * ```typescript
+   * // Get the main account address
+   * const address = agent.getAddress();
+   * ```
+   */
+  public getAddress(): string {
+    const publicKey = this.getPublicKey()
+    const value = publicKey
+    if (!value) {
+      return ""
+    }
+    return ss58.codec(this.chainId).encode(value)
+  }
+
+  
+  /**
+   * Get main account public key
+   *
+   * @returns The public key as Uint8Array
+   * @throws Error if no main private key is available
+   *
+   * @example
+   * ```typescript
+   * // Get the main account public key
+   * const publicKey = agent.getPublicKey();
+   * ```
+   */
+  private getPublicKey(): Uint8Array {
+    if (this.config.keyType === "Sr25519") {
+      // For Sr25519, use the derive function to get the public key
+      const derive = sr25519CreateDerive(this.wallet as Uint8Array)
+      return derive(this.config.derivationPath || "").publicKey
+    } else {
+      // For Ed25519, use the ed25519 lib
+      const derive = ed25519CreateDerive(this.wallet as Uint8Array)
+      return derive(this.config.derivationPath || "").publicKey
+    }
+  }
+
 
   /**
    * Normalize a private key string to Uint8Array format

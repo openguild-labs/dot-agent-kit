@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "@dot-agent-kit/common": "workspace:*",
-    "@polkadot-api/descriptors": "file:.papi/descriptors",
     "polkadot-api": "^1.9.13"
   },
   "devDependencies": {

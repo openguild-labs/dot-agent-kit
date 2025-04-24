@@ -1,8 +1,3 @@
-/** Define type for chain configuration **/
-export interface ChainConfig {
-  url: string
-  name: string
-}
 
 /** Key type supported by the agent */
 export type KeyType = "Sr25519" | "Ed25519"
@@ -25,6 +20,4 @@ export interface AgentConfig {
   delegateDerivationPath?: string
   /** Optional delegate key type (defaults to main keyType) */
   delegateKeyType?: KeyType
-  /** Chain configurations */
-  chains: ChainConfig[]
 }

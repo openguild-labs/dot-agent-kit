@@ -152,9 +152,6 @@ importers:
       '@dot-agent-kit/common':
         specifier: workspace:*
         version: link:../common
-      '@polkadot-api/descriptors':
-        specifier: file:.papi/descriptors
-        version: file:packages/core/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))
       polkadot-api:
         specifier: ^1.9.13
         version: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
@@ -295,9 +292,18 @@ importers:
       '@noble/curves':
         specifier: ^1.6.0
         version: 1.8.2
+      '@polkadot-labs/hdkd':
+        specifier: ^0.0.13
+        version: 0.0.13
+      '@polkadot-labs/hdkd-helpers':
+        specifier: ^0.0.13
+        version: 0.0.13
       '@polkadot/api':
         specifier: ^15.8.1
         version: 15.9.2
+      '@subsquid/ss58':
+        specifier: ^2.0.2
+        version: 2.0.2
       polkadot-api:
         specifier: ^1.9.13
         version: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
@@ -1720,11 +1726,6 @@ packages:
 
   '@polkadot-api/descriptors@file:packages/common/.papi/descriptors':
     resolution: {directory: packages/common/.papi/descriptors, type: directory}
-    peerDependencies:
-      polkadot-api: '>=1.9.11'
-
-  '@polkadot-api/descriptors@file:packages/core/.papi/descriptors':
-    resolution: {directory: packages/core/.papi/descriptors, type: directory}
     peerDependencies:
       polkadot-api: '>=1.9.11'
 
@@ -6084,10 +6085,6 @@ snapshots:
   '@polkadot-api/descriptors@0.0.1': {}
 
   '@polkadot-api/descriptors@file:packages/common/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))':
-    dependencies:
-      polkadot-api: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
-
-  '@polkadot-api/descriptors@file:packages/core/.papi/descriptors(polkadot-api@1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0))':
     dependencies:
       polkadot-api: 1.9.13(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.0)
 
