@@ -49,10 +49,51 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
     return this.polkadotApi.disconnect()
   }
 
+  /**
+   * Get Native Balance Tool
+   * Creates a tool for checking native token balance of an address
+   *
+   * @param address - The address to check balance for
+   * @returns DynamicStructuredTool for checking native token balance
+   *
+   * @example
+   * ```typescript
+   * // Create a balance checking tool
+   * const balanceTool = agent.getNativeBalanceTool("5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY");
+   *
+   * // Tool can be used with LangChain
+   * const result = await balanceTool.call({ address });
+   * ```
+   */
   getNativeBalanceTool(address: string): DynamicStructuredTool {
     return this.agentApi.getNativeBalanceTool(address)
   }
 
+  /**
+   * Get Native Transfer Tool
+   * Creates a tool for transferring native tokens to an address
+   *
+   * @param to - The recipient address as MultiAddress
+   * @param amount - The amount to transfer as bigint
+   * @returns DynamicStructuredTool for transferring native tokens
+   *
+   * @example
+   * ```typescript
+   * // Create a transfer tool
+   * const transferTool = agent.transferNativeTool(
+   *   "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+   *   BigInt(1000000000000) // 1 DOT in planck
+   * );
+   *
+   * // Tool can be used with LangChain
+   * const result = await transferTool.call({
+   *   address: to,
+   *   amount: amount
+   * });
+   * ```
+   *
+   * @throws {Error} If the transfer fails or parameters are invalid
+   */
   transferNativeTool(to: MultiAddress, amount: bigint): DynamicStructuredTool {
     return this.agentApi.transferNativeTool(to, amount)
   }
