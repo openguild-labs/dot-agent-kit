@@ -5,9 +5,9 @@ export default [
     files: ['**/*.ts'],
     ignores: ['**/node_modules/**', '**/dist/**', '**/build/**'],
     languageOptions: {
-      parser: require('@typescript-eslint/parser'),
       parserOptions: {
-        project: './tsconfig.json',
+        project: ["./packages/*/tsconfig*.json"],
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     plugins: {

@@ -1,0 +1,34 @@
+{
+  "chains": [
+    {
+      "id": "west",
+      "name": "westend2",
+      "description": "Westend 2 Testnet"
+    },
+    {
+      "id": "west_asset_hub",
+      "name": "westend2_asset_hub",
+      "description": "Westend 2 Asset Hub"
+    },
+    {
+      "id": "polkadot",
+      "name": "polkadot",
+      "description": "Polkadot Relay Chain"
+    },
+    {
+      "id": "polkadot_asset_hub",
+      "name": "polkadot_asset_hub",
+      "description": "Polkadot Asset Hub"
+    },
+    {
+      "id": "ksmcc3",
+      "name": "ksmcc3",
+      "description": "Kusama Relay Chain"
+    },
+    {
+      "id": "ksmcc3_asset_hub",
+      "name": "ksmcc3_asset_hub",
+      "description": "Kusama Asset Hub"
+    }
+  ]
+}
