@@ -18,10 +18,16 @@ export type LightClients = ClientOptions["lightClients"]
 type ApiBase<Id extends ChainId> = Id extends KnowChainId
     ? TypedApi<Descriptors<Id>>
     : TypedApi<ChainDefinition>
+    
 export type Api<Id extends ChainId> = ApiBase<Id> & {
-    chainId: Id
-    chain: Chain
-    waitReady: Promise<void>
+        chainId: Id
+        chain: Chain
+        waitReady: Promise<void>
+        client?: {
+            bestBlocks$?: { complete: () => void }
+            disconnect?: () => Promise<void>
+        }
+        lightClients?: LightClients
 }
 
 export const isApiAssetHub = (api: Api<ChainId>): api is Api<ChainIdAssetHub> => {
@@ -102,3 +108,28 @@ export const getApi = async <Id extends ChainId, Papi = Api<Id>>(
 
     return api as Papi
 }
+
+/**
+ * Disconnects an API instance and cleans up associated resources
+ * @param api The API instance to disconnect
+ * @returns Promise that resolves when disconnection is complete
+ */
+export const disconnect = async <Id extends ChainId>(api: Api<Id>): Promise<void> => {
+    const cacheKey = getApiCacheId(api.chainId, api.lightClients)
+    
+    try {
+        // Clean up any active subscriptions
+        if (api.client?.bestBlocks$) {
+            api.client.bestBlocks$.complete()
+        }
+
+        // Disconnect the underlying client
+        await api.client?.disconnect?.()
+
+        // Remove from cache
+        API_CACHE.delete(cacheKey)
+    } catch (error) {
+        throw new Error(`Failed to disconnect API: ${(error as Error).message}`)
+    }
+}
+

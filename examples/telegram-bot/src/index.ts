@@ -1,7 +1,7 @@
-import dotenv from 'dotenv';
-import { TelegramBot } from './TelegramBot';
-import {defaultChainMap} from '../../src/chain/chainMap';
 
+import { TelegramBot } from './TelegramBot';
+
+import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function runBot() {
@@ -9,8 +9,7 @@ async function runBot() {
     botToken: process.env.TELEGRAM_BOT_TOKEN!,
     openAiApiKey: process.env.OPENAI_API_KEY!,
     privateKey: process.env.PRIVATE_KEY!,
-    delegatePrivateKey: process.env.DELEGATE_PRIVATE_KEY!,
-    chains: Object.values(defaultChainMap),
+    // delegatePrivateKey: process.env.DELEGATE_PRIVATE_KEY!,
   });
 
   await bot.start();

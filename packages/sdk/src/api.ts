@@ -44,48 +44,73 @@
 //   console.error("❌ SDK auto-initialization failed:", error)
 // }
 
+import { IPolkadotAgentApi, PolkadotAgentApi } from "@dot-agent-kit/llm"
+import { IPolkadotApi, PolkadotApi } from "@dot-agent-kit/core"
+import {
+  Api,
+  Chain,
+  disconnect,
+  getApi,
+  getChainSpec,
+  KnowChainId,
+  SmoldotClient,
+  getChainByName,
+  getAllSupportedChains,
+  isSupportedChain
+} from "@dot-agent-kit/common"
+import { DynamicStructuredTool } from "@langchain/core/tools"
 
-import { IPolkadotAgentApi } from "@dot-agent-kit/llm"
-import { IPolkadotApi } from "@dot-agent-kit/core"
-import { Api, Chain, getApi, getChainSpec, KnowChainId, SmoldotClient } from "@dot-agent-kit/common"
-import * as ed from '@noble/curves/ed25519';
-import { start } from "polkadot-api/smoldot";
+export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
+  private polkadotApi: PolkadotApi
+  private agentApi: PolkadotAgentApi
 
-export class PolkadotApi implements IPolkadotApi {
-    private _api?: Api<KnowChainId>
-    private api: Api<KnowChainId>
-    private initialized = false
-    private disconnectAllowed = true
-    private smoldotClient: SmoldotClient
+  public chainId: string
+  public wallet: Uint8Array
 
-    constructor() {
-        this.smoldotClient = start()
+  constructor(chainId: string, wallet: string) {
+    this.polkadotApi = new PolkadotApi()
+    this.agentApi = new PolkadotAgentApi(this.polkadotApi.api)
+    this.wallet = this.normalizePrivateKey(wallet)
+    this.chainId = chainId
+  }
+
+  setApi(api?: Api<KnowChainId>): void {
+    this.polkadotApi.setApi(api)
+  }
+
+  initializeApi(): Promise<void> {
+    if (!isSupportedChain(this.chainId)) {
+      throw new Error(`Chain ${this.chainId} is not supported`)
     }
+    return this.polkadotApi.initializeApi(getChainByName(this.chainId, getAllSupportedChains()))
+  }
 
-    setApi(api?: Api<KnowChainId>) {
-        this._api = api
+  disconnect(): Promise<void> {
+    return this.polkadotApi.disconnect()
+  }
+
+  getNativeBalanceTool(address: string): DynamicStructuredTool {
+    return this.agentApi.getNativeBalanceTool(address)
+  }
+
+  /**
+   * Normalize a private key string to Uint8Array format
+   * Handles hex strings with or without 0x prefix
+   *
+   * @param key - Private key as string
+   * @returns Uint8Array representation of the key
+   * @private
+   */
+  private normalizePrivateKey(key: string): Uint8Array {
+    if (key.startsWith("0x")) {
+      return new Uint8Array(
+        key
+          .substring(2)
+          .match(/.{1,2}/g)
+          ?.map(byte => parseInt(byte, 16)) || []
+      )
+    } else {
+      return new Uint8Array(key.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || [])
     }
-
-
-    async initializeApi(chain: Chain) {
-        if (this.initialized) {
-            return
-
-        }
-
-        else {
-            this.api = await getApi(chain.id, [chain], true, {
-                enable: true,
-                smoldot: this.smoldotClient,
-                chainSpecs: { [chain.id]: this.getChainSpec(chain) }
-            })
-        }
-    }
-    disconnect(): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-
-    getChainSpec(chain: Chain) {
-        return getChainSpec(chain.id)
-    }
+  }
 }

@@ -4,8 +4,9 @@
 
 
 import { Api, Chain, ChainId, KnowChainId } from "@dot-agent-kit/common";
-import { Tool } from "@langchain/core/tools";
+import { DynamicStructuredTool, Tool } from "@langchain/core/tools";
 import { PolkadotClient } from "polkadot-api";
+import { checkBalanceTool } from "../langchain/balance";
 
 /**
  * Interface for Polkadot API implementations
@@ -13,9 +14,19 @@ import { PolkadotClient } from "polkadot-api";
  */
 export interface IPolkadotAgentApi {
 
-    getNativeBalanceTool(address: string): Tool;
+
+    getNativeBalanceTool(address: string): DynamicStructuredTool;
 
 }
 
 
+export class PolkadotAgentApi implements IPolkadotAgentApi {
+    private api: Api<KnowChainId>
+    constructor(api: Api<KnowChainId>) {
+        this.api = api
+    }
 
+    getNativeBalanceTool(address: string): DynamicStructuredTool {
+        return checkBalanceTool(this.api)
+    }
+}

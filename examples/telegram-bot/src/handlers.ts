@@ -1,7 +1,7 @@
 import { Telegraf } from 'telegraf';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
-import { Tool } from '@langchain/core/tools';
+import { DynamicStructuredTool, Tool } from '@langchain/core/tools';
 
 const SYSTEM_PROMPT = `I am a Telegram bot powered by PolkadotAgentKit. I can assist you with:
 - Transferring tokens between chains using XCM (e.g., "transfer 1 token to westend_asset_hub to 5CSox4ZSN4SGLKUG9NYPtfVK9sByXLtxP4hmoF4UgkM4jgDJ")
@@ -23,7 +23,7 @@ Please provide instructions, and I will assist you!`;
 export function setupHandlers(
   bot: Telegraf,
   llm: ChatOpenAI,
-  toolsByName: Record<string, Tool>,
+  toolsByName: Record<string, DynamicStructuredTool>,
 ): void {
   bot.start((ctx) => {
     ctx.reply(
