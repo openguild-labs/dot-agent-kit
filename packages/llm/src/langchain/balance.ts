@@ -3,7 +3,6 @@ import { z } from "zod"
 import { getNativeBalance } from "@dot-agent-kit/core"
 import { Api, KnowChainId } from "@dot-agent-kit/common"
 
-
 export const checkBalanceTool = (api: Api<KnowChainId>) => {
   return tool(
     async ({ address }: { address: string }) => {

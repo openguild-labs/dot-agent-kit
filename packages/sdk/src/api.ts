@@ -73,7 +73,6 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
     return ss58.codec(this.chainId).encode(value)
   }
 
-  
   /**
    * Get main account public key
    *
@@ -97,7 +96,6 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
       return derive(this.config.derivationPath || "").publicKey
     }
   }
-
 
   /**
    * Normalize a private key string to Uint8Array format

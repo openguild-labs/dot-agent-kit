@@ -84,31 +84,26 @@ export const getChainByName = <T extends Chain>(name: string, chains: Chain[]): 
   return foundChain as T
 }
 
-
-const DEFAULT_CHAIN_CONFIG: Omit<Chain, 'id'> = {
-    name: '',
-    specName: '',
-    wsUrls: [],
-    relay: null,
-    chainId: null,
-    type: 'system',
-    blockExplorerUrl: null
+const DEFAULT_CHAIN_CONFIG: Omit<Chain, "id"> = {
+  name: "",
+  specName: "",
+  wsUrls: [],
+  relay: null,
+  chainId: null,
+  type: "system",
+  blockExplorerUrl: null
 }
 
 export const getAllSupportedChains = (): Chain[] => {
-    return Object.keys(DESCRIPTORS_ALL).map(id => ({
-        ...DEFAULT_CHAIN_CONFIG,
-        id: id as ChainId,
-        name: id,
-        specName: id,
-        type: isChainIdRelay(id) ? 'relay' : 
-              isChainIdAssetHub(id) ? 'para' : 'system'
-    }))
+  return Object.keys(DESCRIPTORS_ALL).map(id => ({
+    ...DEFAULT_CHAIN_CONFIG,
+    id: id as ChainId,
+    name: id,
+    specName: id,
+    type: isChainIdRelay(id) ? "relay" : isChainIdAssetHub(id) ? "para" : "system"
+  }))
 }
 
 export const isSupportedChain = (chainId: unknown): chainId is ChainId => {
-    return typeof chainId === 'string' && Object.keys(DESCRIPTORS_ALL).includes(chainId)
+  return typeof chainId === "string" && Object.keys(DESCRIPTORS_ALL).includes(chainId)
 }
-
-
-

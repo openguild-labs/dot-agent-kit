@@ -1,4 +1,3 @@
-
 /** Key type supported by the agent */
 export type KeyType = "Sr25519" | "Ed25519"
 
