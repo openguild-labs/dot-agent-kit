@@ -156,7 +156,6 @@ dist
 
 package-lock.json
 
-.papi/
 
 .turbo/
 .changeset/
