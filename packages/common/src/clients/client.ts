@@ -36,14 +36,16 @@ export const getClient = (
   return CLIENTS_CACHE.get(cacheKey) as Promise<PolkadotClient>
 }
 
-export const getRelayChainClient = async (chain: ChainRelay, options: ClientOptions) => {
+const getEnvironmentWsProvider = async () => {
   const isNodeJs = typeof window === 'undefined'
-  let getWsProvider
-  if (isNodeJs) {
-    getWsProvider = (await import('polkadot-api/ws-provider/node')).getWsProvider
-  } else {
-    getWsProvider = (await import('polkadot-api/ws-provider/web')).getWsProvider
-  }
+  return isNodeJs
+    ? (await import('polkadot-api/ws-provider/node')).getWsProvider
+    : (await import('polkadot-api/ws-provider/web')).getWsProvider
+}
+
+
+export const getRelayChainClient = async (chain: ChainRelay, options: ClientOptions) => {
+  const getWsProvider = await getEnvironmentWsProvider()
 
   
   // force ws provider if light clients are disabled or chainSpec is not available
@@ -64,14 +66,7 @@ export const getRelayChainClient = async (chain: ChainRelay, options: ClientOpti
 }
 
 export const getParaChainClient = async (chain: Chain, options: ClientOptions) => {
-
-  const isNodeJs = typeof window === 'undefined'
-  let getWsProvider
-  if (isNodeJs) {
-    getWsProvider = (await import('polkadot-api/ws-provider/node')).getWsProvider
-  } else {
-    getWsProvider = (await import('polkadot-api/ws-provider/web')).getWsProvider
-  }
+  const getWsProvider = await getEnvironmentWsProvider()
 
 
   if (!chain.relay) throw new Error(`Chain ${chain.id} does not have a relay chain`)
