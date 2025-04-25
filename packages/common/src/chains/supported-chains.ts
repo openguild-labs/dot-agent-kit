@@ -21,7 +21,7 @@ export const polkadotChain = createChain({
 })
 
 export const polkadotAssetHubChain = createChain({
-  id: "pah",
+  id: "polkadot_asset_hub",
   name: "Polkadot Asset Hub",
   specName: "asset-hub-polkadot",
   wsUrls: ["wss://polkadot-asset-hub-rpc.polkadot.io/"],
@@ -33,7 +33,7 @@ export const polkadotAssetHubChain = createChain({
 })
 
 export const westendChain = createChain({
-  id: "westend",
+  id: "west",
   name: "Westend",
   specName: "westend",
   wsUrls: ["wss://westend-rpc.polkadot.io"],
@@ -46,7 +46,7 @@ export const westendChain = createChain({
 })
 
 export const westendAssetHubChain = createChain({
-  id: "wah",
+  id: "west_asset_hub",
   name: "Westend Asset Hub",
   specName: "asset-hub-westend",
   wsUrls: ["wss://westend-asset-hub-rpc.polkadot.io"],

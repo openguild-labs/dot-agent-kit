@@ -36,7 +36,6 @@ export class TelegramBot {
     this.bot = new Telegraf(botToken);
 
     this.agent = new PolkadotAgentKit(privateKey as string, {keyType: 'Sr25519'});
-    console.log("agent", this.agent.getAddress('polkadot'));
 
     this.llm = new ChatOpenAI({
       modelName: 'gpt-4',
@@ -44,23 +43,36 @@ export class TelegramBot {
       openAIApiKey: openAiApiKey,
       streaming: true,
     });
-
-    const balanceTool = this.agent.getNativeBalanceTool('polkadot');
-    console.log("balanceTool", balanceTool);
-    // const tools = new PolkadotLangTools(this.agent);
-    // const xcmTool = xcmTransfer(tools, this.chainMap) as unknown as Tool;
-    // const balanceTool = checkBalanceTool(tools) as unknown as Tool;
-    // const proxiesTool = checkProxiesTool(tools, this.chainMap) as unknown as Tool;
-
-    setupHandlers(this.bot, this.llm, {
-      // xcmTransfer: xcmTool,
-      checkBalance: balanceTool,
-      // checkProxies: proxiesTool,
-    });
   }
+
+  async initialize() {
+    console.log("Initializing bot...");
+    
+    try {
+      // Initialize APIs first
+      await this.agent.initializeApi();
+    
+
+      // Set up tools after API initialization
+      const balanceTool = this.agent.getNativeBalanceTool('polkadot');
+      
+      setupHandlers(this.bot, this.llm, {
+        checkBalance: balanceTool,
+      });
+
+      console.log("Bot initialization complete");
+    } catch (error) {
+      console.error("Failed to initialize bot:", error);
+      throw error;
+    }
+  }
+
+
+
 
   public async start(): Promise<void> {
     try {
+      await this.initialize();
       await this.bot.launch();
       console.log('Bot is running!');
       
@@ -70,9 +82,12 @@ export class TelegramBot {
     }
   }
 
-  public stop(): void {
-    // this.agent.disconnectAll();
-    this.bot.stop();
-    
+  public async stop(): Promise<void> {
+    try {
+      await this.agent.disconnect();
+      this.bot.stop();
+    } catch (error) {
+      console.error('Error during shutdown:', error);
+    }
   }
 }

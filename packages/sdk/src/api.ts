@@ -41,8 +41,13 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
     return this.polkadotApi.getApi(chainId)
   }
 
-  initializeApi(): Promise<void> {
-    return this.polkadotApi.initializeApi()
+  async initializeApi(): Promise<void> {
+    try {
+      await this.polkadotApi.initializeApi()
+    } catch (error) {
+      console.error("PolkadotAgentKit API initialization failed:", error)
+      throw error
+    }
   }
 
   disconnect(): Promise<void> {

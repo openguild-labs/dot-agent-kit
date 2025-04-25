@@ -8,6 +8,7 @@ export const checkBalanceTool = (api: Api<KnowChainId>, address: string) => {
     async ({ chain }: { chain: string }) => {
       try {
         const balance = await getNativeBalance(api, address)
+        console.log("balance on debug", balance)
         return {
           content: `Balance on ${chain}: ${balance.toString()}`,
           tool_call_id: `balance_${Date.now()}`

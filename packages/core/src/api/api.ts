@@ -6,7 +6,8 @@ import {
   getApi,
   getChainSpec,
   disconnect,
-  getAllSupportedChains
+  getAllSupportedChains,
+  specRegistry
 } from "@dot-agent-kit/common"
 
 import { start } from "polkadot-api/smoldot"
@@ -24,6 +25,7 @@ export class PolkadotApi implements IPolkadotApi {
   private _apis: Map<KnowChainId, Api<KnowChainId>> = new Map()
   private initialized = false
   private smoldotClient: SmoldotClient
+  private initPromise: Promise<void> | null = null
 
   constructor() {
     this.smoldotClient = start()
@@ -36,43 +38,70 @@ export class PolkadotApi implements IPolkadotApi {
   }
 
   getApi(chainId: KnowChainId): Api<KnowChainId> {
-    return this._apis.get(chainId) as Api<KnowChainId>
+    if (!this.initialized) {
+      throw new Error("APIs not initialized. Call initializeApi() first.")
+    }
+    const api = this._apis.get(chainId)
+    if (!api) {
+      throw new Error(`API for chain ${chainId} not found`)
+    }
+    return api
   }
 
   async initializeApi(): Promise<void> {
+    if (this.initPromise) {
+      return this.initPromise
+    }
+
     if (this.initialized) {
       return
     }
 
-    try {
-      const supportedChains = getAllSupportedChains()
-      const chainSpecs: Record<KnowChainId, string> = {
-        polkadot: "",
-        west: "",
-        polkadot_asset_hub: "",
-        west_asset_hub: ""
-      }
+    this.initPromise = (async () => {
+      try {
+        const supportedChains = getAllSupportedChains()
 
-      for (const chain of supportedChains) {
-        chainSpecs[chain.id as KnowChainId] = this.getChainSpec(chain)
-      }
+        const chainSpecs: Record<KnowChainId, string> = {
+          polkadot: "",
+          west: "",
+          polkadot_asset_hub: "",
+          west_asset_hub: ""
+        }
 
-      // Initialize APIs for all supported chains
-      for (const chain of supportedChains) {
-        const api = await getApi(chain.id as KnowChainId, [chain], true, {
-          enable: true,
-          smoldot: this.smoldotClient,
-          chainSpecs
+        for (const chain of supportedChains) {
+          chainSpecs[chain.id as KnowChainId] = this.getChainSpec(chain.id as KnowChainId)
+        }
+
+        const apiInitPromises = supportedChains.map(async chain => {
+          try {
+            const api = await getApi(chain.id as KnowChainId, [chain], true, {
+              enable: true,
+              smoldot: this.smoldotClient,
+              chainSpecs
+            })
+            return { chain, api }
+          } catch (error) {
+            console.error(`Failed to initialize API for ${chain.id}:`, error)
+            throw error
+          }
         })
-        this._apis.set(chain.id as KnowChainId, api)
-      }
 
-      this.initialized = true
-    } catch (error) {
-      throw new Error(
-        `Failed to initialize APIs: ${error instanceof Error ? error.message : String(error)}`
-      )
-    }
+        const results = await Promise.all(apiInitPromises)
+        for (const { chain, api } of results) {
+          this._apis.set(chain.id as KnowChainId, api)
+        }
+
+        this.initialized = true
+      } catch (error) {
+        throw new Error(
+          `Failed to initialize APIs: ${error instanceof Error ? error.message : String(error)}`
+        )
+      } finally {
+        this.initPromise = null
+      }
+    })()
+
+    return this.initPromise
   }
 
   async disconnect(): Promise<void> {
@@ -95,7 +124,7 @@ export class PolkadotApi implements IPolkadotApi {
     }
   }
 
-  getChainSpec(chain: Chain) {
-    return getChainSpec(chain.id)
+  getChainSpec(chainId: KnowChainId) {
+    return getChainSpec(chainId, specRegistry())
   }
 }

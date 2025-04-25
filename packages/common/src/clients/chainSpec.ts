@@ -1,4 +1,8 @@
 import type { ChainId } from "../chains"
+import { chainSpec as polkadotSpec } from "polkadot-api/chains/polkadot"
+import { chainSpec as westSpec } from "polkadot-api/chains/westend2"
+import { chainSpec as polkadotAssetHubSpec } from "polkadot-api/chains/polkadot_asset_hub"
+import { chainSpec as westAssetHubSpec } from "polkadot-api/chains/westend2_asset_hub"
 
 /**
  * Cache for chain specifications to avoid redundant lookups
@@ -60,4 +64,13 @@ export function hasChainSpec(
  */
 export function clearChainSpecCache(): void {
   chainSpecCache.clear()
+}
+
+export function specRegistry(): Partial<Record<ChainId, string>> {
+  return {
+    polkadot: polkadotSpec,
+    west: westSpec,
+    polkadot_asset_hub: polkadotAssetHubSpec,
+    west_asset_hub: westAssetHubSpec
+  }
 }
