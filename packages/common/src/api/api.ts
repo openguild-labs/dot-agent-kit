@@ -46,7 +46,6 @@ export const getApiInner = async <Id extends ChainId>(
   const chain = getChainById(chainId, chains)
 
   const descriptors = getDescriptors(chain.id)
-
   const client = await getClient(chainId, chains, { lightClients })
   if (!client) throw new Error(`Could not create client for chain ${chainId}/${lightClients}`)
 
@@ -63,8 +62,8 @@ export const getApiInner = async <Id extends ChainId>(
       // Set default timeout (30 seconds)
       const timeoutId = setTimeout(() => {
         if (subscription) subscription.unsubscribe()
-        reject(new Error("Connection timeout after 30000ms"))
-      }, 30000)
+        reject(new Error("Connection timeout after 45000ms"))
+      }, 45000)
 
       // Set up subscription with cleanup
       subscription = client.bestBlocks$.subscribe({

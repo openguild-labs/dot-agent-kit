@@ -3,6 +3,8 @@ import { ChatOpenAI } from '@langchain/openai';
 import { Tool } from '@langchain/core/tools';
 import { setupHandlers } from './handlers';
 import { PolkadotAgentKit } from '@dot-agent-kit/sdk';
+import { getChainByName, KnowChainId, getAllSupportedChains } from '@dot-agent-kit/common';
+import { polkadot } from '@polkadot-api/descriptors';
 
 
 interface BotConfig {
@@ -33,9 +35,7 @@ export class TelegramBot {
 
     this.bot = new Telegraf(botToken);
 
-    this.agent = new PolkadotAgentKit("polkadot", config.privateKey as string);
-
-    // this.agent = new PolkadotApi();
+    this.agent = new PolkadotAgentKit(privateKey as string, {keyType: 'Sr25519'});
 
     this.llm = new ChatOpenAI({
       modelName: 'gpt-4',
@@ -43,23 +43,39 @@ export class TelegramBot {
       openAIApiKey: openAiApiKey,
       streaming: true,
     });
-
-    const balanceTool = this.agent.getNativeBalanceTool("5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY");
-    // const tools = new PolkadotLangTools(this.agent);
-    // const xcmTool = xcmTransfer(tools, this.chainMap) as unknown as Tool;
-    // const balanceTool = checkBalanceTool(tools) as unknown as Tool;
-    // const proxiesTool = checkProxiesTool(tools, this.chainMap) as unknown as Tool;
-
-    setupHandlers(this.bot, this.llm, {
-      // xcmTransfer: xcmTool,
-      checkBalance: balanceTool,
-      // checkProxies: proxiesTool,
-    });
   }
+
+  async initialize() {
+    console.log("Initializing bot...");
+    
+    try {
+      // Initialize APIs first
+      await this.agent.initializeApi();
+    
+
+      // Set up tools after API initialization
+      const checkBalance = this.agent.getNativeBalanceTool('polkadot');
+      console.log("balanceTool", checkBalance)
+      
+      setupHandlers(this.bot, this.llm, {
+        checkBalance: checkBalance,
+      });
+
+      console.log("Bot initialization complete");
+    } catch (error) {
+      console.error("Failed to initialize bot:", error);
+      throw error;
+    }
+  }
+
+
+
 
   public async start(): Promise<void> {
     try {
+      await this.initialize();
       await this.bot.launch();
+      console.log('Bot is running!');
       
     } catch (error) {
       console.error('Failed to start bot:', error);
@@ -67,9 +83,12 @@ export class TelegramBot {
     }
   }
 
-  public stop(): void {
-    // this.agent.disconnectAll();
-    this.bot.stop();
-    
+  public async stop(): Promise<void> {
+    try {
+      await this.agent.disconnect();
+      this.bot.stop();
+    } catch (error) {
+      console.error('Error during shutdown:', error);
+    }
   }
 }

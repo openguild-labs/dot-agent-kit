@@ -1,5 +1,11 @@
 import { polkadot, polkadot_asset_hub, west, west_asset_hub } from "@polkadot-api/descriptors"
 
+import {
+  polkadotChain,
+  polkadotAssetHubChain,
+  westendChain,
+  westendAssetHubChain
+} from "./supported-chains"
 type DescriptorsRelayType = {
   polkadot: typeof polkadot
   west: typeof west
@@ -66,6 +72,7 @@ export type Chain = {
   chainId: number | null
   type: "system" | "relay" | "para"
   blockExplorerUrl: string | null
+  prefix: number
 }
 
 export type ChainRelay = Chain & { chainId: null }
@@ -84,26 +91,17 @@ export const getChainByName = <T extends Chain>(name: string, chains: Chain[]): 
   return foundChain as T
 }
 
-const DEFAULT_CHAIN_CONFIG: Omit<Chain, "id"> = {
-  name: "",
-  specName: "",
-  wsUrls: [],
-  relay: null,
-  chainId: null,
-  type: "system",
-  blockExplorerUrl: null
-}
+const SUPPORTED_CHAINS: Chain[] = [
+  polkadotChain,
+  polkadotAssetHubChain,
+  westendChain,
+  westendAssetHubChain
+]
 
 export const getAllSupportedChains = (): Chain[] => {
-  return Object.keys(DESCRIPTORS_ALL).map(id => ({
-    ...DEFAULT_CHAIN_CONFIG,
-    id: id as ChainId,
-    name: id,
-    specName: id,
-    type: isChainIdRelay(id) ? "relay" : isChainIdAssetHub(id) ? "para" : "system"
-  }))
+  return SUPPORTED_CHAINS
 }
 
 export const isSupportedChain = (chainId: unknown): chainId is ChainId => {
-  return typeof chainId === "string" && Object.keys(DESCRIPTORS_ALL).includes(chainId)
+  return typeof chainId === "string" && SUPPORTED_CHAINS.some(chain => chain.id === chainId)
 }

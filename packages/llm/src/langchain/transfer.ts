@@ -2,7 +2,7 @@ import { tool } from "@langchain/core/tools"
 import { z } from "zod"
 import { transferNativeCall } from "@dot-agent-kit/core"
 import { Api, KnowChainId } from "@dot-agent-kit/common"
-import { MultiAddress } from "@dot-agent-kit/common/.papi/descriptors"
+import { MultiAddress } from "@polkadot-api/descriptors"
 
 export const transferNativeTool = (api: Api<KnowChainId>) => {
   return tool(

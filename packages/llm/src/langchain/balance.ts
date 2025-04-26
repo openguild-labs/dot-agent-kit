@@ -1,20 +1,21 @@
 import { tool } from "@langchain/core/tools"
 import { z } from "zod"
-import { getNativeBalance } from "@dot-agent-kit/core"
+import { getNativeBalance, PolkadotApi } from "@dot-agent-kit/core"
 import { Api, KnowChainId } from "@dot-agent-kit/common"
 
-export const checkBalanceTool = (api: Api<KnowChainId>) => {
+export const checkBalanceTool = (api: Api<KnowChainId>, address: string) => {
   return tool(
-    async ({ address }: { address: string }) => {
+    async ({ chain }: { chain: string }) => {
       try {
         const balance = await getNativeBalance(api, address)
+        console.log("balance on debug", balance)
         return {
-          content: `Balance on ${address}: ${balance.toString()}`,
+          content: `Balance on ${chain}: ${balance.toString()}`,
           tool_call_id: `balance_${Date.now()}`
         }
       } catch (error) {
         return {
-          content: `Error checking balance on ${address}: ${error.message}`,
+          content: `Error checking balance on ${chain}: ${error.message}`,
           tool_call_id: `balance_error_${Date.now()}`
         }
       }

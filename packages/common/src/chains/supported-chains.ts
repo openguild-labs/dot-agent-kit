@@ -16,22 +16,24 @@ export const polkadotChain = createChain({
   relay: "polkadot",
   type: "relay",
   chainId: null,
-  blockExplorerUrl: "https://polkadot.subscan.io"
+  blockExplorerUrl: "https://polkadot.subscan.io",
+  prefix: 0
 })
 
 export const polkadotAssetHubChain = createChain({
-  id: "pah",
+  id: "polkadot_asset_hub",
   name: "Polkadot Asset Hub",
   specName: "asset-hub-polkadot",
   wsUrls: ["wss://polkadot-asset-hub-rpc.polkadot.io/"],
   relay: "polkadot",
   type: "system",
   chainId: 1000,
-  blockExplorerUrl: "https://assethub-polkadot.subscan.io"
+  blockExplorerUrl: "https://assethub-polkadot.subscan.io",
+  prefix: 0
 })
 
 export const westendChain = createChain({
-  id: "westend",
+  id: "west",
   name: "Westend",
   specName: "westend",
   wsUrls: ["wss://westend-rpc.polkadot.io"],
@@ -39,16 +41,18 @@ export const westendChain = createChain({
   type: "relay",
   chainId: null,
   blockExplorerUrl: "https://westend.subscan.io",
-  xcmExtrinsic: "limited_teleport_assets"
+  xcmExtrinsic: "limited_teleport_assets",
+  prefix: 42 // default
 })
 
 export const westendAssetHubChain = createChain({
-  id: "wah",
+  id: "west_asset_hub",
   name: "Westend Asset Hub",
   specName: "asset-hub-westend",
   wsUrls: ["wss://westend-asset-hub-rpc.polkadot.io"],
   relay: "west",
   type: "system",
   chainId: 1000,
-  blockExplorerUrl: "https://assethub-westend.subscan.io"
+  blockExplorerUrl: "https://assethub-westend.subscan.io",
+  prefix: 42 // default
 })

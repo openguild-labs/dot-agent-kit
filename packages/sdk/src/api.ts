@@ -11,45 +11,97 @@ import {
   getChainByName,
   getAllSupportedChains,
   isSupportedChain,
-  AgentConfig
+  AgentConfig,
+  getChainById
 } from "@dot-agent-kit/common"
 import { DynamicStructuredTool } from "@langchain/core/tools"
 import { sr25519CreateDerive, ed25519CreateDerive } from "@polkadot-labs/hdkd"
 import * as ss58 from "@subsquid/ss58"
+import { MultiAddress } from "@polkadot-api/descriptors"
 
 export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
   private polkadotApi: PolkadotApi
   private agentApi: PolkadotAgentApi
 
-  public chainId: string
   public wallet: Uint8Array
   public config: AgentConfig
 
-  constructor(chainId: string, wallet: string, config: AgentConfig) {
+  constructor(wallet: string, config: AgentConfig) {
     this.polkadotApi = new PolkadotApi()
-    this.agentApi = new PolkadotAgentApi(this.polkadotApi.api)
+    this.agentApi = new PolkadotAgentApi(this.polkadotApi)
     this.wallet = this.normalizePrivateKey(wallet)
-    this.chainId = chainId
     this.config = config
   }
 
-  setApi(api?: Api<KnowChainId>): void {
-    this.polkadotApi.setApi(api)
+  setApi(chainId: KnowChainId, api?: Api<KnowChainId>) {
+    this.polkadotApi.setApi(chainId, api)
   }
 
-  initializeApi(): Promise<void> {
-    if (!isSupportedChain(this.chainId)) {
-      throw new Error(`Chain ${this.chainId} is not supported`)
+  getApi(chainId: KnowChainId): Api<KnowChainId> {
+    return this.polkadotApi.getApi(chainId)
+  }
+
+  async initializeApi(): Promise<void> {
+    try {
+      await this.polkadotApi.initializeApi()
+    } catch (error) {
+      console.error("PolkadotAgentKit API initialization failed:", error)
+      throw error
     }
-    return this.polkadotApi.initializeApi(getChainByName(this.chainId, getAllSupportedChains()))
   }
 
   disconnect(): Promise<void> {
     return this.polkadotApi.disconnect()
   }
 
-  getNativeBalanceTool(address: string): DynamicStructuredTool {
-    return this.agentApi.getNativeBalanceTool(address)
+  /**
+   * Get Native Balance Tool
+   * Creates a tool for checking native token balance of an address
+   *
+   * @param address - The address to check balance for
+   * @returns DynamicStructuredTool for checking native token balance
+   *
+   * @example
+   * ```typescript
+   * // Create a balance checking tool
+   * const balanceTool = agent.getNativeBalanceTool("5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY");
+   *
+   * // Tool can be used with LangChain
+   * const result = await balanceTool.call({ address });
+   * ```
+   */
+  getNativeBalanceTool(chainId: KnowChainId): DynamicStructuredTool {
+    let currentAddress = this.getAddress(chainId)
+    return this.agentApi.getNativeBalanceTool(chainId, currentAddress)
+  }
+
+  /**
+   * Get Native Transfer Tool
+   * Creates a tool for transferring native tokens to an address
+   *
+   * @param to - The recipient address as MultiAddress
+   * @param amount - The amount to transfer as bigint
+   * @returns DynamicStructuredTool for transferring native tokens
+   *
+   * @example
+   * ```typescript
+   * // Create a transfer tool
+   * const transferTool = agent.transferNativeTool(
+   *   "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+   *   BigInt(1000000000000) // 1 DOT in planck
+   * );
+   *
+   * // Tool can be used with LangChain
+   * const result = await transferTool.call({
+   *   address: to,
+   *   amount: amount
+   * });
+   * ```
+   *
+   * @throws {Error} If the transfer fails or parameters are invalid
+   */
+  transferNativeTool(chainId: KnowChainId): DynamicStructuredTool {
+    return this.agentApi.transferNativeTool(chainId)
   }
 
   /**
@@ -64,13 +116,14 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    * const address = agent.getAddress();
    * ```
    */
-  public getAddress(): string {
+  public getAddress(chainId: KnowChainId): string {
+    const chain = getChainById(chainId, getAllSupportedChains())
     const publicKey = this.getPublicKey()
     const value = publicKey
     if (!value) {
       return ""
     }
-    return ss58.codec(this.chainId).encode(value)
+    return ss58.codec(chain.prefix).encode(value)
   }
 
   /**
