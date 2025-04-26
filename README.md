@@ -55,36 +55,6 @@
 
 ---
 
-## 🗺️ Roadmap
-
-| Phase | Task | Status |
-|-----------|-----------|------------|
-| Phase 1 | Build core library (Substrate, XCM, Proxy, NFT, DeFi) | Done |
-| Phase 2 | Develop AI Interface and NLP | Done |
-| Phase 3 | Integrate MPC wallets and enhanced security | Planned |
-
----
-
-## 🤝 Contributing
-
-We welcome contributions from the community! Please:
-1. Fork the repository.
-2. Create a new branch for your feature/bug fix.
-3. Submit a Pull Request with a detailed description of your changes.
-
----
-
-## 📜 License
-
-This project is licensed under the **[MIT License](LICENSE)**.
-
----
-
-## 📬 Contact
-
-- **GitHub Issues**: [Report Bugs/Suggestions](https://github.com/chauanhtuan185/polkadot-ai-agent-kit/issues)
-- **Email**: [Telegram](https://t.me/kayx64)
-
 ## Chain Configuration and Setup
 
 This project provides a flexible, interactive system to install Polkadot chains. The `.papi/` directory is included in `.gitignore` to prevent tracking of chain descriptors, which means each developer needs to set up their desired chains after cloning the repository.
@@ -360,3 +330,18 @@ const agent = new PolkadotAgentKit({
 |----------|-------------|
 | `Ed25519` | Edwards-curve Digital Signature Algorithm (EdDSA) with 255-bit curve. Default key type. |
 | `Sr25519` | Schnorrkel/Ristretto signatures on the Ristretto group on curve25519. Used by Polkadot ecosystem for account keys. |
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Please:
+1. Fork the repository.
+2. Create a new branch for your feature/bug fix.
+3. Submit a Pull Request with a detailed description of your changes.
+
+---
+
+## 📜 License
+
+This project is licensed under the **[MIT License](LICENSE)**.

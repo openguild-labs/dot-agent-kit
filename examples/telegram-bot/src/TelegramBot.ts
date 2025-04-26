@@ -51,7 +51,6 @@ export class TelegramBot {
       // Initialize APIs first
       await this.agent.initializeApi();
     
-
       // Set up tools 
       // Get balance of agent account
       const checkBalance = this.agent.getNativeBalanceTool();

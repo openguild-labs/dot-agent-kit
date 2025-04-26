@@ -47,14 +47,13 @@ export class PolkadotApi implements IPolkadotApi {
     }
     return api
   }
-
+  
   getAllApis(): Map<KnowChainId, Api<KnowChainId>> {
     if (!this.initialized) {
       throw new Error("APIs not initialized. Call initializeApi() first.")
     }
     return this._apis
   }
-
   async initializeApi(): Promise<void> {
     if (this.initPromise) {
       return this.initPromise
