@@ -51,8 +51,6 @@ export function setupHandlers(
         new HumanMessage({ content: message }),
       ];
 
-      console.log('Sending request to LLM with messages:', messages);
-
       const aiMessage = await llmWithTools.invoke(messages);
       
       
