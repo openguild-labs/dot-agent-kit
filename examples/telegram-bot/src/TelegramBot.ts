@@ -54,10 +54,11 @@ export class TelegramBot {
     
 
       // Set up tools after API initialization
-      const balanceTool = this.agent.getNativeBalanceTool('polkadot');
+      const checkBalance = this.agent.getNativeBalanceTool('polkadot');
+      console.log("balanceTool", checkBalance)
       
       setupHandlers(this.bot, this.llm, {
-        checkBalance: balanceTool,
+        checkBalance: checkBalance,
       });
 
       console.log("Bot initialization complete");

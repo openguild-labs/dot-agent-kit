@@ -26,6 +26,8 @@ export function setupHandlers(
   toolsByName: Record<string, DynamicStructuredTool>,
 ): void {
 
+  console.log('toolsByName', toolsByName)
+
   bot.start((ctx) => {
     ctx.reply(
       'Welcome to Polkadot Bot!\n' +
@@ -60,12 +62,10 @@ export function setupHandlers(
       
       if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
         for (const toolCall of aiMessage.tool_calls) {
-          console.log('Processing tool call:', toolCall);
           
-          const selectedTool = toolsByName[toolCall.name];
+          const selectedTool = toolsByName[toCamelCase(toolCall.name)];
           if (selectedTool) {
             const toolMessage = await selectedTool.invoke(toolCall);
-            console.log('Tool response:', toolMessage);
             
             if (!toolMessage || !toolMessage.content) {
               await ctx.reply('Tool did not return a response.');
@@ -103,4 +103,8 @@ export function setupHandlers(
     console.error(`Error for ${ctx.updateType}`, err);
     ctx.reply('An error occurred. Please try again.');
   });
+}
+
+function toCamelCase(snakeStr: string) {
+  return snakeStr.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
 }
