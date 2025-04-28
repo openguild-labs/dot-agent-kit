@@ -1,0 +1,26 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "tasks": {
+      "compile": {},
+      "format:check": {},
+      "format:write": {},
+      "lint:check": {},
+      "lint": {},
+      "test": {},
+      "test:cov": {
+        "cache": false
+      },
+      "test:watch": {
+        "cache": false
+      },
+      "test:integration": {},
+      "test:e2e": {},
+      "build": {
+        "cache": false,
+        "outputs": ["dist/**"],
+        "dependsOn": ["^build"]
+      }
+    }
+  }
+
+  

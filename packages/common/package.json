@@ -1,0 +1,65 @@
+{
+  "name": "@dot-agent-kit/common",
+  "version": "1.0.0",
+  "description": "SDK common code for Polkadot Agent Kit for developers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openguild-labs/dot-agent-kit.git",
+    "directory": "packages/common"
+  },
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "compile": "tsc --noEmit",
+    "build": "rollup -c",
+    "lint:check": "eslint src",
+    "lint": "eslint --fix src",
+    "format:check": "prettier --check src",
+    "format:write": "prettier --write src",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "test:watch": "vitest",
+    "setup": "tsx ./scripts/setup-chains.ts"
+  },
+  "dependencies": {
+    "@noble/curves": "^1.6.0",
+    "@noble/hashes": "^1.5.0",
+    "@polkadot/api": "^15.8.1",
+    "@subsquid/ss58": "^2.0.2",
+    "polkadot-api": "^1.9.13"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-import-attributes": "^7.26.0",
+    "@babel/preset-env": "^7.26.9",
+    "@codecov/rollup-plugin": "^1.9.0",
+    "@polkadot/api": "^15.8.1",
+    "@polkadot/types": "^15.8.1",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/node": "^22.12.0",
+    "@types/sinon": "^17.0.4",
+    "@vitest/coverage-v8": "^3.0.9",
+    "dotenv": "^16.4.7",
+    "prettier": "^3.5.3",
+    "rollup": "^4.37.0",
+    "rollup-plugin-dts": "^6.2.1",
+    "sinon": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.0.4"
+  }
+}

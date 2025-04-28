@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "esModuleInterop": true,
+      "noImplicitAny": true,
+      "resolveJsonModule": true,
+      "strictNullChecks": true,
+      "skipLibCheck": true
+    },
+    "ts-node": {
+        // Tell ts-node CLI to install the --loader automatically
+        "esm": true
+    },
+    "include": ["src"]
+  }
