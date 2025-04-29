@@ -8,6 +8,10 @@
     "ai",
     "polkadot agent kit"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elasticlabs-org/polkadot-agent-kit.git"
+  },
   "type": "module",
   "devDependencies": {
     "@changesets/cli": "^2.27.12",

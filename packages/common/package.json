@@ -4,7 +4,7 @@
   "description": "SDK common code for Polkadot Agent Kit for developers",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openguild-labs/polkadot-agent-kit.git",
+    "url": "git+https://github.com/elasticlabs-org/polkadot-agent-kit.git",
     "directory": "packages/common"
   },
   "license": "MIT",

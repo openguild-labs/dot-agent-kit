@@ -4,7 +4,7 @@
   "description": "SDK LLM for Polkadot Agent Kit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openguild-labs/polkadot-agent-kit.git",
+    "url": "git+https://github.com/elasticlabs-org/polkadot-agent-kit.git",
     "directory": "packages/llm"
   },
   "license": "MIT",
