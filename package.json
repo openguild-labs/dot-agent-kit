@@ -8,7 +8,6 @@
     "ai",
     "polkadot agent kit"
   ],
-  "private": true,
   "type": "module",
   "devDependencies": {
     "@changesets/cli": "^2.27.12",

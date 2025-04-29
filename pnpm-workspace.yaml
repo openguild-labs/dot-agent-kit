@@ -1,5 +1,5 @@
 packages:
   - packages/*
-  - examples/telegram-bot
+  - examples/*
 ignoredBuiltDependencies:
   - esbuild
