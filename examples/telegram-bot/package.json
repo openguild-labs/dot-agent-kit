@@ -1,7 +1,7 @@
 {
     "name": "telegram-bot-example",
     "version": "1.0.0",
-    "description": "A template example for a telegram bot using dot-agent-kit, using typescript",
+    "description": "A template example for a telegram bot using polkadot-agent-kit, using typescript",
     "author": "",
     "license": "MIT",
     "type": "module",
@@ -14,10 +14,10 @@
     },
     "dependencies": {
       "dotenv": "^16.5.0",
-      "@dot-agent-kit/common": "workspace:*",
-      "@dot-agent-kit/llm": "workspace:*",
-      "@dot-agent-kit/sdk": "workspace:*",
-      "@dot-agent-kit/core": "workspace:*",
+      "@polkadot-agent-kit/common": "workspace:*",
+      "@polkadot-agent-kit/llm": "workspace:*",
+      "@polkadot-agent-kit/sdk": "workspace:*",
+      "@polkadot-agent-kit/core": "workspace:*",
       "telegraf": "^4.16.3",
       "telegraf-safe-md-reply": "^1.0.0",
       "@langchain/core": "^0.3.40",

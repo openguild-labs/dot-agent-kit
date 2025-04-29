@@ -2,8 +2,8 @@ import { Telegraf } from 'telegraf';
 import { ChatOpenAI } from '@langchain/openai';
 import { Tool } from '@langchain/core/tools';
 import { setupHandlers } from './handlers';
-import { PolkadotAgentKit } from '@dot-agent-kit/sdk';
-import { getChainByName, KnowChainId, getAllSupportedChains } from '@dot-agent-kit/common';
+import { PolkadotAgentKit } from '@polkadot-agent-kit/sdk';
+import { getChainByName, KnowChainId, getAllSupportedChains } from '@polkadot-agent-kit/common';
 
 
 interface BotConfig {

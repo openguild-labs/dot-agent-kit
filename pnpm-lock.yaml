@@ -66,24 +66,24 @@ importers:
 
   examples/telegram-bot:
     dependencies:
-      '@dot-agent-kit/common':
-        specifier: workspace:*
-        version: link:../../packages/common
-      '@dot-agent-kit/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@dot-agent-kit/llm':
-        specifier: workspace:*
-        version: link:../../packages/llm
-      '@dot-agent-kit/sdk':
-        specifier: workspace:*
-        version: link:../../packages/sdk
       '@langchain/core':
         specifier: ^0.3.40
         version: 0.3.49(openai@4.96.0(ws@8.18.1)(zod@3.24.3))
       '@langchain/openai':
         specifier: ^0.3.17
         version: 0.3.17(@langchain/core@0.3.49(openai@4.96.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
+      '@polkadot-agent-kit/common':
+        specifier: workspace:*
+        version: link:../../packages/common
+      '@polkadot-agent-kit/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@polkadot-agent-kit/llm':
+        specifier: workspace:*
+        version: link:../../packages/llm
+      '@polkadot-agent-kit/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0
@@ -215,7 +215,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@dot-agent-kit/common':
+      '@polkadot-agent-kit/common':
         specifier: workspace:*
         version: link:../common
       '@subsquid/ss58':
@@ -267,12 +267,6 @@ importers:
 
   packages/llm:
     dependencies:
-      '@dot-agent-kit/common':
-        specifier: workspace:*
-        version: link:../common
-      '@dot-agent-kit/core':
-        specifier: workspace:*
-        version: link:../core
       '@langchain/community':
         specifier: ^0.3.19
         version: 0.3.41(@browserbasehq/sdk@2.5.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.52.0)(deepmerge@4.3.1)(dotenv@16.5.0)(openai@4.96.0(ws@8.18.1)(zod@3.24.3))(zod@3.24.3))(@ibm-cloud/watsonx-ai@1.6.4(@langchain/core@0.3.49(openai@4.96.0(ws@8.18.1)(zod@3.24.3))))(@langchain/core@0.3.49(openai@4.96.0(ws@8.18.1)(zod@3.24.3)))(axios@1.9.0)(ibm-cloud-sdk-core@5.3.2)(ignore@5.3.2)(jsonwebtoken@9.0.2)(openai@4.96.0(ws@8.18.1)(zod@3.24.3))(playwright@1.52.0)(ws@8.18.1)
@@ -288,6 +282,12 @@ importers:
       '@noble/curves':
         specifier: ^1.6.0
         version: 1.9.0
+      '@polkadot-agent-kit/common':
+        specifier: workspace:*
+        version: link:../common
+      '@polkadot-agent-kit/core':
+        specifier: workspace:*
+        version: link:../core
       '@polkadot-labs/hdkd':
         specifier: ^0.0.13
         version: 0.0.13
@@ -346,21 +346,21 @@ importers:
 
   packages/sdk:
     dependencies:
-      '@dot-agent-kit/common':
-        specifier: workspace:*
-        version: link:../common
-      '@dot-agent-kit/core':
-        specifier: workspace:*
-        version: link:../core
-      '@dot-agent-kit/llm':
-        specifier: workspace:*
-        version: link:../llm
       '@langchain/core':
         specifier: ^0.3.40
         version: 0.3.49(openai@4.96.0(ws@8.18.1)(zod@3.24.3))
       '@noble/curves':
         specifier: ^1.6.0
         version: 1.9.0
+      '@polkadot-agent-kit/common':
+        specifier: workspace:*
+        version: link:../common
+      '@polkadot-agent-kit/core':
+        specifier: workspace:*
+        version: link:../core
+      '@polkadot-agent-kit/llm':
+        specifier: workspace:*
+        version: link:../llm
       '@polkadot-labs/hdkd':
         specifier: ^0.0.13
         version: 0.0.13
@@ -8143,7 +8143,7 @@ snapshots:
   axios@1.9.0(debug@4.4.0):
     dependencies:
       follow-redirects: 1.15.9(debug@4.4.0)
-      form-data: 4.0.0
+      form-data: 4.0.2
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug

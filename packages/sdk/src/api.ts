@@ -1,23 +1,15 @@
-import { IPolkadotAgentApi, PolkadotAgentApi } from "@dot-agent-kit/llm"
-import { IPolkadotApi, PolkadotApi } from "@dot-agent-kit/core"
+import { IPolkadotAgentApi, PolkadotAgentApi } from "@polkadot-agent-kit/llm"
+import { IPolkadotApi, PolkadotApi } from "@polkadot-agent-kit/core"
 import {
   Api,
-  Chain,
-  disconnect,
-  getApi,
-  getChainSpec,
   KnowChainId,
-  SmoldotClient,
-  getChainByName,
   getAllSupportedChains,
-  isSupportedChain,
   AgentConfig,
   getChainById
-} from "@dot-agent-kit/common"
+} from "@polkadot-agent-kit/common"
 import { DynamicStructuredTool } from "@langchain/core/tools"
 import { sr25519CreateDerive, ed25519CreateDerive } from "@polkadot-labs/hdkd"
 import * as ss58 from "@subsquid/ss58"
-import { MultiAddress } from "@polkadot-api/descriptors"
 
 export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
   private polkadotApi: PolkadotApi

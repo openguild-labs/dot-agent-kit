@@ -1,8 +1,14 @@
 import { tool } from "@langchain/core/tools"
 import { z } from "zod"
-import { getNativeBalance, convertAddress } from "@dot-agent-kit/core"
-import { Api, KnowChainId } from "@dot-agent-kit/common"
+import { getNativeBalance, convertAddress } from "@polkadot-agent-kit/core"
+import { Api, KnowChainId } from "@polkadot-agent-kit/common"
 
+/**
+ * Returns a tool that checks the balance of a specific address
+ * @param apis Map of chain IDs to API instances
+ * @param address The address to check the balance for
+ * @returns A dynamic structured tool that checks the balance of the specified address
+ */
 export const checkBalanceTool = (apis: Map<KnowChainId, Api<KnowChainId>>, address: string) => {
   return tool(
     async ({ chain }: { chain: string }) => {

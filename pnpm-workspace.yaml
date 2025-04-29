@@ -1,3 +1,5 @@
 packages:
-  - "packages/*"
-  - "examples/telegram-bot"
+  - packages/*
+  - examples/telegram-bot
+ignoredBuiltDependencies:
+  - esbuild

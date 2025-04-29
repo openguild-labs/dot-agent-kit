@@ -1,12 +1,6 @@
-import { getAllSupportedChains, getChainById, KnowChainId } from "@dot-agent-kit/common"
+import { getAllSupportedChains, getChainById, KnowChainId } from "@polkadot-agent-kit/common"
 import * as ss58 from "@subsquid/ss58"
 import { AccountId } from "polkadot-api"
-
-/**
- * Account ID encoder instance for validating addresses
- * @private
- */
-const accountIdEncoder = AccountId().enc
 
 /**
  * Gets the SS58 prefix for a chain
@@ -42,7 +36,7 @@ export function convertAddress(
     const prefix = typeof targetChainId === "number" ? targetChainId : getChainPrefix(targetChainId)
 
     // Validate the address first
-    accountIdEncoder(address)
+    AccountId().enc(address)
 
     // Decode the public key from any SS58 format
     const publicKey = ss58.decode(address).bytes

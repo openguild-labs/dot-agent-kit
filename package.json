@@ -1,7 +1,7 @@
 {
-  "name": "dot-agent-kit",
+  "name": "polkadot-agent-kit",
   "description": "A toolkit for building agents on Polkadot",
-  "author": "OpenGuild Team",
+  "author": "Elastic Labs",
   "keywords": [
     "polkadot",
     "agent",

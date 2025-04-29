@@ -1,10 +1,10 @@
 {
-    "name": "@dot-agent-kit/sdk",
+    "name": "@polkadot-agent-kit/sdk",
     "version": "1.0.0",
     "description": "SDK for Polkadot Agent Kit",
     "repository": {
       "type": "git",
-      "url": "git+https://github.com/openguild-labs/dot-agent-kit.git",
+      "url": "git+https://github.com/openguild-labs/polkadot-agent-kit.git",
       "directory": "packages/sdk"
     },
     "license": "MIT",
@@ -35,9 +35,9 @@
     },
     "dependencies": {
         "@polkadot/api": "^15.8.1",
-        "@dot-agent-kit/core": "workspace:*",
-        "@dot-agent-kit/llm": "workspace:*",
-        "@dot-agent-kit/common": "workspace:*",
+        "@polkadot-agent-kit/core": "workspace:*",
+        "@polkadot-agent-kit/llm": "workspace:*",
+        "@polkadot-agent-kit/common": "workspace:*",
         "zod": "^3.24.3",
         "@langchain/core": "^0.3.40",
         "polkadot-api": "^1.9.13",
