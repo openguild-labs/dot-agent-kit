@@ -6,7 +6,7 @@
 ![Status: In Development](https://img.shields.io/badge/Status-In%20Development-yellow)
 <br/>
 <br/>
-**Polkadot AI Agent Kitt** is an open-source library designed to build AI Agents that interact with the Polkadot ecosystem. The library provides tools for wallet management, cross-chain transactions, NFT interactions, DeFi integrations, and interactions with Asset Hub and parachains such as People Chain and Kusama Chain. The project will be archived under the **[OpenGuild](https://github.com/openguild-labs)** organization upon completion.
+**Polkadot AI Agent Kit** is an open-source library designed to build AI Agents that interact with the Polkadot ecosystem. The library provides tools for wallet management, cross-chain transactions, NFT interactions, DeFi integrations, and interactions with Asset Hub and parachains such as People Chain and Kusama Chain. The project will be archived under the **[OpenGuild](https://github.com/openguild-labs)** organization upon completion.
 
 - All packages can be found in: https://www.npmjs.com/settings/polkadot-agent-kit/packages
 
