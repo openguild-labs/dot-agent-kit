@@ -70,9 +70,9 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    * const result = await balanceTool.call({ address });
    * ```
    */
-  getNativeBalanceTool(chainId: KnowChainId): DynamicStructuredTool {
-    let currentAddress = this.getAddress(chainId)
-    return this.agentApi.getNativeBalanceTool(chainId, currentAddress)
+  getNativeBalanceTool(): DynamicStructuredTool {
+    const address = this.getCurrentAddress()
+    return this.agentApi.getNativeBalanceTool(address)
   }
 
   /**
@@ -113,11 +113,12 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    * @example
    * ```typescript
    * // Get the main account address
-   * const address = agent.getAddress();
+   * const address = agent.getCurrentAddress('polkadot');
    * ```
    */
-  public getAddress(chainId: KnowChainId): string {
-    const chain = getChainById(chainId, getAllSupportedChains())
+  public getCurrentAddress(): string {
+    // get chain default address polkadot
+    const chain = getChainById("polkadot", getAllSupportedChains())
     const publicKey = this.getPublicKey()
     const value = publicKey
     if (!value) {

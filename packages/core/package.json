@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@dot-agent-kit/common": "workspace:*",
+    "@subsquid/ss58": "^2.0.2",
     "polkadot-api": "^1.9.13"
   },
   "devDependencies": {

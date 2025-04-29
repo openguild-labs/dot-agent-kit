@@ -173,7 +173,6 @@ describe("PolkadotApi", () => {
 
     it("should return the correct tool for a specific chain", () => {
       const tool = mockAgentPolkadotApi.getNativeBalanceTool(
-        "polkadot",
         "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
       )
 
@@ -184,11 +183,9 @@ describe("PolkadotApi", () => {
 
     it("should return the correct tool for different chains", () => {
       const dotTool = mockAgentPolkadotApi.getNativeBalanceTool(
-        "polkadot",
         "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
       )
       const westTool = mockAgentWestApi.getNativeBalanceTool(
-        "west",
         "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
       )
 
@@ -204,14 +201,12 @@ describe("PolkadotApi", () => {
 
       expect(() =>
         mockAgentPolkadotApi.getNativeBalanceTool(
-          "polkadot",
           "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
         )
       ).toThrow("API for chain polkadot is not initialized")
     })
 
     it("should throw error if chain is not supported", () => {
-      // @ts-expect-error - Testing invalid chain
       expect(() => mockAgentPolkadotApi.getNativeBalanceTool("unsupported")).toThrow(
         "Chain unsupported is not supported"
       )
