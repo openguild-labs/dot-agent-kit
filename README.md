@@ -1,11 +1,14 @@
 # Polkadot AI Agent Kit 
 
+![Group 57](https://github.com/user-attachments/assets/ddc9ebc7-0bc6-4bac-af3e-82f378c959f5)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![Status: In Development](https://img.shields.io/badge/Status-In%20Development-yellow)
+<br/>
+<br/>
+**Polkadot AI Agent Kit** is an open-source library designed to build AI Agents that interact with the Polkadot ecosystem. The library provides tools for wallet management, cross-chain transactions, NFT interactions, DeFi integrations, and interactions with Asset Hub and parachains such as People Chain and Kusama Chain. The project will be archived under the **[OpenGuild](https://github.com/openguild-labs)** organization upon completion.
 
-**Polkadot AI Agent Kitt** is an open-source library designed to build AI Agents that interact with the Polkadot ecosystem. The library provides tools for wallet management, cross-chain transactions, NFT interactions, DeFi integrations, and interactions with Asset Hub and parachains such as People Chain and Kusama Chain. The project will be archived under the **[OpenGuild](https://github.com/openguild-labs)** organization upon completion.
-
----
+- All packages can be found in: https://www.npmjs.com/settings/polkadot-agent-kit/packages
 
 ## 📦 Project Overview
 
@@ -14,8 +17,6 @@
 - Provide **extensive tools** for interacting with Substrate, parachains, XCM, NFTs, and DeFi protocols.
 - Support **secure wallet management** through Proxy or MPC solutions.
 - Integrate an **AI interface** for controlling the Agent using natural language.
-
----
 
 ## ✨ Features
 
@@ -28,8 +29,6 @@
 | **DeFi Integrations** | Interact with DeFi protocols for staking, swapping, and yield farming. |
 | **OpenGov Interaction** | Create/vote on proposals on People Chain and manage governance. |
 | **AI Interface** | Control the Agent using natural language commands (e.g., *"Swap 100 USDC to DOT and transfer to Coretime Chain"*). |
-
----
 
 ## 🛠️ Phases & Deliverables
 
@@ -52,8 +51,6 @@
 | ```await agent.prompt("Mint an NFT on Asset Hub")``` | |
 | ```await agent.prompt("Stake 100 DOT on a DeFi protocol")``` | |
 | **Natural Language Processing** | Integrate AI models to analyze natural language requests. |
-
----
 
 ## Chain Configuration and Setup
 

@@ -2,9 +2,8 @@ import { Telegraf } from 'telegraf';
 import { ChatOpenAI } from '@langchain/openai';
 import { Tool } from '@langchain/core/tools';
 import { setupHandlers } from './handlers';
-import { PolkadotAgentKit } from '@dot-agent-kit/sdk';
-import { getChainByName, KnowChainId, getAllSupportedChains } from '@dot-agent-kit/common';
-import { polkadot } from '@polkadot-api/descriptors';
+import { PolkadotAgentKit } from '@polkadot-agent-kit/sdk';
+import { getChainByName, KnowChainId, getAllSupportedChains } from '@polkadot-agent-kit/common';
 
 
 interface BotConfig {
@@ -52,10 +51,9 @@ export class TelegramBot {
       // Initialize APIs first
       await this.agent.initializeApi();
     
-
-      // Set up tools after API initialization
-      const checkBalance = this.agent.getNativeBalanceTool('polkadot');
-      console.log("balanceTool", checkBalance)
+      // Set up tools 
+      // Get balance of agent account
+      const checkBalance = this.agent.getNativeBalanceTool();
       
       setupHandlers(this.bot, this.llm, {
         checkBalance: checkBalance,

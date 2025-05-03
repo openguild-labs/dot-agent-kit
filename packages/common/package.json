@@ -1,10 +1,10 @@
 {
-  "name": "@dot-agent-kit/common",
+  "name": "@polkadot-agent-kit/common",
   "version": "1.0.0",
   "description": "SDK common code for Polkadot Agent Kit for developers",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openguild-labs/dot-agent-kit.git",
+    "url": "git+https://github.com/elasticlabs-org/polkadot-agent-kit.git",
     "directory": "packages/common"
   },
   "license": "MIT",

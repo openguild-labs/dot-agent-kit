@@ -1,67 +1,64 @@
 {
-    "name": "@dot-agent-kit/sdk",
-    "version": "1.0.0",
-    "description": "SDK for Polkadot Agent Kit",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/openguild-labs/dot-agent-kit.git",
-      "directory": "packages/sdk"
-    },
-    "license": "MIT",
-    "type": "module",
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.cjs"
-      }
-    },
-    "main": "dist/index.cjs",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
-    "files": [
-      "dist"
-    ],
-    "scripts": {
-      "compile": "tsc --noEmit",
-      "build": "rollup -c",
-      "lint:check": "eslint src",
-      "lint": "eslint --fix src",
-      "format:check": "prettier --check src",
-      "format:write": "prettier --write src",
-      "test": "vitest run",
-      "test:cov": "vitest run --coverage",
-      "test:watch": "vitest"
-    },
-    "dependencies": {
-        "@polkadot/api": "^15.8.1",
-        "@dot-agent-kit/core": "workspace:*",
-        "@dot-agent-kit/llm": "workspace:*",
-        "@dot-agent-kit/common": "workspace:*",
-        "zod": "^3.24.3",
-        "@langchain/core": "^0.3.40",
-        "polkadot-api": "^1.9.13",
-        "@noble/curves": "^1.6.0",
-        "@polkadot-labs/hdkd": "^0.0.13",
-        "@polkadot-labs/hdkd-helpers": "^0.0.13",
-        "@subsquid/ss58": "^2.0.2"
-
-    },
-    "devDependencies": {
-      "@babel/plugin-syntax-import-attributes": "^7.26.0",
-      "@babel/preset-env": "^7.26.9",
-      "@codecov/rollup-plugin": "^1.9.0",
-      "@polkadot/api": "^15.8.1",
-      "@polkadot/types": "^15.8.1",
-      "@rollup/plugin-babel": "^6.0.4",
-      "@rollup/plugin-json": "^6.1.0",
-      "@rollup/plugin-typescript": "^12.1.2",
-      "@vitest/coverage-v8": "^3.0.9",
-      "dotenv": "^16.4.7",
-      "prettier": "^3.5.3",
-      "rollup": "^4.37.0",
-      "rollup-plugin-dts": "^6.2.1"
+  "name": "@polkadot-agent-kit/sdk",
+  "version": "1.0.0",
+  "description": "SDK for Polkadot Agent Kit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elasticlabs-org/polkadot-agent-kit.git",
+    "directory": "packages/sdk"
+  },
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "compile": "tsc --noEmit",
+    "build": "rollup -c",
+    "lint:check": "eslint src",
+    "lint": "eslint --fix src",
+    "format:check": "prettier --check src",
+    "format:write": "prettier --write src",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@polkadot/api": "^15.8.1",
+    "@polkadot-agent-kit/core": "workspace:*",
+    "@polkadot-agent-kit/llm": "workspace:*",
+    "@polkadot-agent-kit/common": "workspace:*",
+    "zod": "^3.24.3",
+    "@langchain/core": "^0.3.40",
+    "polkadot-api": "^1.9.13",
+    "@noble/curves": "^1.6.0",
+    "@polkadot-labs/hdkd": "^0.0.13",
+    "@polkadot-labs/hdkd-helpers": "^0.0.13",
+    "@subsquid/ss58": "^2.0.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-import-attributes": "^7.26.0",
+    "@babel/preset-env": "^7.26.9",
+    "@codecov/rollup-plugin": "^1.9.0",
+    "@polkadot/api": "^15.8.1",
+    "@polkadot/types": "^15.8.1",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@vitest/coverage-v8": "^3.0.9",
+    "dotenv": "^16.4.7",
+    "prettier": "^3.5.3",
+    "rollup": "^4.37.0",
+    "rollup-plugin-dts": "^6.2.1"
   }
-
-
+}

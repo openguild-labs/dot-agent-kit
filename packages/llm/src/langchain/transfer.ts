@@ -1,14 +1,19 @@
 import { tool } from "@langchain/core/tools"
 import { z } from "zod"
-import { transferNativeCall } from "@dot-agent-kit/core"
-import { Api, KnowChainId } from "@dot-agent-kit/common"
+import { transferNativeCall } from "@polkadot-agent-kit/core"
+import { Api, KnowChainId } from "@polkadot-agent-kit/common"
 import { MultiAddress } from "@polkadot-api/descriptors"
 
+/**
+ * Returns a tool that transfers native tokens to a specific address
+ * @param api The API instance to use for the transfer
+ * @returns A dynamic structured tool that transfers native tokens to the specified address
+ */
 export const transferNativeTool = (api: Api<KnowChainId>) => {
   return tool(
     async ({ address, amount }: { address: MultiAddress; amount: bigint }) => {
       try {
-        const balance = await transferNativeCall(api, address, amount)
+        await transferNativeCall(api, address, amount)
         return {
           content: `Transferred ${amount} to ${address}`,
           tool_call_id: `transfer_${Date.now()}`

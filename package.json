@@ -1,14 +1,17 @@
 {
-  "name": "dot-agent-kit",
+  "name": "polkadot-agent-kit",
   "description": "A toolkit for building agents on Polkadot",
-  "author": "OpenGuild Team",
+  "author": "Elastic Labs",
   "keywords": [
     "polkadot",
     "agent",
     "ai",
     "polkadot agent kit"
   ],
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elasticlabs-org/polkadot-agent-kit.git"
+  },
   "type": "module",
   "devDependencies": {
     "@changesets/cli": "^2.27.12",

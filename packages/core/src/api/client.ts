@@ -1,19 +1,19 @@
 import {
   Api,
   KnowChainId,
-  Chain,
   SmoldotClient,
   getApi,
   getChainSpec,
   disconnect,
   getAllSupportedChains,
   specRegistry
-} from "@dot-agent-kit/common"
-
+} from "@polkadot-agent-kit/common"
 import { start } from "polkadot-api/smoldot"
 
-// Define the interface for the Polkadot API
-
+/**
+ * Interface for Polkadot API implementations
+ * Defines the interface that all Polkadot chain types must follow
+ */
 export interface IPolkadotApi {
   setApi(chainId: KnowChainId, api?: Api<KnowChainId>): void
   initializeApi(): Promise<void>
@@ -21,6 +21,10 @@ export interface IPolkadotApi {
   getApi(chainId: KnowChainId): Api<KnowChainId>
 }
 
+/**
+ * Implementation of the IPolkadotApi interface
+ * Manages the initialization and connection of Polkadot APIs
+ */
 export class PolkadotApi implements IPolkadotApi {
   private _apis: Map<KnowChainId, Api<KnowChainId>> = new Map()
   private initialized = false
@@ -31,12 +35,22 @@ export class PolkadotApi implements IPolkadotApi {
     this.smoldotClient = start()
   }
 
+  /**
+   * Sets the API for a specific chain
+   * @param chainId The ID of the chain
+   * @param api Optional API instance to set
+   */
   setApi(chainId: KnowChainId, api?: Api<KnowChainId>) {
     if (api) {
       this._apis.set(chainId, api)
     }
   }
 
+  /**
+   * Retrieves the API for a specific chain
+   * @param chainId The ID of the chain
+   * @returns The API instance for the specified chain
+   */
   getApi(chainId: KnowChainId): Api<KnowChainId> {
     if (!this.initialized) {
       throw new Error("APIs not initialized. Call initializeApi() first.")
@@ -48,6 +62,21 @@ export class PolkadotApi implements IPolkadotApi {
     return api
   }
 
+  /**
+   * Retrieves all initialized APIs
+   * @returns Map of chain IDs to API instances
+   */
+  getAllApis(): Map<KnowChainId, Api<KnowChainId>> {
+    if (!this.initialized) {
+      throw new Error("APIs not initialized. Call initializeApi() first.")
+    }
+    return this._apis
+  }
+
+  /**
+   * Initializes all APIs
+   * @returns Promise that resolves when all APIs are initialized
+   */
   async initializeApi(): Promise<void> {
     if (this.initPromise) {
       return this.initPromise
@@ -104,6 +133,10 @@ export class PolkadotApi implements IPolkadotApi {
     return this.initPromise
   }
 
+  /**
+   * Disconnects all APIs and terminates the smoldot client
+   * @returns Promise that resolves when all APIs are disconnected
+   */
   async disconnect(): Promise<void> {
     try {
       // Disconnect all chain APIs
@@ -124,6 +157,11 @@ export class PolkadotApi implements IPolkadotApi {
     }
   }
 
+  /**
+   * Retrieves the chain spec for a specific chain
+   * @param chainId The ID of the chain
+   * @returns The chain spec for the specified chain
+   */
   getChainSpec(chainId: KnowChainId) {
     return getChainSpec(chainId, specRegistry())
   }

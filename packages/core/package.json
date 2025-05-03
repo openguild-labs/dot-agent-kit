@@ -1,10 +1,10 @@
 {
-  "name": "@dot-agent-kit/core",
+  "name": "@polkadot-agent-kit/core",
   "version": "1.0.0",
   "description": "Core Package for Polkadot Agent Kit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openguild-labs/dot-agent-kit.git",
+    "url": "git+https://github.com/elasticlabs-org/polkadot-agent-kit.git",
     "directory": "packages/core"
   },
   "license": "MIT",
@@ -35,7 +35,8 @@
     "setup": "tsx ./scripts/setup-chains.ts"
   },
   "dependencies": {
-    "@dot-agent-kit/common": "workspace:*",
+    "@polkadot-agent-kit/common": "workspace:*",
+    "@subsquid/ss58": "^2.0.2",
     "polkadot-api": "^1.9.13"
   },
   "devDependencies": {
