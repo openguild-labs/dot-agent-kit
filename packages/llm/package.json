@@ -23,6 +23,7 @@
     "dist"
   ],
   "scripts": {
+    "clean": "rm -rf dist .turbo node_modules",
     "compile": "tsc --noEmit",
     "build": "rollup -c",
     "lint:check": "eslint src",

@@ -36,6 +36,7 @@
     "node": ">=22"
   },
   "scripts": {
+    
     "compile": "turbo run compile",
     "format:check": "turbo run format:check",
     "format:write": "turbo run format:write",
