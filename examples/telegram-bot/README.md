@@ -8,7 +8,7 @@ This example demonstrates how to build a Telegram bot using the Polkadot Agent K
 - PNPM package manager
 - A Telegram Bot Token (obtain from [@BotFather](https://t.me/botfather))
 
-## Setup Instructions
+## Setup 
 
 1. **Environment Variables**
    - Create a `.env` file in the project root
@@ -27,8 +27,9 @@ This example demonstrates how to build a Telegram bot using the Polkadot Agent K
 
 
 2. **Install Dependencies**
+
    ```bash
-   pnpm install
+   pnpm install --ignore-workspace
    ```
 
 3. **Start the Bot**
