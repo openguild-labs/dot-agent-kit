@@ -9,5 +9,5 @@
     "strictNullChecks": true,
     "skipLibCheck": true
   },
-  "include": ["src", "../core/src/api/client.ts"]
+  "include": ["src"]
 }
