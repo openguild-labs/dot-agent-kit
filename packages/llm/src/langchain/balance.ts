@@ -4,6 +4,25 @@ import { getNativeBalance, convertAddress } from "@polkadot-agent-kit/core"
 import { Api, KnowChainId } from "@polkadot-agent-kit/common"
 
 /**
+ * Format balance with proper decimal places
+ * @param balance The balance in smallest unit
+ * @param decimals The number of decimal places
+ * @returns Formatted balance string
+ */
+const formatBalance = (balance: bigint, decimals: number): string => {
+  const divisor = BigInt(10 ** decimals)
+  const integerPart = balance / divisor
+  const fractionalPart = balance % divisor
+  
+  // Convert fractional part to string and pad with leading zeros
+  let fractionalStr = fractionalPart.toString().padStart(decimals, '0')
+  // Remove trailing zeros
+  fractionalStr = fractionalStr.replace(/0+$/, '')
+  
+  return fractionalStr ? `${integerPart}.${fractionalStr}` : integerPart.toString()
+}
+
+/**
  * Returns a tool that checks the balance of a specific address
  * @param apis Map of chain IDs to API instances
  * @param address The address to check the balance for
@@ -30,10 +49,11 @@ export const checkBalanceTool = (apis: Map<KnowChainId, Api<KnowChainId>>, addre
             tool_call_id: `balance_error_${Date.now()}`
           }
         }
-        const balance = await getNativeBalance(api, formattedAddress)
+        const balanceInfo = await getNativeBalance(api, formattedAddress)
+        const formattedBalance = formatBalance(balanceInfo.balance, balanceInfo.decimals)
 
         return {
-          content: `Balance on ${chain}: ${balance.toString()}`,
+          content: `Balance on ${chain}: ${formattedBalance} ${balanceInfo.symbol}`,
           tool_call_id: `balance_${Date.now()}`
         }
       } catch (error) {

@@ -8,11 +8,17 @@ importers:
 
   .:
     dependencies:
+      '@noble/curves':
+        specifier: ^1.6.0
+        version: 1.9.0
       '@polkadot-api/descriptors':
         specifier: file:.papi/descriptors
         version: file:.papi/descriptors(polkadot-api@1.10.0(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.1))
+      '@subsquid/ss58':
+        specifier: ^2.0.2
+        version: 2.0.2
       polkadot-api:
-        specifier: ^1.9.13
+        specifier: ^1.10.0
         version: 1.10.0(jiti@2.4.2)(postcss@8.5.3)(rxjs@7.8.2)(tsx@4.19.3)(yaml@2.7.1)
     devDependencies:
       '@changesets/cli':
@@ -9171,7 +9177,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.9.0(debug@4.4.0))
+      retry-axios: 2.6.0(axios@1.9.0)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -10478,7 +10484,7 @@ snapshots:
       onetime: 7.0.0
       signal-exit: 4.1.0
 
-  retry-axios@2.6.0(axios@1.9.0(debug@4.4.0)):
+  retry-axios@2.6.0(axios@1.9.0):
     dependencies:
       axios: 1.9.0(debug@4.4.0)
 
