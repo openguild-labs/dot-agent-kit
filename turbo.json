@@ -19,6 +19,9 @@
         "cache": false,
         "outputs": ["dist/**"],
         "dependsOn": ["^build"]
+      },
+      "clean": {
+        "cache": false
       }
     }
   }
