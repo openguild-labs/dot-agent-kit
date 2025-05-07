@@ -7,6 +7,26 @@ import { config } from 'dotenv'
 
 config({ path: '../../.env' })
 
+const commonPlugins = [
+  typescript(),
+  json(),
+  babel({
+    extensions: ['.ts'],
+    plugins: ['@babel/plugin-syntax-import-attributes'],
+    babelHelpers: 'bundled',
+    presets: ['@babel/preset-env']
+  }),
+  codecovRollupPlugin({
+    enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
+    bundleName: 'agent-kit-polkadot',
+    uploadToken: process.env.CODECOV_TOKEN,
+    debug: true,
+    uploadOverrides: {
+      sha: process.env.GH_COMMIT_SHA
+    }
+  })
+]
+
 export default [
   {
     input: './src/index.ts',
@@ -15,29 +35,25 @@ export default [
       { file: './dist/index.cjs', format: 'cjs' },
       { file: './dist/index.mjs', format: 'es' }
     ],
-    plugins: [
-      typescript(),
-      json(),
-      babel({
-        extensions: ['.ts'],
-        plugins: ['@babel/plugin-syntax-import-attributes'],
-        babelHelpers: 'bundled',
-        presets: ['@babel/preset-env']
-      }),
-      codecovRollupPlugin({
-        enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
-        bundleName: 'agent-kit-polkadot',
-        uploadToken: process.env.CODECOV_TOKEN,
-        debug: true,
-        uploadOverrides: {
-          sha: process.env.GH_COMMIT_SHA
-        }
-      })
-    ]
+    plugins: commonPlugins
+  },
+  {
+    input: './src/api/client.ts',
+    external: ['ms'],
+    output: [
+      { file: './dist/api/client.cjs', format: 'cjs' },
+      { file: './dist/api/client.mjs', format: 'es' }
+    ],
+    plugins: commonPlugins
   },
   {
     input: './src/index.ts',
     output: [{ file: './dist/index.d.ts', format: 'es' }],
+    plugins: [dts()]
+  },
+  {
+    input: './src/api/client.ts',
+    output: [{ file: './dist/api/client.d.ts', format: 'es' }],
     plugins: [dts()]
   }
 ]
