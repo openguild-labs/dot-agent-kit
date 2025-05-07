@@ -62,6 +62,12 @@ export function addressOfSubstrate(address: Uint8Array): string {
   return ss58.codec("substrate").encode(value)
 }
 
+export interface BalanceInfo {
+  balance: bigint;
+  decimals: number;
+  symbol: string;
+}
+
 // export function toMultiAddress(address: string): MultiAddress {
 //   return MultiAddress.Id(address);
 // }
