@@ -58,7 +58,9 @@
   },
   "packageManager": "pnpm@10.6.5",
   "dependencies": {
-    "polkadot-api": "^1.9.13",
-    "@polkadot-api/descriptors": "file:.papi/descriptors"
+    "@noble/curves": "^1.6.0",
+    "@polkadot-api/descriptors": "file:.papi/descriptors",
+    "@subsquid/ss58": "^2.0.2",
+    "polkadot-api": "^1.10.0"
   }
 }

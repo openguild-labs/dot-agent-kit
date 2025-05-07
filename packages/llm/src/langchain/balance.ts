@@ -2,6 +2,7 @@ import { tool } from "@langchain/core/tools"
 import { z } from "zod"
 import { getNativeBalance, convertAddress } from "@polkadot-agent-kit/core"
 import { Api, KnowChainId } from "@polkadot-agent-kit/common"
+import { formatBalance } from "@polkadot-agent-kit/common"
 
 /**
  * Returns a tool that checks the balance of a specific address
@@ -30,10 +31,11 @@ export const checkBalanceTool = (apis: Map<KnowChainId, Api<KnowChainId>>, addre
             tool_call_id: `balance_error_${Date.now()}`
           }
         }
-        const balance = await getNativeBalance(api, formattedAddress)
+        const balanceInfo = await getNativeBalance(api, formattedAddress)
+        const formattedBalance = formatBalance(balanceInfo.balance, balanceInfo.decimals)
 
         return {
-          content: `Balance on ${chain}: ${balance.toString()}`,
+          content: `Balance on ${chain}: ${formattedBalance} ${balanceInfo.symbol}`,
           tool_call_id: `balance_${Date.now()}`
         }
       } catch (error) {
