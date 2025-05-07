@@ -9,5 +9,5 @@
       "strictNullChecks": true,
       "skipLibCheck": true
     },
-    "include": ["src", "../common/src/utils/balance.ts"]
+    "include": ["src", "../common/src/types/balance.ts"]
 }
