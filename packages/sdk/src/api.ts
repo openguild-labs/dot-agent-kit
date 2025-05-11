@@ -67,6 +67,10 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
     return this.agentApi.getNativeBalanceTool(address)
   }
 
+  getSetChainContextTool(): DynamicStructuredTool {
+    return this.agentApi.getSetChainContextTool()
+  }
+
   /**
    * Get Native Transfer Tool
    * Creates a tool for transferring native tokens to an address
