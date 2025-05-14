@@ -17,7 +17,9 @@ export const polkadotChain = createChain({
   type: "relay",
   chainId: null,
   blockExplorerUrl: "https://polkadot.subscan.io",
-  prefix: 0
+  prefix: 0,
+  decimals: 10,
+  symbol: "DOT"
 })
 
 export const polkadotAssetHubChain = createChain({
@@ -29,7 +31,9 @@ export const polkadotAssetHubChain = createChain({
   type: "system",
   chainId: 1000,
   blockExplorerUrl: "https://assethub-polkadot.subscan.io",
-  prefix: 0
+  prefix: 0,
+  decimals: 10,
+  symbol: "DOT"
 })
 
 export const westendChain = createChain({
@@ -42,7 +46,9 @@ export const westendChain = createChain({
   chainId: null,
   blockExplorerUrl: "https://westend.subscan.io",
   xcmExtrinsic: "limited_teleport_assets",
-  prefix: 42 // default
+  prefix: 42, // default
+  decimals: 12,
+  symbol: "WND"
 })
 
 export const westendAssetHubChain = createChain({
@@ -54,5 +60,7 @@ export const westendAssetHubChain = createChain({
   type: "system",
   chainId: 1000,
   blockExplorerUrl: "https://assethub-westend.subscan.io",
-  prefix: 42 // default
+  prefix: 42, // default
+  decimals: 12,
+  symbol: "WND"
 })
