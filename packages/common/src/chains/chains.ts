@@ -73,6 +73,8 @@ export type Chain = {
   type: "system" | "relay" | "para"
   blockExplorerUrl: string | null
   prefix: number
+  decimals: number
+  symbol: string
 }
 
 export type ChainRelay = Chain & { chainId: null }
@@ -104,11 +106,4 @@ export const getAllSupportedChains = (): Chain[] => {
 
 export const isSupportedChain = (chainId: unknown): chainId is ChainId => {
   return typeof chainId === "string" && SUPPORTED_CHAINS.some(chain => chain.id === chainId)
-}
-
-export const CHAIN_PROPERTIES: Record<KnowChainId, { decimals: number; symbol: string }> = {
-  polkadot: { decimals: 10, symbol: 'DOT' },
-  west: { decimals: 12, symbol: 'WND' },
-  polkadot_asset_hub: { decimals: 10, symbol: 'DOT' },
-  west_asset_hub: { decimals: 12, symbol: 'WND' }
 }

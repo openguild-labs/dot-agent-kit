@@ -1,8 +1,7 @@
 import { tool } from "@langchain/core/tools"
 import { z } from "zod"
 import { getNativeBalance, convertAddress } from "@polkadot-agent-kit/core"
-import { Api, KnowChainId } from "@polkadot-agent-kit/common"
-import { formatBalance } from "@polkadot-agent-kit/common"
+import { Api, KnowChainId, formatBalance } from "@polkadot-agent-kit/common"
 
 /**
  * Returns a tool that checks the balance of a specific address
