@@ -12,6 +12,11 @@ src/*.js.map
 src/**/*.js
 src/**/*.js.map
 
+# Specific files to ignore
+src/handlers.js
+src/index.js
+src/TelegramBot.js
+
 # Environment variables
 .env
 .env.local
