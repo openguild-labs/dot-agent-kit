@@ -3,6 +3,28 @@ import { z } from "zod"
 import { getNativeBalance, convertAddress } from "@polkadot-agent-kit/core"
 import { Api, KnowChainId } from "@polkadot-agent-kit/common"
 
+// Utility function to generate tool_call_id
+const generateToolCallId = (prefix: string) => `${prefix}_${Date.now()}`
+
+// Utility function to validate chain and retrieve the API
+const getApiForChain = (apis: Map<KnowChainId, Api<KnowChainId>>, chain: string) => {
+  const api = apis.get(chain as KnowChainId)
+  if (!api) {
+    const availableChains = Array.from(apis.keys()).join(", ")
+    throw new Error(`Chain '${chain}' not available. Available chains: ${availableChains}`)
+  }
+  return api
+}
+
+// Utility function to validate and format the address
+const validateAndFormatAddress = (address: string, chain: KnowChainId) => {
+  const formattedAddress = convertAddress(address, chain)
+  if (!formattedAddress) {
+    throw new Error(`Invalid address: ${address}`)
+  }
+  return formattedAddress
+}
+
 /**
  * Returns a tool that checks the balance of a specific address
  * @param apis Map of chain IDs to API instances
@@ -13,39 +35,29 @@ export const checkBalanceTool = (apis: Map<KnowChainId, Api<KnowChainId>>, addre
   return tool(
     async ({ chain }: { chain: string }) => {
       try {
-        const api = apis.get(chain as KnowChainId)
+        // Validate chain and get API instance
+        const api = getApiForChain(apis, chain)
 
-        if (!api) {
-          const availableChains = Array.from(apis.keys()).join(", ")
-          return {
-            content: `Chain '${chain}' not available. You can check balance on: ${availableChains}`,
-            tool_call_id: `balance_error_${Date.now()}`
-          }
-        }
-        // format address with correct chain prefix
-        const formattedAddress = convertAddress(address, chain as KnowChainId)
-        if (!formattedAddress) {
-          return {
-            content: `Invalid address: ${address}`,
-            tool_call_id: `balance_error_${Date.now()}`
-          }
-        }
+        // Validate and format the address
+        const formattedAddress = validateAndFormatAddress(address, chain as KnowChainId)
+
+        // Fetch the balance
         const balance = await getNativeBalance(api, formattedAddress)
 
         return {
           content: `Balance on ${chain}: ${balance.toString()}`,
-          tool_call_id: `balance_${Date.now()}`
+          tool_call_id: generateToolCallId("balance")
         }
-      } catch (error) {
+      } catch (error: any) {
         return {
           content: `Error checking balance on ${chain}: ${error.message}`,
-          tool_call_id: `balance_error_${Date.now()}`
+          tool_call_id: generateToolCallId("balance_error")
         }
       }
     },
     {
       name: "check_balance",
-      description: "Check balance of the agent's account on a specific chain",
+      description: "Check balance of the wallet address on a specific chain",
       schema: z.object({
         chain: z
           .string()
