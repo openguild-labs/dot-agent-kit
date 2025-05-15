@@ -67,7 +67,15 @@ After cloning the project, the easiest way to setup chains is:
 
 2. Run the interactive chain setup script:
    ```bash
-   pnpm run test:setup
+    pnpm papi
+   ```
+3. Run build package
+   ```bash
+   pnpm run build
+   ```
+4. Test Telegram AI bot
+   ```bash
+   cd examples/telegram-bot && pnpm i && pnpm run dev
    ```
 
 This will launch an interactive CLI menu that allows you to:

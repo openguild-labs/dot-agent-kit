@@ -2,7 +2,9 @@
   "name": "polkadot-agent-kit",
   "description": "A toolkit for building agents on Polkadot",
   "author": "Elastic Labs",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "keywords": [
     "polkadot",
     "agent",
@@ -36,7 +38,6 @@
     "node": ">=22"
   },
   "scripts": {
-    
     "compile": "turbo run compile",
     "format:check": "turbo run format:check",
     "format:write": "turbo run format:write",
@@ -60,7 +61,7 @@
   },
   "packageManager": "pnpm@10.6.5",
   "dependencies": {
-    "polkadot-api": "^1.9.13",
-    "@polkadot-api/descriptors": "file:.papi/descriptors"
+    "@polkadot-api/descriptors": "file:.papi/descriptors",
+    "polkadot-api": "^1.10.0"
   }
 }

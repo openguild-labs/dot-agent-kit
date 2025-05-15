@@ -1,7 +1,7 @@
 import { tool } from "@langchain/core/tools"
 import { z } from "zod"
 import { getNativeBalance, convertAddress } from "@polkadot-agent-kit/core"
-import { Api, KnowChainId } from "@polkadot-agent-kit/common"
+import { Api, KnowChainId, formatBalance } from "@polkadot-agent-kit/common"
 
 // Utility function to generate tool_call_id
 const generateToolCallId = (prefix: string) => `${prefix}_${Date.now()}`
@@ -37,16 +37,29 @@ export const checkBalanceTool = (apis: Map<KnowChainId, Api<KnowChainId>>, addre
       try {
         // Validate chain and get API instance
         const api = getApiForChain(apis, chain)
-
-        // Validate and format the address
+        
+        if (!api) {
+          const availableChains = Array.from(apis.keys()).join(", ")
+          return {
+            content: `Chain '${chain}' not available. You can check balance on: ${availableChains}`,
+            tool_call_id: `balance_error_${Date.now()}`
+          }
+        }
+        // format address with correct chain prefix
         const formattedAddress = validateAndFormatAddress(address, chain as KnowChainId)
-
-        // Fetch the balance
-        const balance = await getNativeBalance(api, formattedAddress)
+        if (!formattedAddress) {
+          return {
+            content: `Invalid address: ${address}`,
+            tool_call_id: `balance_error_${Date.now()}`
+          }
+        }
+        const balanceInfo = await getNativeBalance(api, formattedAddress)
+        const formattedBalance = formatBalance(balanceInfo.balance, balanceInfo.decimals)
 
         return {
-          content: `Balance on ${chain}: ${balance.toString()}`,
+          content: `Balance on ${chain}: ${formattedBalance} ${balanceInfo.symbol}`,
           tool_call_id: generateToolCallId("balance")
+
         }
       } catch (error: any) {
         return {

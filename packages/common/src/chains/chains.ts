@@ -73,6 +73,8 @@ export type Chain = {
   type: "system" | "relay" | "para"
   blockExplorerUrl: string | null
   prefix: number
+  decimals: number
+  symbol: string
 }
 
 export type ChainRelay = Chain & { chainId: null }
