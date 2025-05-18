@@ -54,9 +54,12 @@ export class TelegramBot {
       // Set up tools 
       // Get balance of agent account
       const checkBalance = this.agent.getNativeBalanceTool();
+      // transfer native token to another address on specific chain 
+      const transferNative = this.agent.transferNativeTool();
       
       setupHandlers(this.bot, this.llm, {
         checkBalance: checkBalance,
+        transferNative: transferNative,
       });
 
       console.log("Bot initialization complete");

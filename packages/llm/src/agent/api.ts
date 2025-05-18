@@ -40,7 +40,7 @@ export class PolkadotAgentApi implements IPolkadotAgentApi {
     return checkBalanceTool(this.api.getAllApis(), address)
   }
 
-  transferNativeTool(chainId: KnowChainId): DynamicStructuredTool {
-    return transferNativeTool(this.api.getApi(chainId))
+  transferNativeTool(): DynamicStructuredTool {
+    return transferNativeTool(this.api.getAllApis())
   }
 }

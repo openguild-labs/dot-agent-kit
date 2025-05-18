@@ -92,8 +92,8 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    *
    * @throws {Error} If the transfer fails or parameters are invalid
    */
-  transferNativeTool(chainId: KnowChainId): DynamicStructuredTool {
-    return this.agentApi.transferNativeTool(chainId)
+  transferNativeTool(): DynamicStructuredTool {
+    return this.agentApi.transferNativeTool()
   }
 
   /**

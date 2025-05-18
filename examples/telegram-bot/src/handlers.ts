@@ -51,8 +51,9 @@ export function setupHandlers(
         new HumanMessage({ content: message }),
       ];
 
+      console.log(messages);
       const aiMessage = await llmWithTools.invoke(messages);
-      
+      console.log(aiMessage);
       
       if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
         for (const toolCall of aiMessage.tool_calls) {

@@ -1,4 +1,5 @@
 import { getAllSupportedChains, getChainById, KnowChainId } from "@polkadot-agent-kit/common"
+import { MultiAddress } from "@polkadot-api/descriptors"
 import * as ss58 from "@subsquid/ss58"
 import { AccountId } from "polkadot-api"
 
@@ -51,3 +52,9 @@ export function convertAddress(
     return null
   }
 }
+
+
+export function toMultiAddress(address: string): MultiAddress {
+	return MultiAddress.Id(address)
+}
+
