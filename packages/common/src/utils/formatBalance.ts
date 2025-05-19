@@ -34,30 +34,27 @@ export const formatBalance = (balance: bigint, decimals: number): string => {
  * ```
  */
 export function parseUnits(value: string, decimals: number): bigint {
-  if (typeof value !== "string") {
-    throw new Error("Value must be a string")
-  }
 
   if (!Number.isInteger(decimals) || decimals < 0) {
-    throw new Error("Decimals must be a non-negative integer")
+    throw new Error("Invalid value as an input")
   }
 
   if (!value.trim()) {
-    throw new Error("Value cannot be empty")
+    throw new Error("Invalid value as an input")
   }
 
   const [integerPart, fractionalPart = ""] = value.split(".")
 
   if (!/^\d+$/.test(integerPart)) {
-    throw new Error("Value must be a non-negative number")
+    throw new Error("Invalid value as an input")
   }
 
   if (fractionalPart && !/^\d+$/.test(fractionalPart)) {
-    throw new Error("Invalid fractional part")
+    throw new Error("Invalid value as an input")
   }
 
   if (fractionalPart.length > decimals) {
-    throw new Error(`Fractional part exceeds ${decimals} decimal places`)
+    throw new Error("Invalid value as an input")
   }
 
   // Convert to smallest unit
