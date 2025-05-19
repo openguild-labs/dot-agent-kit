@@ -1,4 +1,4 @@
-import { IPolkadotAgentApi, PolkadotAgentApi } from "@polkadot-agent-kit/llm"
+import { IPolkadotAgentApi, PolkadotAgentApi, BalanceTool, TransferTool } from "@polkadot-agent-kit/llm"
 import { IPolkadotApi, PolkadotApi } from "@polkadot-agent-kit/core"
 import {
   Api,
@@ -10,6 +10,7 @@ import {
 import { DynamicStructuredTool } from "@langchain/core/tools"
 import { sr25519CreateDerive, ed25519CreateDerive } from "@polkadot-labs/hdkd"
 import * as ss58 from "@subsquid/ss58"
+
 
 export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
   private polkadotApi: PolkadotApi
@@ -62,7 +63,7 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    * const result = await balanceTool.call({ address });
    * ```
    */
-  getNativeBalanceTool(): DynamicStructuredTool {
+  getNativeBalanceTool(): BalanceTool {
     const address = this.getCurrentAddress()
     return this.agentApi.getNativeBalanceTool(address)
   }
@@ -92,7 +93,7 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
    *
    * @throws {Error} If the transfer fails or parameters are invalid
    */
-  transferNativeTool(): DynamicStructuredTool {
+  transferNativeTool(): TransferTool {
     return this.agentApi.transferNativeTool()
   }
 

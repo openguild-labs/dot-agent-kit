@@ -1,28 +1,31 @@
-import { tool } from "@langchain/core/tools"
+import { DynamicStructuredTool, tool } from "@langchain/core/tools"
 import { z } from "zod"
-import { getNativeBalance, convertAddress } from "@polkadot-agent-kit/core"
+import { getNativeBalance } from "@polkadot-agent-kit/core"
 import { Api, KnowChainId, formatBalance } from "@polkadot-agent-kit/common"
+import {
+  getApiForChain,
+  validateAndFormatAddress,
+  executeTool
+} from "../utils"
+import { balanceToolSchema, TOOL_NAMES, ToolConfig } from "../types"
 
-// Utility function to generate tool_call_id
-const generateToolCallId = (prefix: string) => `${prefix}_${Date.now()}`
 
-// Utility function to validate chain and retrieve the API
-const getApiForChain = (apis: Map<KnowChainId, Api<KnowChainId>>, chain: string) => {
-  const api = apis.get(chain as KnowChainId)
-  if (!api) {
-    const availableChains = Array.from(apis.keys()).join(", ")
-    throw new Error(`Chain '${chain}' not available. Available chains: ${availableChains}`)
-  }
-  return api
+// Define tool types
+export type BalanceTool = DynamicStructuredTool<typeof balanceToolSchema>
+
+
+interface BalanceToolResult {
+  balance: string
+  symbol: string
+  chain: string
 }
 
-// Utility function to validate and format the address
-const validateAndFormatAddress = (address: string, chain: KnowChainId) => {
-  const formattedAddress = convertAddress(address, chain)
-  if (!formattedAddress) {
-    throw new Error(`Invalid address: ${address}`)
-  }
-  return formattedAddress
+
+
+const toolConfig: ToolConfig = {
+  name: TOOL_NAMES.CHECK_BALANCE,
+  description: "Check balance of the wallet address on a specific chain",
+  schema: balanceToolSchema
 }
 
 /**
@@ -33,51 +36,24 @@ const validateAndFormatAddress = (address: string, chain: KnowChainId) => {
  */
 export const checkBalanceTool = (apis: Map<KnowChainId, Api<KnowChainId>>, address: string) => {
   return tool(
-    async ({ chain }: { chain: string }) => {
-      try {
-        // Validate chain and get API instance
-        const api = getApiForChain(apis, chain)
-        
-        if (!api) {
-          const availableChains = Array.from(apis.keys()).join(", ")
-          return {
-            content: `Chain '${chain}' not available. You can check balance on: ${availableChains}`,
-            tool_call_id: `balance_error_${Date.now()}`
-          }
-        }
-        // format address with correct chain prefix
-        const formattedAddress = validateAndFormatAddress(address, chain as KnowChainId)
-        if (!formattedAddress) {
-          return {
-            content: `Invalid address: ${address}`,
-            tool_call_id: `balance_error_${Date.now()}`
-          }
-        }
-        const balanceInfo = await getNativeBalance(api, formattedAddress)
-        const formattedBalance = formatBalance(balanceInfo.balance, balanceInfo.decimals)
+    async ({ chain }: z.infer<typeof balanceToolSchema>) => {
+      return executeTool<BalanceToolResult>(
+        TOOL_NAMES.CHECK_BALANCE,
+        async () => {
+          const api = getApiForChain(apis, chain)
+          const formattedAddress = validateAndFormatAddress(address, chain as KnowChainId)
+          const balanceInfo = await getNativeBalance(api, formattedAddress)
+          const formattedBalance = formatBalance(balanceInfo.balance, balanceInfo.decimals)
 
-        return {
-          content: `Balance on ${chain}: ${formattedBalance} ${balanceInfo.symbol}`,
-          tool_call_id: generateToolCallId("balance")
-
-        }
-      } catch (error: any) {
-        return {
-          content: `Error checking balance on ${chain}: ${error.message}`,
-          tool_call_id: generateToolCallId("balance_error")
-        }
-      }
+          return {
+            balance: formattedBalance,
+            symbol: balanceInfo.symbol,
+            chain
+          }
+        },
+        (result) => `Balance on ${result.chain}: ${result.balance} ${result.symbol}`
+      )
     },
-    {
-      name: "check_balance",
-      description: "Check balance of the wallet address on a specific chain",
-      schema: z.object({
-        chain: z
-          .string()
-          .describe(
-            "The chain name to check balance on (e.g., 'polkadot', 'kusama', 'west', 'westend_asset_hub')"
-          )
-      })
-    }
+    toolConfig
   )
 }

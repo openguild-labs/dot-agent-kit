@@ -107,3 +107,8 @@ export const getAllSupportedChains = (): Chain[] => {
 export const isSupportedChain = (chainId: unknown): chainId is ChainId => {
   return typeof chainId === "string" && SUPPORTED_CHAINS.some(chain => chain.id === chainId)
 }
+
+export function getDecimalsByChainId(chainId: string): number {
+  const chain = getChainById(chainId, getAllSupportedChains())
+  return chain.decimals
+}
