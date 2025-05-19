@@ -53,8 +53,6 @@ export function convertAddress(
   }
 }
 
-
 export function toMultiAddress(address: string): MultiAddress {
-	return MultiAddress.Id(address)
+  return MultiAddress.Id(address)
 }
-
