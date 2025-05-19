@@ -39,7 +39,7 @@ function getDecimals(chainId: string): number {
  */
 export const transferNativeTool = (apis: Map<KnowChainId, Api<KnowChainId>>) => {
   return tool(
-    async ({ chain, to, amount }: { chain: string; to: string; amount: bigint }) => {
+    async ({ amount, to, chain }: { amount: string; to: string; chain: string }) => {
       try {
         // Validate chain and get API instance
         const api = getApiForChain(apis, chain)
@@ -60,7 +60,7 @@ export const transferNativeTool = (apis: Map<KnowChainId, Api<KnowChainId>>) => 
           }
         }
 
-        const parsedAmount = parseUnits(amount.toString(), getDecimals(chain))
+        const parsedAmount = parseUnits(amount, getDecimals(chain))
         await transferNativeCall(api, formattedAddress, parsedAmount)
         return {
           content: `Transferred ${amount} to ${formattedAddress}`,
@@ -77,9 +77,9 @@ export const transferNativeTool = (apis: Map<KnowChainId, Api<KnowChainId>>) => 
       name: "transfer_native",
       description: "Transfer native tokens to a specific address",
       schema: z.object({
-        chain: z.string().describe("The chain to transfer the tokens to"),
+        amount: z.string().describe("The amount of tokens to transfer"),
         to: z.string().describe("The address to transfer the tokens to"),
-        amount: z.bigint().describe("The amount of tokens to transfer")
+        chain: z.string().describe("The chain to transfer the tokens to"),
       })
     }
   )
