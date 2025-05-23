@@ -14,7 +14,7 @@ import { getApi, getChainSpec, AgentConfig } from "@polkadot-agent-kit/common"
 import { PolkadotAgentKit } from "./api"
 import { PolkadotApi } from "@polkadot-agent-kit/core"
 import { DynamicStructuredTool } from "@langchain/core/tools"
-import { PolkadotAgentApi } from "@polkadot-agent-kit/llm"
+import { BalanceTool, PolkadotAgentApi } from "@polkadot-agent-kit/llm"
 
 describe("PolkadotApi", () => {
   let polkadotApi: PolkadotApi
@@ -166,9 +166,13 @@ describe("PolkadotApi", () => {
         getNativeBalanceTool: vi.fn().mockReturnValue(mockWestBalanceTool)
       } as unknown as import("@polkadot-agent-kit/llm").PolkadotAgentApi
 
-      vi.spyOn(mockAgentPolkadotApi, "getNativeBalanceTool").mockReturnValue(mockDotBalanceTool)
+      vi.spyOn(mockAgentPolkadotApi, "getNativeBalanceTool").mockReturnValue(
+        mockDotBalanceTool as unknown as BalanceTool
+      )
 
-      vi.spyOn(mockAgentWestApi, "getNativeBalanceTool").mockReturnValue(mockWestBalanceTool)
+      vi.spyOn(mockAgentWestApi, "getNativeBalanceTool").mockReturnValue(
+        mockWestBalanceTool as unknown as BalanceTool
+      )
     })
 
     it("should return the correct tool for a specific chain", () => {
