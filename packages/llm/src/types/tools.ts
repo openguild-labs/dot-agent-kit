@@ -1,15 +1,15 @@
 import { z } from "zod"
 
 /**
- * Constants for tool names used across the application.
+ * Enum for tool names used across the application.
  * These constants ensure consistency in tool naming and prevent typos.
  */
-export const TOOL_NAMES = {
+export enum ToolNames {
   /** Tool for checking native token balance */
-  CHECK_BALANCE: "check_balance",
+  CHECK_BALANCE = "check_balance",
   /** Tool for transferring native tokens */
-  TRANSFER_NATIVE: "transfer_native"
-} as const
+  TRANSFER_NATIVE = "transfer_native"
+}
 
 /**
  * Schema for the transfer tool input.

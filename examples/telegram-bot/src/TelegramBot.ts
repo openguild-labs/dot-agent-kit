@@ -3,7 +3,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { Tool } from '@langchain/core/tools';
 import { setupHandlers } from './handlers';
 import { PolkadotAgentKit } from '@polkadot-agent-kit/sdk';
-import { getChainByName, KnowChainId, getAllSupportedChains } from '@polkadot-agent-kit/common';
+import { getChainByName, KnownChainId, getAllSupportedChains } from '@polkadot-agent-kit/common';
 
 
 interface BotConfig {

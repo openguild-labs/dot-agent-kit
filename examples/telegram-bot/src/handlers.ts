@@ -15,7 +15,7 @@ When transferring tokens, please provide:
 3. The name of the destination chain (e.g., westend, westend_asset_hub)
 
 
-Suggested syntax: "transfer [amount] token to [address] on [chain name]"
+Suggested syntax: "transfer [amount] token to [chain name] to [address]"
 
 When checking proxies, you can specify the chain (e.g., "check proxies on westend") or 
 not specify a chain (the first chain will be used by default)
@@ -52,11 +52,7 @@ export function setupHandlers(
         new SystemMessage({ content: SYSTEM_PROMPT }),
         new HumanMessage({ content: message }),
       ];
-
-      console.log(messages);
       const aiMessage = await llmWithTools.invoke(messages);
-      console.log(aiMessage);
-      
       if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
         for (const toolCall of aiMessage.tool_calls) {
           

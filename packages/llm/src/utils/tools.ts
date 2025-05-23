@@ -1,16 +1,20 @@
-import { Api, KnowChainId } from "@polkadot-agent-kit/common"
+import { Api, KnownChainId } from "@polkadot-agent-kit/common"
 import { convertAddress, toMultiAddress } from "@polkadot-agent-kit/core"
 import { MultiAddress } from "@polkadot-api/descriptors"
 import { ToolResponse, ChainNotAvailableError, InvalidAddressError } from "../types"
 
-// Utility function to generate tool_call_id
-export const generateToolCallId = (prefix: string): string => `${prefix}_${Date.now()}`
+/**
+ * Internal utility to generate unique IDs for tool responses.
+ * Used by createErrorResponse and createSuccessResponse to generate
+ * tool_call_id values in the format: `${prefix}_${timestamp}`
+ */
+const generateToolCallId = (prefix: string): string => `${prefix}_${Date.now()}`
 
 export const getApiForChain = (
-  apis: Map<KnowChainId, Api<KnowChainId>>,
+  apis: Map<KnownChainId, Api<KnownChainId>>,
   chain: string
-): Api<KnowChainId> => {
-  const api = apis.get(chain as KnowChainId)
+): Api<KnownChainId> => {
+  const api = apis.get(chain as KnownChainId)
   if (!api) {
     const availableChains = Array.from(apis.keys())
     throw new ChainNotAvailableError(chain, availableChains)
@@ -18,7 +22,7 @@ export const getApiForChain = (
   return api
 }
 
-export const validateAndFormatAddress = (address: string, chain: KnowChainId): string => {
+export const validateAndFormatAddress = (address: string, chain: KnownChainId): string => {
   const formattedAddress = convertAddress(address, chain)
   if (!formattedAddress) {
     throw new InvalidAddressError(address)
@@ -28,7 +32,7 @@ export const validateAndFormatAddress = (address: string, chain: KnowChainId): s
 
 export const validateAndFormatMultiAddress = (
   address: string,
-  chain: KnowChainId
+  chain: KnownChainId
 ): MultiAddress => {
   const formattedAddress = validateAndFormatAddress(address, chain)
   return toMultiAddress(formattedAddress)

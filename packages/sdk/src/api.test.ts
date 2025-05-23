@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi, afterEach } from "vitest"
 import {
   Api,
   Chain,
-  KnowChainId,
+  KnownChainId,
   disconnect,
   getAllSupportedChains,
   getChainByName,
@@ -24,7 +24,7 @@ describe("PolkadotApi", () => {
 
   const mockApi = {
     disconnect: vi.fn().mockResolvedValue(undefined)
-  } as unknown as Api<KnowChainId>
+  } as unknown as Api<KnownChainId>
 
   beforeEach(() => {
     vi.mock("polkadot-api/smoldot", () => ({
@@ -124,7 +124,7 @@ describe("PolkadotApi", () => {
 
   describe("setApi", () => {
     it("should set API for a specific chain", () => {
-      const mockChainApi = {} as Api<KnowChainId>
+      const mockChainApi = {} as Api<KnownChainId>
       polkadotApi.setApi("polkadot", mockChainApi)
 
       expect(polkadotApi["_apis"].get("polkadot")).toBe(mockChainApi)
@@ -154,8 +154,8 @@ describe("PolkadotApi", () => {
 
     beforeEach(() => {
       // Ensure APIs are initialized
-      polkadotApi["_apis"].set("polkadot", {} as Api<KnowChainId>)
-      polkadotApi["_apis"].set("west", {} as Api<KnowChainId>)
+      polkadotApi["_apis"].set("polkadot", {} as Api<KnownChainId>)
+      polkadotApi["_apis"].set("west", {} as Api<KnownChainId>)
       mockAgentPolkadotApi = {
         api: polkadotApi["_apis"].get("polkadot") as any,
         getNativeBalanceTool: vi.fn().mockReturnValue(mockDotBalanceTool)

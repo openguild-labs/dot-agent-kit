@@ -7,7 +7,7 @@ import {
 import { IPolkadotApi, PolkadotApi } from "@polkadot-agent-kit/core"
 import {
   Api,
-  KnowChainId,
+  KnownChainId,
   getAllSupportedChains,
   AgentConfig,
   getChainById
@@ -30,11 +30,11 @@ export class PolkadotAgentKit implements IPolkadotApi, IPolkadotAgentApi {
     this.config = config
   }
 
-  setApi(chainId: KnowChainId, api?: Api<KnowChainId>) {
+  setApi(chainId: KnownChainId, api?: Api<KnownChainId>) {
     this.polkadotApi.setApi(chainId, api)
   }
 
-  getApi(chainId: KnowChainId): Api<KnowChainId> {
+  getApi(chainId: KnownChainId): Api<KnownChainId> {
     return this.polkadotApi.getApi(chainId)
   }
 

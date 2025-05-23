@@ -1,6 +1,6 @@
 import {
   Api,
-  KnowChainId,
+  KnownChainId,
   getChainById,
   getAllSupportedChains,
   BalanceInfo
@@ -13,7 +13,7 @@ import {
  * @returns The native balance info including balance, decimals and symbol
  */
 export const getNativeBalance = async (
-  api: Api<KnowChainId>,
+  api: Api<KnownChainId>,
   address: string
 ): Promise<BalanceInfo> => {
   const balance = await api.query.System.Account.getValue(address)

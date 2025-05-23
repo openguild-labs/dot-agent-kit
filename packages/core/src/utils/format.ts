@@ -1,4 +1,4 @@
-import { getAllSupportedChains, getChainById, KnowChainId } from "@polkadot-agent-kit/common"
+import { getAllSupportedChains, getChainById, KnownChainId } from "@polkadot-agent-kit/common"
 import { MultiAddress } from "@polkadot-api/descriptors"
 import * as ss58 from "@subsquid/ss58"
 import { AccountId } from "polkadot-api"
@@ -7,7 +7,7 @@ import { AccountId } from "polkadot-api"
  * Gets the SS58 prefix for a chain
  * @private
  */
-function getChainPrefix(chainId: KnowChainId): number {
+function getChainPrefix(chainId: KnownChainId): number {
   const chain = getChainById(chainId, getAllSupportedChains())
   return chain.prefix
 }
@@ -30,7 +30,7 @@ function getChainPrefix(chainId: KnowChainId): number {
  */
 export function convertAddress(
   address: string,
-  targetChainId: KnowChainId | number
+  targetChainId: KnownChainId | number
 ): string | null {
   try {
     // Get prefix based on input type

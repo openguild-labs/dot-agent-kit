@@ -5,12 +5,12 @@ import {
   Api,
   getAllSupportedChains,
   getChainById,
-  KnowChainId,
+  KnownChainId,
   parseUnits,
   getDecimalsByChainId
 } from "@polkadot-agent-kit/common"
 import { getApiForChain, validateAndFormatMultiAddress, executeTool } from "../utils"
-import { TOOL_NAMES, ToolConfig, transferToolSchema } from "../types"
+import { ToolNames, ToolConfig, transferToolSchema } from "../types"
 
 export type TransferTool = DynamicStructuredTool<typeof transferToolSchema>
 interface TransferResult {
@@ -20,7 +20,7 @@ interface TransferResult {
 }
 
 const toolConfigTransferNative: ToolConfig = {
-  name: TOOL_NAMES.TRANSFER_NATIVE,
+  name: ToolNames.TRANSFER_NATIVE,
   description: "Transfer native tokens to a specific address",
   schema: transferToolSchema
 }
@@ -30,13 +30,13 @@ const toolConfigTransferNative: ToolConfig = {
  * @param api The API instance to use for the transfer
  * @returns A dynamic structured tool that transfers native tokens to the specified address
  */
-export const transferNativeTool = (apis: Map<KnowChainId, Api<KnowChainId>>) => {
+export const transferNativeTool = (apis: Map<KnownChainId, Api<KnownChainId>>) => {
   return tool(async ({ amount, to, chain }: z.infer<typeof transferToolSchema>) => {
     return executeTool<TransferResult>(
-      TOOL_NAMES.TRANSFER_NATIVE,
+      ToolNames.TRANSFER_NATIVE,
       async () => {
         const api = getApiForChain(apis, chain)
-        const formattedAddress = validateAndFormatMultiAddress(to, chain as KnowChainId)
+        const formattedAddress = validateAndFormatMultiAddress(to, chain as KnownChainId)
         const parsedAmount = parseUnits(amount, getDecimalsByChainId(chain))
 
         await transferNativeCall(api, formattedAddress, parsedAmount)
