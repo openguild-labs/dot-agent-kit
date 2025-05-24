@@ -38,21 +38,3 @@ export interface ToolResponse {
   tool_call_id: string
 }
 
-export interface ToolError extends Error {
-  code: string
-  details?: unknown
-}
-
-export class ChainNotAvailableError extends Error implements ToolError {
-  code = "CHAIN_NOT_AVAILABLE"
-  constructor(chain: string, availableChains: string[]) {
-    super(`Chain '${chain}' not available. Available chains: ${availableChains.join(", ")}`)
-  }
-}
-
-export class InvalidAddressError extends Error implements ToolError {
-  code = "INVALID_ADDRESS"
-  constructor(address: string) {
-    super(`Invalid address: ${address}`)
-  }
-}
