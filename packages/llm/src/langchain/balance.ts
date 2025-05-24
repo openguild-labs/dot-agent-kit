@@ -3,22 +3,8 @@ import { z } from "zod"
 import { getNativeBalance } from "@polkadot-agent-kit/core"
 import { Api, KnownChainId, formatBalance } from "@polkadot-agent-kit/common"
 import { getApiForChain, validateAndFormatAddress, executeTool } from "../utils"
-import { balanceToolSchema, ToolNames, ToolConfig } from "../types"
+import { BalanceToolResult, balanceToolSchema, toolConfigBalance, ToolNames } from "../types"
 
-// Define tool types
-export type BalanceTool = DynamicStructuredTool<typeof balanceToolSchema>
-
-interface BalanceToolResult {
-  balance: string
-  symbol: string
-  chain: string
-}
-
-const toolConfig: ToolConfig = {
-  name: ToolNames.CHECK_BALANCE,
-  description: "Check balance of the wallet address on a specific chain",
-  schema: balanceToolSchema
-}
 
 /**
  * Returns a tool that checks the balance of a specific address
@@ -44,5 +30,5 @@ export const checkBalanceTool = (apis: Map<KnownChainId, Api<KnownChainId>>, add
       },
       result => `Balance on ${result.chain}: ${result.balance} ${result.symbol}`
     )
-  }, toolConfig)
+  }, toolConfigBalance)
 }

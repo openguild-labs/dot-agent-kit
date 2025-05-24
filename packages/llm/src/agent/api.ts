@@ -1,7 +1,8 @@
 import { KnownChainId } from "@polkadot-agent-kit/common"
 import { DynamicStructuredTool } from "@langchain/core/tools"
-import { checkBalanceTool, transferNativeTool, BalanceTool, TransferTool } from "../langchain"
+import { checkBalanceTool, transferNativeTool } from "../langchain"
 import { PolkadotApi } from "@polkadot-agent-kit/core"
+import { BalanceTool, TransferTool } from "../types"
 
 /**
  * Interface for Polkadot API implementations

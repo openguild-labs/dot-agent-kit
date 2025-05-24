@@ -10,20 +10,8 @@ import {
   getDecimalsByChainId
 } from "@polkadot-agent-kit/common"
 import { getApiForChain, validateAndFormatMultiAddress, executeTool } from "../utils"
-import { ToolNames, ToolConfig, transferToolSchema } from "../types"
+import { toolConfigTransferNative, ToolNames, TransferResult, transferToolSchema } from "../types"
 
-export type TransferTool = DynamicStructuredTool<typeof transferToolSchema>
-interface TransferResult {
-  amount: string
-  address: string
-  chain: string
-}
-
-const toolConfigTransferNative: ToolConfig = {
-  name: ToolNames.TRANSFER_NATIVE,
-  description: "Transfer native tokens to a specific address",
-  schema: transferToolSchema
-}
 
 /**
  * Returns a tool that transfers native tokens to a specific address

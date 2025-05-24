@@ -1,3 +1,4 @@
+import { DynamicStructuredTool } from "@langchain/core/tools"
 import { z } from "zod"
 
 /**
@@ -10,45 +11,6 @@ export enum ToolNames {
   /** Tool for transferring native tokens */
   TRANSFER_NATIVE = "transfer_native"
 }
-
-/**
- * Schema for the transfer tool input.
- * Defines the structure and validation rules for token transfer requests.
- *
- * @example
- * ```typescript
- * {
- *   amount: "1.5",  // Amount of tokens to transfer
- *   to: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",  // Recipient address
- *   chain: "polkadot"  // Target chain
- * }
- * ```
- */
-export const transferToolSchema = z.object({
-  amount: z.string().describe("The amount of tokens to transfer"),
-  to: z.string().describe("The address to transfer the tokens to"),
-  chain: z.string().describe("The chain to transfer the tokens to")
-})
-
-/**
- * Schema for the balance check tool input.
- * Defines the structure and validation rules for balance check requests.
- *
- * @example
- * ```typescript
- * {
- *   chain: "polkadot"  // Chain to check balance on
- * }
- * ```
- */
-export const balanceToolSchema = z.object({
-  chain: z
-    .string()
-    .describe(
-      "The chain name to check balance on (e.g., 'polkadot', 'kusama', 'west', 'westend_asset_hub')"
-    )
-})
-
 /**
  * Interface for tool configuration.
  * Defines the structure for configuring tools.
