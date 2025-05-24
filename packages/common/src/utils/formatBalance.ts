@@ -34,33 +34,26 @@ export const formatBalance = (balance: bigint, decimals: number): string => {
  * ```
  */
 export function parseUnits(value: string, decimals: number): bigint {
-
   if (!Number.isInteger(decimals) || decimals < 0) {
-    throw new Error("Invalid value as an input")
+    throw new Error("Decimals must be a non-negative integer")
   }
-
-  if (!value.trim()) {
-    throw new Error("Invalid value as an input")
+  const trimmed = value.trim()
+  if (!trimmed) {
+    throw new Error("Value must not be empty")
   }
-
-  const [integerPart, fractionalPart = ""] = value.split(".")
-
+  const [integerPart, fractionalPart = ""] = trimmed.split(".")
   if (!/^\d+$/.test(integerPart)) {
-    throw new Error("Invalid value as an input")
+    throw new Error("Integer part must be numeric")
   }
-
   if (fractionalPart && !/^\d+$/.test(fractionalPart)) {
-    throw new Error("Invalid value as an input")
+    throw new Error("Fractional part must be numeric")
   }
-
   if (fractionalPart.length > decimals) {
-    throw new Error("Invalid value as an input")
+    throw new Error(`Fractional part exceeds allowed decimals (${decimals})`)
   }
-
-  // Convert to smallest unit
   const divisor = BigInt(10 ** decimals)
   const integerValue = BigInt(integerPart)
-  const fractionalValue = fractionalPart ? BigInt(fractionalPart.padEnd(decimals, "0")) : BigInt(0)
-
+  const paddedFraction = fractionalPart.padEnd(decimals, "0")
+  const fractionalValue = paddedFraction ? BigInt(paddedFraction) : BigInt(0)
   return integerValue * divisor + fractionalValue
 }
