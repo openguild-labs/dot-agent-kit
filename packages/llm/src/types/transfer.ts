@@ -21,14 +21,49 @@ export const transferToolSchema = z.object({
     chain: z.string().describe("The chain to transfer the tokens to")
 })
 
+/**
+ * Type for a token transfer tool that validates input using transferToolSchema.
+ * 
+ * @example
+ * ```typescript
+ * const transferTool: TransferTool = transferNativeTool(apis);
+ * const result = await transferTool.invoke({ amount: "1.5", to: "address", chain: "polkadot" });
+ * ```
+ */
 export type TransferTool = DynamicStructuredTool<typeof transferToolSchema>
 
+/**
+ * Result returned by token transfer tools.
+ * 
+ * @example
+ * ```typescript
+ * const result: TransferResult = {
+ *   amount: "1.5",
+ *   address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+ *   chain: "polkadot"
+ * };
+ * ```
+ */
 export interface TransferResult {
+    /** The amount of tokens transferred */
     amount: string
+    /** The recipient address */
     address: string
+    /** The chain where the transfer occurred */
     chain: string
 }
 
+/**
+ * Configuration object for the native token transfer tool.
+ * Used internally by LangChain to register and execute the tool.
+ * 
+ * @example
+ * ```typescript
+ * const tool = tool(async ({ amount, to, chain }) => {
+ *   // transfer implementation
+ * }, toolConfigTransferNative);
+ * ```
+ */
 export const toolConfigTransferNative: ToolConfig = {
     name: ToolNames.TRANSFER_NATIVE,
     description: "Transfer native tokens to a specific address",
