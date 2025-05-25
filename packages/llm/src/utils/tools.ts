@@ -1,7 +1,7 @@
 import { Api, KnownChainId } from "@polkadot-agent-kit/common"
 import { convertAddress, toMultiAddress } from "@polkadot-agent-kit/core"
 import { MultiAddress } from "@polkadot-api/descriptors"
-import { ToolResponse, ChainNotAvailableError, InvalidAddressError, ToolError, ERROR_CODES, isAnyToolError } from "../types"
+import { ToolResponse, ChainNotAvailableError, InvalidAddressError, ToolError, ErrorCodes, isAnyToolError } from "../types"
 
 /**
  * Internal utility to generate unique IDs for tool responses.
@@ -78,7 +78,7 @@ export const createErrorResponse = (error: ToolError | string, toolName: string)
     content: JSON.stringify({
       success: false,
       error: {
-        code: ERROR_CODES.LLM_INVALID_PARAMETERS,
+        code: ErrorCodes.LLM_INVALID_PARAMETERS,
         message: typeof error === 'string' ? error : 'Unknown error occurred',
         name: 'GenericError'
       },
@@ -150,7 +150,7 @@ export const executeTool = async <T>(
     const toolError: ToolError = {
       name: error instanceof Error ? error.constructor.name : 'UnknownError',
       message: error instanceof Error ? error.message : String(error),
-      code: ERROR_CODES.LLM_INVALID_PARAMETERS,
+      code: ErrorCodes.LLM_INVALID_PARAMETERS,
       details: error
     } as ToolError
     
